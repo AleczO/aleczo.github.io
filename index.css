@@ -1,0 +1,56 @@
+h1 {
+    text-align: left;
+    font-family: Roboto;
+}
+
+
+
+.Personal-Information{
+    background-color:white;
+    float: left;
+    width: 260px;
+}
+
+.Projects-Information{
+    background-color: white;
+    float: left;
+    margin-left: 30px;
+}
+
+.Vertical-Line{
+    background-color: black;
+    width: 1px;
+    height: 500px;
+    float: left;
+}
+
+
+
+hr {
+    height: 2px;
+    border-width: 0;
+    color: black;
+    background-color: black;
+}
+  
+
+.orbitron-Name {
+    font-family: "Orbitron", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 420;
+    font-style: normal;
+    font-size: 34px;
+}
+  
+.roboto-light {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+  
+.roboto-bold {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+  

@@ -1,0 +1,86 @@
+body{
+    background-color:#e3e3e3;
+}
+
+
+
+.header{
+    text-align: center;
+}
+
+
+#menu ul {
+    display: block;
+    list-style-type: none;
+    margin-right: 400px;
+}
+
+
+#menu li{
+    display: inline;
+    margin-right: 40px;
+}
+
+#menu a{
+    text-decoration: none;
+}
+
+#grad {
+    border-radius: 25px;
+    height: 5px;
+    background-color: red; /* For browsers that do not support gradients */
+    background-image: linear-gradient(to right, #f95959, #233142);
+}
+
+
+.title {
+    font-size: 1.8em;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    color: #f95959;
+}
+  
+
+.contents{
+    font-size: 1.6em;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    color: #f95959;
+}
+
+
+
+#projects-list-section{
+    margin-left: 100px;
+}
+
+#projects-list-section a{
+    text-decoration: none;
+}
+
+
+p{
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    color: #455d7a;
+}
+
+.project-name{
+    font-size: 1.7em;
+    font-family: "Open Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
+    color: #233142;
+}
+

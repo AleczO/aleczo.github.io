@@ -1,10 +1,21 @@
-h1 {
-    text-align: left;
-    font-family: Roboto;
+*{ 
+    box-sizing: border-box;
+    overflow: hidden;
+ 
 }
 
 
+.header{
+    padding: 30px;
+    
+    display: block;
+    margin-top: 0;
+    text-align: center;
+    background-color: #233142;
+    width: 100%;
+ }
 
+/*
 .Personal-Information{
     background-color:white;
     float: left;
@@ -23,9 +34,10 @@ h1 {
     height: 500px;
     float: left;
 }
+*/
 
 
-
+/*
 hr {
     height: 2px;
     border-width: 0;
@@ -54,3 +66,4 @@ hr {
     font-style: normal;
 }
   
+*/

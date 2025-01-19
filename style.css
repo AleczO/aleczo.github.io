@@ -1,5 +1,7 @@
 body{
-    background-color:#e3e3e3;
+    background-color:#F8EDED;
+    margin-left: 100px;
+    margin-right: 200px;
 }
 
 
@@ -40,7 +42,7 @@ body{
     font-weight: 700;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    color: #f95959;
+    color: #173B45;     
 }
   
 
@@ -51,7 +53,7 @@ body{
     font-weight: 500;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    color: #f95959;
+    color: #173B45;
 }
 
 
@@ -79,7 +81,8 @@ p{
     font-weight: 700;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    color: #455d7a;
+    color: #173B45;
+    margin-right: 20%;
 }
 
 .project-name{
@@ -89,7 +92,7 @@ p{
     font-weight: 700;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    color: #233142;
+    color: #B43F3F;
 }
 
 .project-links{
@@ -98,5 +101,5 @@ p{
     font-weight: 700;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    color: #6c4b7b;
+    color: #A0153E;
 }

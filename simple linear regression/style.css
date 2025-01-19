@@ -1,19 +1,14 @@
 body{
     background-color:#F8EDED;
-    margin-left: 10%;
+    margin-left: 100px;
     margin-right: 200px;
 }
 
 
 
 .header{
-    text-align: left;
+    text-align: center;
 }
-
-.header a{
-    text-decoration: none;
-}
-
 
 
 #menu ul {
@@ -25,9 +20,19 @@ body{
 
 #menu li{
     display: inline;
-    margin-right: 20%;
+    margin-right: 40px;
 }
 
+#menu a{
+    text-decoration: none;
+}
+
+#grad {
+    border-radius: 25px;
+    height: 5px;
+    background-color: red; /* For browsers that do not support gradients */
+    background-image: linear-gradient(to right, #f95959, #233142);
+}
 
 
 .title {
@@ -39,7 +44,7 @@ body{
     font-variation-settings: "wdth" 100;
     color: #173B45;     
 }
-
+  
 
 .contents{
     font-size: 1.6em;

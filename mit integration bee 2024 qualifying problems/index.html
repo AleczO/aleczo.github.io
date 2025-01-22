@@ -45,19 +45,19 @@
     <br><br><br> 
 
     <h1> 2 </h1>
-    <p> $$ \int \frac{(x-1)^{log(x+1)}} {(x+1)^{log(x-1)}} dx $$ 
+    <p> $$ \int \frac{(x-1)^{\log{(x+1)}}} {(x+1)^{\log{(x-1)}}} dx $$ 
         <br>
 
-        $$ = \int \frac{e^{log((x-1)^{log(x+1)})}}{e^{log((x+1)^{log(x-1)})}} dx $$
+        $$ = \int \frac{e^{\log({(x-1)}^{\log{(x+1)}})}}{e^{\log({(x+1)}^{\log{(x-1)}})}} dx $$
         <br>
 
-        $$ = \int \frac{e^{log(x+1)log(x-1)}}{e^{log(x-1)log(x+1)}} dx $$
+        $$ = \int \frac{e^{\log{(x+1)}\log{(x-1)}}}{e^{\log{(x-1)}\log{(x+1)}}} dx $$
         <br>
 
-        $$ = \int \frac{e^{log(x+1)}e^{log(x-1)}}{e^{log(x-1)}e^{log(x+1)}} dx = \int 1 dx = $$
+        $$ = \int \frac{e^{\log{(x+1)}}e^{\log{(x-1)}}}{e^{\log{(x-1)}}e^{\log{(x+1)}}} dx = \int 1 dx = $$
         
         <br>
-        $$ = x $$   
+        $$ = x + C $$   
     </p>
     <br><br><br>
 
@@ -71,9 +71,9 @@
 
         <br><br>
 
-        The first integral can be solved using \(uv\) substitution
+        The first integral can be solved using integration by parts
 
-        $$ \int x\log{x} dx = \frac{1}{2}x^2 log{x} - \frac{1}{2}\int x dx = \frac{1}{2}x^2 log{x} - \frac{1}{4}x^2 $$
+        $$ \int x\log{x} dx = \frac{1}{2}x^2 \log{x} - \frac{1}{2}\int x dx = \frac{1}{2}x^2 \log{x} - \frac{1}{4}x^2 $$
 
         <br><br>
 
@@ -87,13 +87,130 @@
 
         $$ = \int x\log{x} dx + \int 2x dx $$
 
-        $$ = \frac{1}{2}x^2 log{x} - \frac{1}{4}x^2 + x^2 = $$
+        $$ = \frac{1}{2}x^2 \log{x} - \frac{1}{4}x^2 + x^2 = $$
 
         <br>
         
-        $$ \frac{1}{2}x^2 log{x} + \frac{3}{4}x^2 $$
+        $$ =  \frac{1}{2}x^2 \log{x} + \frac{3}{4}x^2 + C $$
 
     </p>
+    <br><br><br>
+
+
+
+    <h1> 4 </h1>
+    <p>
+        $$ \int \frac{dx}{x\log{x} + 2x} = \int \frac{dx}{x(\log{x} + 2)}  $$
+        <br><br>
+
+        We can use substitution
+        
+        $$ t = \log{x} + 2 $$
+        $$ dt = \frac{1}{x} dx $$
+
+        $$ = \int \frac{dt}{t} = \log{|t|} + C $$
+
+        <br><br>
+
+
+        $$ = \log{(\log{x} + 2)} + C  $$
+    </p>
+
+
+
+    <h2> 5 </h2>
+
+    <p> It requires intuitive explanation. To Do </p>
+    <br><br><br>
+
+
+
+
+    <h2> 6 </h2>
+
+    $$
+    \int \frac{\cos x + \cot x + \csc x + 1}{\sin x + \tan x + \sec x + 1} dx 
+    $$
+
+    <br><br>
+
+    <p> lets first rewrite the numerator </p>
+
+    $$ \cos x + \cot x + \csc x + 1 = $$
+
+    $$ = \cos x + \frac{\cos x}{\sin x} + \frac{1}{\sin x} + 1 = $$
+
+    $$ = \frac{\sin x \cos x + \cos x + 1 + \sin x}{ \sin x } $$
+
+    $$ = \frac{(\cos x + 1)(\sin x + 1)}{\sin x} $$
+
+    <br>
+
+    <p> then rewrite the denominator </p>
+
+    $$ \sin x + \tan x + \sec x + 1 $$
+
+    $$ = \sin x + \frac{\sin x}{\cos x} + \frac{1}{\cos x} + 1 = $$
+    
+    $$ = \frac{\cos x \sin x + \sin x + 1 + \cos x}{\cos x} $$
+
+    $$ = \frac{(\cos x + 1)(\sin x + 1)}{\cos x} $$
+
+    <br><br>
+    
+    <p> and finally rewrite integral </p>
+
+    <br>
+
+
+    $$ = \int \frac{(\cos x + 1)(\sin x + 1)}{\sin x} \cdot \frac{\cos x}{(\cos x + 1)(\sin x + 1)} x $$
+    
+    $$ = \int \frac{\cos x}{\sin x} dx $$
+    
+    $$ = \log{\sin x} + C $$
+
+    <br><br>
+
+
+
+
+    <h1> 7 </h1>
+
+    $$ \int \frac{x^{2024} - 1}{x^{506} - 1} dx = $$
+    <br>
+
+    $$ = \int \frac{(x^{1012} - 1)(x^{1012} + 1)}{x^{506} - 1} dx $$
+    <br>
+
+    $$ = \int \frac{(x^{506} - 1)(x^{506} + 1)(x^{1012} + 1)}{x^{506} - 1} dx $$
+    <br>
+
+    $$ = \int (x^{506} + 1)(x^{1012} + 1) dx $$
+    <br>
+
+    $$ = \int (x^{1518} + x^{506} + x^{1012} + 1 )dx $$
+    <br>
+
+    $$ = \frac{x^{1519}}{1519} + \frac{x^{507}}{507} + \frac{x^{1013}}{1013} + x + C $$
+    <br><br>
+
+
+
+    <h1> 8 </h1>
+
+    $$ \int_{-1}^{1} (5x^3 - 3x)^2 dx = $$
+    
+    $$ = \int_{-1}^{1} (25x^6 - 30x^4 + 9x^2) dx $$
+
+    $$ = \bigg[ \frac{25}{7}x^7 - 6x^5 + 3x^3 \bigg]_{-1}^{1} $$
+
+    $$ = \frac{25}{7} - 6 + 3 - (-\frac{25}{7} + 6 - 3) $$
+
+    $$ = \frac{50}{7} - 6 = \frac{8}{7} $$
+    <br><br>
+
+    
+
 
 </div> <!-- End of Projects list section -->
 

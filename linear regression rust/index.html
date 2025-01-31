@@ -50,37 +50,28 @@
 <main> <!-- Start of Projects list section -->
 
 
-    <h1>
-        Linear Regression in Rust
-    </h1>
+    <h1> Linear Regression in Rust </h1>
     <hr>
 
-    <br> <br>
+    <br><br>
 
-    <h2>
-        Simple Linear Regression
-    </h2>
+    <h2> Simple Linear Regression </h2>
     <hr>
 
-    <h3>
-        Equation Model
-    </h3>
+    <h3> Equation Model </h3>
     $$ y = \alpha + \beta x $$
+
     <br>
 
-    <h3>
-        Cost Function
-    </h3>
-
+    <h3> Cost Function </h3>
     $$ RSS = \sum_{i=1}^{m} (y_i - \alpha - \beta x_i)^2 $$
 
     <br>
 
-    <h3>
-        Optimal \(\beta\) calculation 
-    </h3>
+    <h3> Optimal \(\beta\) calculation </h3>
 
     $$ \hat{\beta} = \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }{\sum_{i=1}^n (x_i - \bar{x})^2} $$
+
 
     <pre><code class="language-rust">
     fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
@@ -100,9 +91,7 @@
 
     <br>
 
-    <h3>
-        Optimal \(\alpha\) calculation 
-    </h3>
+    <h3> Optimal \(\alpha\) calculation </h3>
 
     $$ \hat{\alpha} = \bar{y} - \hat{\beta}  \bar{x} $$
 
@@ -115,6 +104,26 @@
     </code></pre>
 
     <br>
+
+
+    <h3> Regression Output </h3>
+
+    $$ \hat{y}_i = \hat{\alpha} + \hat{\beta} x_i $$
+
+    <pre><code class="language-rust">
+    fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
+        let beta: f64 = beta_hat(x, y);
+        let alpha : f64 = alpha_hat(x, y, beta);
+    
+        let mut y_hat: Vec<f64> = Vec::new();
+    
+        for i in 0..x.len(){
+            y_hat.push(alpha + beta * x[i]);
+        }
+    
+        y_hat
+    }
+    </code></pre>
 
     <button type="button" class="collapsible"> <h3> Help Functions </h3>  </button>
     <div class="content">
@@ -131,21 +140,26 @@
         <br>
     
         <h3>
-            Error Measure
+            RSS 
         </h3>
+
+        $$ RSS =  \sum_{i=1}^n (y_i - \hat{y}_i)^2 $$
     
         <pre><code class="language-rust">
-        fn RSME(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+        fn RSS(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
             let mut sum: f64 = 0.0;
                 
             for i in 0..y.len(){
-                sum += (y_hat[i] - y[i]) * (y_hat[i] - y[i]);
+                sum += (y[i] - y_hat[i]) * (y[i] - y_hat[i]);
             }
                 
-            (sum / y.len() as f64).sqrt()
+            sum
         }        
         </code></pre>
+
+
     </div>
+
 
     <script src="index.js"></script>
 

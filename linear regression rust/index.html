@@ -127,6 +127,24 @@
 
     <!------------------------------------------------------------------------------------------------------>
 
+    <h3> Correlation Coefficient </h3>
+
+    $$ r = \frac{ \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }
+    { \sqrt{\sum_{i=1}^n(x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n(y_i - \bar{y})^2} }
+     $$
+
+    <br>
+
+    <!------------------------------------------------------------------------------------------------------>
+
+    <h3> Test for Zero Correlation \( H_0: \rho = 0 \) </h3>
+
+    $$ t = r \sqrt{\frac{n-2}{1-r^2}} $$
+
+
+    <br>
+    <!------------------------------------------------------------------------------------------------------>
+
 
     <h3> Coefficient of Determination \( R^2 \) </h3>
 
@@ -196,12 +214,30 @@
             for i in 0..y.len(){
                 sum += (y[i] - mean(y)) * (y[i] - mean(y));
             }
-                
+        
             sum
         }
         </code></pre>
+        <br>
 
         <!-------------------------------------------------------------------------------------------------------->
+
+        <h3> SSR (Regression Sum of Squares) </h3>
+
+        $$ SSR = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 $$
+
+        <pre><code class="language-rust"> 
+        fn SSR(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+            let mut sum = 0.0;
+            
+            for i in 0..y.len(){
+                sum += (y_hat[i] - mean(y)) * (y_hat[i] - mean(y));
+            }
+            
+            sum
+        }
+    </code></pre>
+
 
 
     </div>

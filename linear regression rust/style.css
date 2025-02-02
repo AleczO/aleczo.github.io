@@ -90,7 +90,6 @@ p{
 /* -------------------------------------------------------------------------------------------- */
 
 /* icons */
-
 .fa-github {
     color: #222831;
     font-size: 23px;
@@ -108,16 +107,22 @@ p{
 
 /* -------------------------------------------------------------------------------------------- */
 
+
+
 .collapsible {
-    cursor: pointer;
     background-color:#fbfcff;
-    border: 4px 0px;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
     border: none;
-    text-align: left;
-    outline: none;
+    padding: 8px 8px;
+    text-align: center;
+    border-radius: 2px;
+    display: block;
+    cursor: pointer;
 }
   
- .collapsible:hover {
+.collapsible:hover {
     color: #fbfcff;
     background-color: #222831;
 }

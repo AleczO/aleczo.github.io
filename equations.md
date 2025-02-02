@@ -53,3 +53,35 @@ $$ \hat{\beta} {\sum_{i=1}^n (x_i - \bar{x})^2} = \sum_{i=1}^n(x_i - \bar{x})(y_
 
 
 $$ = \beta^2 \sum_{i=1}^n (x_i - \bar{x})^2 -  \beta^2 \sum_{i=1}^n (x_i - x)^2 = 0 $$
+
+<br><br><br><br><br><br>
+
+
+$$ r = \frac{ \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) } { \sqrt{\sum_{i=1}^n(x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n(y_i - \bar{y})^2} }
+$$
+
+
+$$ r\frac{\sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2}} $$
+
+$$ r\frac{s_y}{s_x} = \frac{ \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) } { \sqrt{\sum_{i=1}^n(x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n(y_i - \bar{y})^2}}
+\frac{\sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2}} 
+$$
+
+
+$$ = \frac{ \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) } { \sum_{i=1}^n(x_i - \bar{x})^2} = \hat{\beta}
+$$
+
+<br>
+
+
+
+
+$$ y_i - \bar{y} = -\hat{\beta}(x_i - \bar{x}) $$
+
+
+$$ (y_i - \bar{y})^2 = \hat{\beta}^2 (x_i - \bar{x})^2 $$
+
+$$ \sum_{i=1}^n (y_i - \bar{y})^2 = \hat{\beta}^2\sum_{i=1}^n (x_i - \bar{x})^2 $$
+
+
+$$ \hat{\beta}^2 = \frac{\sum_{i=1}^n (y_i - \bar{y})^2} {\sum_{i=1}^n (x_i - \bar{x})^2} $$

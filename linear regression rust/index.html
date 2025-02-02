@@ -7,7 +7,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
-
+    <!-- Arrow icon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=keyboard_arrow_down" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
@@ -107,6 +108,8 @@
 
     <h3> Regression Output </h3>
 
+    
+
     $$ \hat{y}_i = \hat{\alpha} + \hat{\beta} x_i $$
 
     <pre><code class="language-rust">
@@ -146,9 +149,75 @@
     <!------------------------------------------------------------------------------------------------------>
 
 
-    <h3> Coefficient of Determination \( R^2 \) </h3>
+    <h3> Coefficient of Determination \( r^2 \) </h3>
 
-    $$ R^2 = 1 - \frac{\text{SSE}}{\text{SST}} $$
+
+
+<button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+<div class="content">
+
+<button type="button" class="collapsible"> <h3> Equation 1 </h3>  </button>
+<div class="content"> 
+
+$$ \sum_{i=1}^n(y_i - \bar{y})^2 = \sum_{i=1}^n(y_i - \hat{y}_i)^2 + \sum_{i=1}^n  (\hat{y}_i - \bar{y})^2 $$
+
+<br>
+
+
+
+$$ \sum_{i=1}^n[(y_i - \hat{y}_i) + (\hat{y}_i - \bar{y})]^2 $$
+
+$$ =  \sum_{i=1}^n(y_i - \hat{y}_i)^2 + 2\sum_{i=1}^n (y_i - \hat{y}_i)(\hat{y}_i - \bar{y}) + \sum_{i=1}^n(\hat{y}_i - \bar{y})^2  $$
+
+<br>
+
+We need to show that
+
+$$ \sum_{i=1}^n (y_i - \hat{y}_i)(\hat{y}_i - \bar{y}) = 0 $$
+
+<button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+<div class="content">
+
+$$  \hat{y}_i = \hat{\alpha} + \hat{\beta} x_i  $$  
+
+$$ \hat{\alpha} = \bar{y} - \hat{\beta} \bar{x} $$ 
+
+<br>
+
+$$ \hat{y}_i = \bar{y} - \hat{\beta}\bar{x} + \bar{\beta}x_i $$
+
+$$ \hat{y}_i = \bar{y} - \hat{\beta}(\bar{x} - x_i) $$
+
+</div>
+
+<br>
+
+$$ = \sum_{i=1}^n (y_i - \hat{y}_i)(\hat{y}_i - \bar{y}) $$
+
+$$ = \sum_{i=1}^n [(y_i - \bar{y}) - \beta(x_i - \bar{x})][\beta(x_i - \bar{x})] $$
+
+$$ = \beta \sum_{i=1}^n (y_i - \bar{y})(x_i - \bar{x}) -  \beta^2 \sum_{i=1}^n (x_i - x)^2 $$
+
+<button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+<div class="content">
+
+
+$$ \hat{\beta} = \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }{\sum_{i=1}^n (x_i - \bar{x})^2} $$
+
+$$ \hat{\beta} {\sum_{i=1}^n (x_i - \bar{x})^2} = \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y})  $$
+
+</div>
+
+$$ = \beta^2 \sum_{i=1}^n (x_i - \bar{x})^2 -  \beta^2 \sum_{i=1}^n (x_i - x)^2 = 0 $$
+
+</div>
+
+        $$ \text{SST} = {\text{SSR}} + {\text{SSE}} $$
+        $$ \frac{\text{SST}}{\text{SST}} = \frac{\text{SSR}}{\text{SST}} + \frac{\text{SSE}}{\text{SST}} $$
+        $$ \frac{\text{SSR}}{\text{SST}}  = 1 - \frac{\text{SSE}}{\text{SST}} $$
+    </div>
+
+    $$ r^2 = 1 - \frac{\text{SSE}}{\text{SST}} $$
 
     <pre><code class="language-rust">
     fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
@@ -161,9 +230,47 @@
 
     <br>
 
+    <!-------------------------------------------------------------------------------------------------------->
+
+    <h3> Error Variance </h3>
+
+    $$ \sigma^2 = s^2 = \frac{\sum_{i=1}^n(y_i - \bar{y}_i)}{n - 2} $$
+
+    <br>
+
+    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+    <div class="content"> 
+
+        <p> from the coefficient of determination </p>
+
+        $$ r^2 = 1 - \frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{\sum_{i=1}^n(y_i - \bar{y})^2} $$
+
+        $$ 1 - r^2 = \frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{\sum_{i=1}^n(y_i - \bar{y})^2} $$
+        
+        $$ (1 - r^2)\sum_{i=1}^n(y_i - \bar{y})^2  = \sum_{i=1}^n(y_i - \hat{y}_i)^2 $$
+
+        $$ \frac{(1 - r^2)\sum_{i=1}^n(y_i - \bar{y})^2}{n - 2}  = \frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2} = s^2 $$
+    
+    </div>
+    
+
+    $$ s^2 = \frac{(1-r^2) \sum_{i=1}^n(y_i - \bar{y})}{n-2} $$
+
+    <!-------------------------------------------------------------------------------------------------------->
+
+    <h3> Standard Error of Regression</h3>
+
+    $$ s_e = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2}} = \sqrt{\frac{\text{SSE}}{n - 2}} $$
+
+    <pre><code class="language-rust">
+    fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+        (SSE(y, &y_hat) / ((y.len() - 2) as f64)).sqrt()
+    }
+    </code></pre>
+
     <!-------------------------------------- Help functions section ---------------------------------------->
 
-    <button type="button" class="collapsible"> <h2> Help Functions </h2>  </button>
+    <button type="button" class="collapsible"> <h2> Helper Functions </h2>  </button>
     <div class="content">
 
         <!-------------------------------------------------------------------------------------------------------->

@@ -140,14 +140,6 @@
 
     <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Test for Zero Correlation \( H_0: \rho = 0 \) </h3>
-
-    $$ t = r \sqrt{\frac{n-2}{1-r^2}} $$
-
-
-    <br>
-    <!------------------------------------------------------------------------------------------------------>
-
 
     <h3> Coefficient of Determination \( r^2 \) </h3>
 
@@ -158,6 +150,8 @@
 
     <button type="button" class="collapsible"> 1 </button>
     <div class="content"> 
+
+    <h3> Analysis of Variance (ANOVA) Identity Proof </h3>
 
     $$ \sum_{i=1}^n(y_i - \bar{y})^2 = \sum_{i=1}^n(y_i - \hat{y}_i)^2 + \sum_{i=1}^n  (\hat{y}_i - \bar{y})^2 $$
 
@@ -214,6 +208,9 @@
 
     <button type="button" class="collapsible"> 2 </button>
     <div class="content"> 
+
+        <h3> \( r^2 \) Derivation </h3>
+
         $$ 
         r \frac{\sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2}}  $$
 
@@ -232,6 +229,9 @@
 
         <button type="button" class="collapsible"> 2.1 </button>
         <div class="content"> 
+
+        
+
             From 1.1
 
             $$ \hat{y_i} - \bar{y} = -\hat{\beta}(x_i - \bar{x}) $$
@@ -251,11 +251,18 @@
 
     </div>
 
+    <br>
 
-        From 1
+    <h3> Formula Simplification </h3>
 
-        $$ r^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (y_i - \bar{y})^2} = 
+        $$ r^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (y_i - \bar{y})^2} $$ 
+
+        <p>From <b>1</b></p>
+        
+        $$ \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (y_i - \bar{y})^2} =
         \frac{\sum_{i=1}^n(y_i - \bar{y}_i)^2 - \sum_{i=1}^n  ({y}_i - \hat{y})^2}{\sum_{i=1}^n(y_i - \bar{y})^2}  $$
+
+        <br>
 
         $$ r^2 = 1 - \frac{\sum_{i=1}^n  ({y}_i - \hat{y})^2}{\sum_{i=1}^n(y_i - \bar{y})^2} $$
 
@@ -298,7 +305,9 @@
     </div>
     
 
-    $$ s^2 = \frac{(1-r^2) \sum_{i=1}^n(y_i - \bar{y})}{n-2} $$
+    <h4> Equivalent Formula </h4>
+
+    $$ s^2 = \frac{(1-r^2) \sum_{i=1}^n(y_i - \bar{y})^2}{n-2} $$
 
     <!-------------------------------------------------------------------------------------------------------->
 

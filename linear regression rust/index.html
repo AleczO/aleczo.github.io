@@ -188,9 +188,9 @@
 
     $$ = \sum_{i=1}^n (y_i - \hat{y}_i)(\hat{y}_i - \bar{y}) $$
 
-    $$ = \sum_{i=1}^n [(y_i - \bar{y}) - \beta(x_i - \bar{x})][\beta(x_i - \bar{x})] $$
+    $$ = \sum_{i=1}^n [(y_i - \bar{y}) - \hat{\beta}(x_i - \bar{x})][\hat{\beta}(x_i - \bar{x})] $$
 
-    $$ = \beta \sum_{i=1}^n (y_i - \bar{y})(x_i - \bar{x}) -  \beta^2 \sum_{i=1}^n (x_i - x)^2 $$
+    $$ = \hat{\beta} \sum_{i=1}^n (y_i - \bar{y})(x_i - \bar{x}) -  \hat{\beta}^2 \sum_{i=1}^n (x_i - x)^2 $$
 
     <button type="button" class="collapsible"> 1.2  </button>
     <div class="content">
@@ -202,7 +202,7 @@
 
     </div>
 
-    $$ = \beta^2 \sum_{i=1}^n (x_i - \bar{x})^2 -  \beta^2 \sum_{i=1}^n (x_i - x)^2 = 0 $$
+    $$ = \hat{\beta}^2 \sum_{i=1}^n (x_i - \bar{x})^2 -  \hat{\beta}^2 \sum_{i=1}^n (x_i - x)^2 = 0 $$
 
     </div>
 
@@ -285,9 +285,12 @@
 
     <h3> Error Variance </h3>
 
-    $$ \sigma^2 = s^2 = \frac{\sum_{i=1}^n(y_i - \bar{y}_i)}{n - 2} $$
+    $$ \sigma^2 = s^2 = \frac{\sum_{i=1}^n(y_i - \hat{y}_i)}{n - 2} $$
 
     <br>
+
+
+    <h4> Equivalent Formula </h4>
 
     <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
     <div class="content"> 
@@ -305,25 +308,42 @@
     </div>
     
 
-    <h4> Equivalent Formula </h4>
+    
 
     $$ s^2 = \frac{(1-r^2) \sum_{i=1}^n(y_i - \bar{y})^2}{n-2} $$
 
+    <br>
+
     <!-------------------------------------------------------------------------------------------------------->
 
-    <h3> Standard Error of Regression</h3>
+    <h3> Estimate of the Error Standard Deviation</h3>
 
-    $$ s_e = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2}} = \sqrt{\frac{\text{SSE}}{n - 2}} $$
+    $$ s = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2}} = \sqrt{\frac{\text{SSE}}{n - 2}} $$
 
     <pre><code class="language-rust">
     fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
         (SSE(y, &y_hat) / ((y.len() - 2) as f64)).sqrt()
     }
     </code></pre>
+    <br>
+
+    <!-------------------------------------------------------------------------------------------------------->
+
+    <h3> Standard Deviation of \( \hat{\alpha}\) and \( \hat{\beta} \) </h3>
+
+    $$ s_{\hat{\alpha}} = s \sqrt{\frac{1}{n} +  \frac{\bar{x}^2}{\sum_{i=1}^n (x_i - \bar{x})^2} } $$
+
+    <br>
+
+    $$ s_{\hat{\beta}} = \frac{s}{\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2}}  $$
+
 
     <!-------------------------------------- Help functions section ---------------------------------------->
 
-    <button type="button" class="collapsible"> <h2> Helper Functions </h2>  </button>
+    
+
+
+    <button type="button" class="collapsible" style="font-size: 25px"> Helper Functions   </button>
     <div class="content">
 
         <!-------------------------------------------------------------------------------------------------------->

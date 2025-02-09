@@ -67,7 +67,115 @@
     <!------------------------------------------------------------------------------------------------------>
 
     <h3> Cost Function </h3>
-    $$ RSS = \sum_{i=1}^{m} (y_i - \alpha - \beta x_i)^2 $$
+
+    <h4> Least Squares </h4> 
+
+    $$ Q(x,y) =  \text{RSS} = \sum_{i=1}^{m} (y_i - \alpha - \beta x_i)^2 $$
+    <br>
+
+   
+
+
+    <h3> \( \alpha \) and \( \beta \) Derivation </h3>
+
+    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+    <div class="content">
+
+
+    $$ \frac{\partial Q}{\partial \hat{\alpha}} = -2\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i) = 0 $$ 
+
+    $$ \frac{\partial Q}{\partial \hat{\beta}} = -2\sum_{i=1}^n x_i(y_i - \hat{\alpha} - \hat{\beta}x_i) = 0 $$ 
+
+        <button type="button" class="collapsible"> 1. \( \alpha \) Derivation </button>
+        <div class="content">
+        $$ \frac{\partial Q}{\partial \hat{\alpha}} = 0 $$ 
+
+        $$ -2\sum_{i=1}^n (y_i - \hat{\alpha} - \hat{\beta}x_i) = 0 $$ 
+        
+        $$ \sum_{i=1}^n y_i - \hat{\alpha} \sum_{i=1}^n - \hat{\beta}\sum_{i=1}^n x_i = 0 $$
+        
+        $$ n \bar{y} - n\hat{\alpha} - \hat{\beta}n \bar{x} = 0 $$
+        
+        $$ \bar{y} - \hat{\alpha} - \hat{\beta} \bar{x} = 0 $$
+        
+        solving for \( \alpha \)
+        
+        $$ \hat{\alpha} = \bar{y} - \hat{\beta} \bar{x}  $$
+        </div>
+
+
+
+        <button type="button" class="collapsible"> 2. \( \beta \) Derivation </button>
+        <div class="content">
+
+        $$  \frac{\partial Q}{\partial \hat{\beta}} = 0  $$
+
+        $$ -2\sum_{i=1}^n x_i(y_i - \hat{\alpha} - \hat{\beta}x_i) = 0 $$
+
+        $$ -\sum_{i=1}^n x_iy_i + \hat{\alpha}\sum_{i=1}^n x_i + \hat{\beta} \sum_{i=1}^n x_i^2 = 0 $$
+
+        $$ (\bar{y} - \hat{\beta} \bar{x}) n\bar{x} + \hat{\beta} \sum_{i=1}^n x_i^2 = \sum_{i=1}^n x_iy_i  $$
+
+        $$ n\bar{y}\bar{x} - n\hat{\beta} \bar{x}^2 + \hat{\beta} \sum_{i=1}^n x_i^2 = \sum_{i=1}^n x_iy_i  $$
+
+
+        $$  \hat{\beta} (-n\bar{x}^2 +  \sum_{i=1}^n x_i^2)  = \sum_{i=1}^n x_iy_i - n\bar{x} \bar{y} $$
+
+        $$  \hat{\beta}  = \frac{\sum_{i=1}^n x_iy_i - n\bar{x} \bar{y}}{\sum_{i=1}^n x_i^2-n\bar{x}^2} $$
+
+        <br>
+
+        <h3> Formula Simplification </h3>
+        
+        <button type="button" class="collapsible"> Numerator </button>
+        <div class="content">
+        
+        $$ \sum_{i=1}^n x_iy_i - n\bar{x} \bar{y} = $$
+
+
+        $$ = \sum_{i=1}^n x_iy_i - n\bar{x} \bar{y} - n\bar{x} \bar{y} + n\bar{x} \bar{y}  $$ 
+
+        $$ = \sum_{i=1}^n x_iy_i - \bar{y}\sum_{i=1}^n x_i  - \bar{x}\sum_{i=1}^n y_i + \sum_{i=1}^n \bar{x} \bar{y} $$ 
+
+
+        $$ = \sum_{i=1}^n ( x_iy_i - \bar{y} x_i  - \bar{x} y_i +  \bar{x} \bar{y}) $$
+
+        $$ = \sum_{i=1}^n [  x_i (y_i - \bar{y}) - \bar{x} ( y_i - \bar{y} ) ] $$
+
+        $$ = \sum_{i=1}^n ( y_i - \bar{y} ) (x_i - \bar{x}) $$
+
+        </div>
+
+        <button type="button" class="collapsible"> Denominator </button>
+        <div class="content">
+
+            $$ \sum_{i=1}^n x_i^2-n\bar{x}^2 = $$
+
+            $$ = \sum_{i=1}^n x_i^2  - 2n\bar{x}^2 + n\bar{x}^2  $$
+            
+            $$ = \sum_{i=1}^n x_i^2  - 2\bar{x} n\bar{x} + n\bar{x}^2 $$
+            
+            $$ = \sum_{i=1}^n x_i^2  - 2\bar{x} \sum_{i=1}^n x_i + \sum_{i=1}^n\bar{x}^2 $$
+            
+            $$ = \sum_{i=1}^n (x_i^2 - 2\bar{x} x_i + \bar{x}^2) $$
+            
+            $$ = \sum_{i=1}^n (x_i -\bar{x})^2 $$
+
+        </div>
+
+        <br>
+
+        <h4> Finally </h4>
+        
+        $$ \hat{\beta} = \frac{\sum_{i=1}^n ( y_i - \bar{y} ) (x_i - \bar{x})}{\sum_{i=1}^n (x_i -\bar{x})^2} $$
+                
+        </div>
+
+
+
+    </div>
+
+
     <br>
 
      <!------------------------------------------------------------------------------------------------------>
@@ -77,17 +185,17 @@
     $$ \hat{\beta} = \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }{\sum_{i=1}^n (x_i - \bar{x})^2} $$
 
     <pre><code class="language-rust">
-    fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
-        let (mut num, mut den) = (0.0, 0.0);
-        let (x_mean, y_mean) = (mean(x), mean(y));
-            
-        for i in 0..x.len(){
-            num += (x[i] - x_mean) * (y[i] - y_mean);
-            den += (x[i] - x_mean) * (x[i] - x_mean);
-        }
+fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
+    let (mut num, mut den) = (0.0, 0.0);
+    let (x_mean, y_mean) = (mean(x), mean(y));
         
-        num / den
+    for i in 0..x.len(){
+        num += (x[i] - x_mean) * (y[i] - y_mean);
+        den += (x[i] - x_mean) * (x[i] - x_mean);
     }
+    
+    num / den
+}
     </code></pre>
     <br>
 
@@ -98,9 +206,9 @@
     $$ \hat{\alpha} = \bar{y} - \hat{\beta}  \bar{x} $$
 
     <pre><code class="language-rust">
-    fn alpha_hat(x: &Vec<f64>, y: &Vec<f64>, beta: f64) -> f64 {
-        mean(y) - beta * mean(x)
-    }
+fn alpha_hat(x: &Vec<f64>, y: &Vec<f64>, beta: f64) -> f64 {
+    mean(y) - beta * mean(x)
+}
     </code></pre>
     <br>
 
@@ -113,18 +221,18 @@
     $$ \hat{y}_i = \hat{\alpha} + \hat{\beta} x_i $$
 
     <pre><code class="language-rust">
-    fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
-        let beta: f64 = beta_hat(x, y);
-        let alpha : f64 = alpha_hat(x, y, beta);
-    
-        let mut y_hat: Vec<f64> = Vec::new();
-    
-        for i in 0..x.len(){
-            y_hat.push(alpha + beta * x[i]);
-        }
-    
-        y_hat
+fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
+    let beta: f64 = beta_hat(x, y);
+    let alpha : f64 = alpha_hat(x, y, beta);
+
+    let mut y_hat: Vec<f64> = Vec::new();
+
+    for i in 0..x.len(){
+        y_hat.push(alpha + beta * x[i]);
     }
+
+    y_hat
+}
     </code></pre>
     <br>
 
@@ -271,12 +379,12 @@
     $$ r^2 = 1 - \frac{\text{SSE}}{\text{SST}} $$
 
     <pre><code class="language-rust">
-    fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
-        let num = RSS(y, y_hat);
-        let den = SST(y);
-        
-        (1.0 - (num / den) as f64)
-    }
+fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+    let num = RSS(y, y_hat);
+    let den = SST(y);
+    
+    (1.0 - (num / den) as f64)
+}
     </code></pre>
 
     <br>
@@ -321,9 +429,9 @@
     $$ s = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2}} = \sqrt{\frac{\text{SSE}}{n - 2}} $$
 
     <pre><code class="language-rust">
-    fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
-        (SSE(y, &y_hat) / ((y.len() - 2) as f64)).sqrt()
-    }
+fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+    (SSE(y, &y_hat) / ((y.len() - 2) as f64)).sqrt()
+}
     </code></pre>
     <br>
 
@@ -338,10 +446,46 @@
     $$ s_{\hat{\beta}} = \frac{s}{\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2}}  $$
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-------------------------------------- Help functions section ---------------------------------------->
-
-    
-
 
     <button type="button" class="collapsible" style="font-size: 25px"> Helper Functions   </button>
     <div class="content">
@@ -351,9 +495,9 @@
         <h3> Mean </h3>
     
         <pre><code class="language-rust">
-        fn mean(vec: &Vec<f64> ) -> f64 {
-            vec.iter().sum::<f64>() / (vec.len() as f64)
-        }
+fn mean(vec: &Vec<f64> ) -> f64 {
+    vec.iter().sum::<f64>() / (vec.len() as f64)
+}
         </code></pre>
         <br>
 
@@ -361,62 +505,68 @@
     
         <h3> RSS (Sum of Squared Errors) </h3>
 
-        $$ \text{SSE} = \text{RSS} = \sum_{i=1}^n (y_i - \hat{y}_i)^2 $$
+        <p> also called <b>sum of squares error (SSE) </b>  </p>
+
+        $$   \text{RSS} = \text{SSE}  = \sum_{i=1}^n (y_i - \hat{y}_i)^2 $$
+
+        <br>
+
+        $$ \text{RSS} \neq \text{SSR} $$
     
         <pre><code class="language-rust"> 
-        fn RSS(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
-            let mut sum: f64 = 0.0;
-                
-            for i in 0..y.len(){
-                sum += (y[i] - y_hat[i]) * (y[i] - y_hat[i]);
-            }
-                
-            sum
-        }        
+fn RSS(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+    let mut sum: f64 = 0.0;
+        
+    for i in 0..y.len(){
+        sum += (y[i] - y_hat[i]) * (y[i] - y_hat[i]);
+    }
+        
+    sum
+}        
         </code></pre>
         <br>
 
 
-
-        <!-- ----------------------------------------------------------------------------------------- -->
-
+        <!--------------------------------------------------------------------------------------------->
 
         <h3>
             SST (Total Sum of Squares) 
         </h3>
 
-        $$ SST = \sum_{i=1}^n (y_i - \bar{y})^2 $$
+        $$ \text{SST} = \sum_{i=1}^n (y_i - \bar{y})^2 $$
 
         <pre><code class="language-rust"> 
-        fn SST(y: &Vec<f64>) -> f64 {
-            let mut sum: f64 = 0.0;
-            
-            for i in 0..y.len(){
-                sum += (y[i] - mean(y)) * (y[i] - mean(y));
-            }
-        
-            sum
-        }
+fn SST(y: &Vec<f64>) -> f64 {
+    let mut sum: f64 = 0.0;
+    
+    for i in 0..y.len(){
+        sum += (y[i] - mean(y)) * (y[i] - mean(y));
+    }
+
+    sum
+}
         </code></pre>
         <br>
 
         <!-------------------------------------------------------------------------------------------------------->
 
+
+
         <h3> SSR (Regression Sum of Squares) </h3>
 
-        $$ SSR = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 $$
+        $$ \text{SSR} = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 $$
 
         <pre><code class="language-rust"> 
-        fn SSR(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
-            let mut sum = 0.0;
+fn SSR(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
+    let mut sum = 0.0;
+                
+    for i in 0..y.len(){
+        sum += (y_hat[i] - mean(y)) * (y_hat[i] - mean(y));
+    }
             
-            for i in 0..y.len(){
-                sum += (y_hat[i] - mean(y)) * (y_hat[i] - mean(y));
-            }
-            
-            sum
-        }
-    </code></pre>
+    sum
+}
+        </code></pre>
 
 
 

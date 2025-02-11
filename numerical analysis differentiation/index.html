@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=keyboard_arrow_down" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" href="style-code.css">
+  
 
     <!-- MathJax -->
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
@@ -26,7 +27,7 @@
 
     <script>hljs.highlightAll();</script>
 
-    
+
    
 
     
@@ -54,6 +55,24 @@
 
     <!------------------------------------------------------------------------------------------------------>
 
+    <h2> Taylor Series with Remainder </h2>
+
+    $$ f(x) = f(a) + f'(a)(x - a) + \frac{1}{2}f''(a)(x - a)^2  + \cdots + \frac{1}{n!}f^{(n)}(a)(x - a)^n 
+    + R_n(x)
+    $$
+
+    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+    <div class="content">
+
+    $$ R_n(x) = \frac{1}{n!}\int_{a}^n (x-t)^n f^{(n+1)}(t)dt $$
+
+    $$ = \frac{1}{(n+1)!}f^{(n+1)}(c)(x - a)^{n+1} $$
+
+    \( a < c < x \)
+
+    </div>
+
+    <br>
     <h2>
         First-Order Derivative Formulas
     </h2>
@@ -61,25 +80,108 @@
 
     <h3> Forward Difference Formula </h3>
 
-    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+
+
+    <button type="button" class="collapsible"> Derivation </button>
     <div class="content">
-
-
-    From Taylor expansion 
-
-    $$ f(x + h) = f(x) + hf'(x) + \frac{h^2}{2} f''(x) + \frac{1}{2} $$
-
-
-    </div>
     <br>
 
-    Formula
+    from <b>Taylor series with remainder</b>
+
+    $$ f(x + h) = f(x) + hf'(x) + \frac{h^2}{2!} f''(c) $$
+
+    $$ f(x + h) - f(x) = hf'(x) + \frac{h^2}{2} f''(c)  $$
+
+    $$ \frac{f(x + h) - f(x)}{h} = f'(x) + \frac{h}{2} f''(c) $$
+
+    <p> \(x < c < x + h \) </p>
+
+
+        <pizda>
+    </div>
+
     $$ f'(x) \approx \frac{f(x + h) - f(x)}{h} $$
+    
+    <pre><code class="language-cpp">double FD(std::function&lt;double(double)&gt; f, double x, double h){
+    return (f(x + h) - f(x)) / h;
+}</code></pre>
 
+
+    <h3> Central Difference Formula </h3>
+
+
+    <button type="button" class="collapsible"> Derivation </button>
+    <div class="content">
+    <br>
+
+    <p> from <b>Taylor series with remainder</b> </p>
+
+    $$ f(x + h) = f(x) + hf'(x) + \frac{h^2}{2!} f''(x) + \frac{h^3}{3!} f'''(c_1) $$
+    <p> \( x < c_1 < x + h \) </p>
+
+    <br>
+
+    $$ f(x - h) = f(x) - hf'(x) + \frac{h^2}{2!} f''(x) - \frac{h^3}{3!} f'''(c_2) $$
+    <p>\(x - h < c_2 < x \)</p>
+
+    <br><br>
+
+
+
+    $$ f(x + h) - f(x - h) = 2hf'(x) +  \frac{h^3}{6} (f'''(c_1) + f'''(c_2))  $$
+
+    $$ \frac{f(x + h) - f(x - h)}{2h} = f'(x) - \frac{h^2}{6}f'''(c) $$ 
+
+    <p> \(x - h < c < x + h \) </p>
+ 
+    </div>
+    <br>
     
     
+    $$ f'(x) \approx \frac{f(x + h) - f(x - h)}{2h} $$
 
 
+
+<pre><code class="language-cpp">double CD(std::function&lt;double(double)&gt; f, double x, double h){
+    return (f(x + h) - f(x - h)) / (2 * h);
+}</code></pre>
+
+    <button type="button" class="collapsible"> Error Analysis </button>
+    <div class="content">
+
+        <p>\( \hat{f}(a) \) denotes \( f(a) \) with included \( \epsilon \) <b>machine epsilon</b>  </p>
+
+        <p> \( |\epsilon_1|, |\epsilon_2| \approx \epsilon   \) </p>
+
+        $$ \hat{f}(x + h) = f(x + h) + \epsilon_1 $$
+
+        $$ \hat{f}(x - h) = f(x - h) + \epsilon_2 $$
+
+
+
+        <br>
+        
+        <p>\( f'(x)_\text{E} \) - <b>exact</b> derivative value </p>
+        <p> \( f'(x)_\text{M} \) - <b>machine</b> approximation value </p>
+
+
+        <br>
+
+
+        $$ f'(x)_\text{E} - f'(x)_\text{M} =  $$ 
+        
+        $$ f'(x) - \frac{\hat{f}(x + h) - \hat{f}(x - h)}{2h} = $$
+
+        $$ f'(x) - \frac{f(x + h) + \epsilon_1 - (f(x - h) + \epsilon_2) }{2h} = $$
+
+        $$  f'(x) - \frac{f(x + h) - f(x - h) }{2h} + \frac{\epsilon_1 - \epsilon_2}{2h} = $$
+
+    </div>
+
+   
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <script src="index.js"></script>
 </body> <!-- Body ends here -->
 
 </html>

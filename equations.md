@@ -169,3 +169,57 @@ $$ = \sum_{i=1}^n x_i^2  - 2\bar{x} \sum_{i=1}^n x_i + \sum_{i=1}^n\bar{x}^2 $$
 $$ = \sum_{i=1}^n (x_i^2 - 2\bar{x} x_i + \bar{x}^2) $$
 
 $$ = \sum_{i=1}^n (x_i -\bar{x})^2 $$
+
+        \( \hat{f}(a) \) denotes \( f(a) \) with included \( \epsilon \) <b>machine epsilon</b>  
+
+        <p> \( |\epsilon_1|, |\epsilon_2| \approx \epsilon   \) </p>
+
+        $$ \hat{f}(x + h) = f(x + h) + \epsilon_1 $$
+
+        $$ \hat{f}(x - h) = f(x - h) + \epsilon_2 $$
+
+
+
+        <br>
+        
+        <p>\( f'(x)_\text{E} \) - <b>exact</b> derivative value </p>
+        <p> \( f'(x)_\text{M} \) - <b>machine</b> approximated derivative value </p>
+
+
+        <br>
+
+
+        $$ f'(x)_\text{E} - f'(x)_\text{M} =  $$ 
+        
+        $$ f'(x) - \frac{\hat{f}(x + h) - \hat{f}(x - h)}{2h} = $$
+
+        $$ f'(x) - \frac{f(x + h) + \epsilon_1 - (f(x - h) + \epsilon_2) }{2h} = $$
+
+        $$  f'(x) - \frac{f(x + h) - f(x - h) }{2h} + \frac{\epsilon_1 - \epsilon_2}{2h} = $$
+
+        $$ = f'(x)_\text{E} - f'(x)_\text{F} + \text{RE} $$
+
+
+        <p> \(f'(x)_\text{F}\) is derivative formula </p>
+        <p>  \( \text{RE} \) is <b>rounding error</b> </p>
+
+        <br>
+
+        $$ \text{RE} = \bigg| \frac{\epsilon_1 - \epsilon_2}{2h} \bigg| \leq \frac{| \epsilon_1 | + |\epsilon_2|}{2h} = \frac{2\epsilon}{2h} = \frac{\epsilon}{h} $$
+
+        <br>
+
+        $$ E(h) = \frac{h^2}{6}f'''(c) + \frac{\epsilon}{h} $$ 
+
+        To Optimize it 
+
+        $$ E'(h) = 0 $$
+
+        $$ \frac{h}{3}f'''(c) - \frac{\epsilon}{h^2} = 0 $$
+
+        $$ \frac{h^3}{3}f'''(c) = \epsilon $$
+
+        $$ h^3 = \frac{3\epsilon}{f'''(c)} $$
+
+        $$ h = \bigg( \frac{3\epsilon}{f'''(c)} \bigg)^{\frac{1}{3}} $$ 
+

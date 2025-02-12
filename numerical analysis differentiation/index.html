@@ -77,6 +77,8 @@
         First-Order Derivative Formulas
     </h2>
 
+    <br><br>
+
 
     <h3> Forward Difference Formula </h3>
 
@@ -92,7 +94,7 @@
 
     $$ f(x + h) - f(x) = hf'(x) + \frac{h^2}{2} f''(c)  $$
 
-    $$ \frac{f(x + h) - f(x)}{h} = f'(x) + \frac{h}{2} f''(c) $$
+    $$ \frac{f(x + h) - f(x)}{h} - \frac{h}{2} f''(c) = f'(x)  $$
 
     <p> \(x < c < x + h \) </p>
 
@@ -106,6 +108,7 @@
     return (f(x + h) - f(x)) / h;
 }</code></pre>
 
+    <br><br>
 
     <h3> Central Difference Formula </h3>
 
@@ -130,7 +133,7 @@
 
     $$ f(x + h) - f(x - h) = 2hf'(x) +  \frac{h^3}{6} (f'''(c_1) + f'''(c_2))  $$
 
-    $$ \frac{f(x + h) - f(x - h)}{2h} = f'(x) - \frac{h^2}{6}f'''(c) $$ 
+    $$ \frac{f(x + h) - f(x - h)}{2h} - \frac{h^2}{6}f'''(c) = f'(x)  $$ 
 
     <p> \(x - h < c < x + h \) </p>
  
@@ -146,38 +149,59 @@
     return (f(x + h) - f(x - h)) / (2 * h);
 }</code></pre>
 
-    <button type="button" class="collapsible"> Error Analysis </button>
+<br><br><br>
+
+    <h2>
+        Second-Order Derivative Formulas
+    </h2>
+
+    <br><br>
+
+    <h3>
+        Three-Point Centered-Difference Formula
+    </h3>
+
+    <button type="button" class="collapsible"> Derivation </button>
     <div class="content">
+    <br>
 
-        <p>\( \hat{f}(a) \) denotes \( f(a) \) with included \( \epsilon \) <b>machine epsilon</b>  </p>
+    $$ f(x + h) = f(x) + hf'(x) + \frac{h^2}{2!} f''(x) + \frac{h^3}{3!} f'''(x) + \frac{h^4}{4!} f^{(4)}(c_1) $$
+    <p> \( x < c_1 < x + h \) </p>
 
-        <p> \( |\epsilon_1|, |\epsilon_2| \approx \epsilon   \) </p>
+    <br>
 
-        $$ \hat{f}(x + h) = f(x + h) + \epsilon_1 $$
+    $$ f(x - h) = f(x) - hf'(x) + \frac{h^2}{2!} f''(x) - \frac{h^3}{3!} f'''(x) + \frac{h^4}{4!} f^{(4)}(c_2) $$
+    <p>\(x - h < c_2 < x \)</p>
 
-        $$ \hat{f}(x - h) = f(x - h) + \epsilon_2 $$
+    <br><br>
 
+    $$ f(x + h) + f(x - h) = 2f(x) + 2\frac{h^2}{2!} f''(x) + 2\frac{h^4}{24} f^{(4)}(c) $$
 
+    $$ f(x + h) - 2f(x) + f(x - h) =  \frac{h^2} f''(x) + \frac{h^4}{12} f^{(4)}(c) $$
 
-        <br>
-        
-        <p>\( f'(x)_\text{E} \) - <b>exact</b> derivative value </p>
-        <p> \( f'(x)_\text{M} \) - <b>machine</b> approximation value </p>
+    $$ \frac{f(x + h) - 2f(x) + f(x - h)}{h^2} = f''(x) + \frac{h^2}{12} f^{(4)}(c) $$
 
+    $$ \frac{f(x + h) - 2f(x) + f(x - h)}{h^2} - \frac{h^2}{12} f^{(4)}(c) = f''(x) $$
 
-        <br>
+    <p> \(x - h < c < x + h \) </p>
 
-
-        $$ f'(x)_\text{E} - f'(x)_\text{M} =  $$ 
-        
-        $$ f'(x) - \frac{\hat{f}(x + h) - \hat{f}(x - h)}{2h} = $$
-
-        $$ f'(x) - \frac{f(x + h) + \epsilon_1 - (f(x - h) + \epsilon_2) }{2h} = $$
-
-        $$  f'(x) - \frac{f(x + h) - f(x - h) }{2h} + \frac{\epsilon_1 - \epsilon_2}{2h} = $$
+    <br>
 
     </div>
 
+
+    $$ f''(x) \approx \frac{f(x - h) - 2f(x) + f(x + h)}{h^2} $$
+
+
+    <pre><code class="language-cpp">double CDSO(std::function&lt;double(double)&gt; f, double x, double h){
+    return (f(x + h) - 2 * f(x) + f(x + h)) / (h * h);
+}</code></pre>
+
+    <br>
+
+    <h2> Five-Point Centered-Difference Formula </h2>
+
+    
    
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br>

@@ -175,9 +175,9 @@
 
     <br><br>
 
-    $$ f(x + h) + f(x - h) = 2f(x) + 2\frac{h^2}{2!} f''(x) + 2\frac{h^4}{24} f^{(4)}(c) $$
+    $$ f(x + h) + f(x - h) = 2f(x) + 2\frac{h^2}{2!} f''(x) + 2\frac{h^4}{4!} f^{(4)}(c) $$
 
-    $$ f(x + h) - 2f(x) + f(x - h) =  \frac{h^2} f''(x) + \frac{h^4}{12} f^{(4)}(c) $$
+    $$ f(x + h) - 2f(x) + f(x - h) =  h^2 f''(x) + \frac{h^4}{12} f^{(4)}(c) $$
 
     $$ \frac{f(x + h) - 2f(x) + f(x - h)}{h^2} = f''(x) + \frac{h^2}{12} f^{(4)}(c) $$
 
@@ -199,7 +199,58 @@
 
     <br>
 
-    <h2> Five-Point Centered-Difference Formula </h2>
+    <h3> Five-Point Centered-Difference Formula </h3>
+
+    <button type="button" class="collapsible"> Derivation </button>
+    <div class="content">
+
+        <button type="button" class="collapsible"> <span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+        <div class="content">
+
+            $$ f(x + h) + f(x - h) = 2f(x) + \frac{2}{2!}h^2 f''(x) + \frac{2}{4!}h^4 f^{(4)}(x) + \frac{2}{6!}h^6f^{(6)}(c_1) $$
+
+            $$ f(x + h) - 2f(x) + f(x - h) =  \frac{2}{2!}h^2 f''(x) + \frac{2}{4!}h^4 f^{(4)}(x) + \frac{2}{6!}h^6f^{(6)}(c_1) $$
+
+            <p> \(  x - h < c_1 < x + h \) </p>
+
+        </div>
+
+    <button type="button" class="collapsible"> <span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+        <div class="content">
+
+            $$ f(x + 2h) + f(x - 2h) = 2f(x) + 2\frac{(2h)^2}{2!} f''(x) + 2\frac{(2h)^4}{4!} f^{(4)}(x) + 2\frac{(2h)^6}{6!}f^{(6)}(c_2) $$
+
+            $$ f(x + 2h) + f(x - 2h) = 2f(x) + \frac{2^3}{2!} h^2 f''(x) + \frac{2^5}{4!} h^4 f^{(4)}(x) + \frac{2^7}{6!} h^6 f^{(6)}(c_2) $$
+
+            $$ f(x + 2h) - 2f(x) + f(x - 2h) =  \frac{2^3}{2!} h^2 f''(x) + \frac{2^5}{4!} h^4 f^{(4)}(x) + \frac{2^7}{6!} h^6 f^{(6)}(c_2) $$
+
+            <p> \( x - 2h < c_2 < x + 2h \) </p>
+
+        </div>
+
+ 
+
+    <br><br><br><br> 
+        
+    $$ 16f(x + h) - 32f(x) + 16f(x - h) =  \frac{2^4}{2!}h^2 f''(x) + \frac{2^5}{4!}h^4 f^{(4)}(x) + \frac{2^5}{6!}h^6f^{(6)}(c_1) $$
+
+    <p> \( - \) </p>
+
+    $$ f(x + 2h) - 2f(x) + f(x - 2h) =  \frac{2^3}{2!} h^2 f''(x) + \frac{2^5}{4!} h^4 f^{(4)}(x) + \frac{2^7}{6!} h^6 f^{(6)}(c_2) $$
+
+    <br><br> 
+
+    $$ - f(x + 2h) + 16f(x + h) - 32f(x) + 16f(x - h) -f(x - 2h) = 12 h^2 f''(x) + \frac{h^2}{12}f^{(4)}(x) + h^6(\frac{2^5}{6!}f^{(6)}(c_1) - \frac{2^7}{6!}f^{(6)}(c_2)) $$ 
+
+
+   
+
+
+    <br><br><br><br><br><br>   
+
+
+        
+    </div>
 
     
    

@@ -235,7 +235,6 @@
         
     $$ 16f(x + h) - 32f(x) + 16f(x - h) =  \frac{2^4}{2!}h^2 f''(x) + \frac{2^5}{4!}h^4 f^{(4)}(x) + \frac{2^5}{6!}h^6f^{(6)}(c_1) $$
 
-    <p> \( - \) </p>
 
     $$ f(x + 2h) - 2f(x) + f(x - 2h) =  \frac{2^3}{2!} h^2 f''(x) + \frac{2^5}{4!} h^4 f^{(4)}(x) + \frac{2^7}{6!} h^6 f^{(6)}(c_2) $$
 
@@ -249,6 +248,8 @@
    
     $$ \frac{- f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) - f(x - 2h)}{12h^2} + \frac{1}{90}h^4f^{(6)}(c)  = f''(x) $$    
 
+    <p> \( x - 2h < c < x + 2h \) </p>
+
     <br><br>
 
     
@@ -256,9 +257,16 @@
     </div>
 
     $$ f''(x) \approx  \frac{- f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) - f(x - 2h)}{12h^2} $$
+
+    <pre><code class="language-cpp">double FPCDSO(std::function<double(double)> f, double x, double h){
+    return (-f(x + 2*h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2*h)) / (12 * h * h);
+}</code></pre>
+
+    <h2> Partial Differentation </h2>
+
    
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
     <script src="index.js"></script>
 </body> <!-- Body ends here -->
 

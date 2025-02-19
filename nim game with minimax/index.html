@@ -15,9 +15,7 @@
   
 
     <!-- MathJax -->
-        
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-    </script>
+    <script src="mathjax.js" async></script>
 
 
     <!-- Code display -->
@@ -49,29 +47,44 @@
 
 <main> 
 
-
     <h1> Minimax in Nim - C++ Implementation </h1>
     <hr> 
 
+    <h2> Minimax Description </h2>
+
+    <p>The <b>minimax algorithm</b> computes the <b>minimax value</b> of the current state of the game. The <b>minimax value</b> 
+        of game is defined as </p>
+
+        $$ \bar{U}_i = \min_{s_{-i}} \max_{s_i} U_i(s_i, s_{-i}) $$
+
+
+        Where
+
+        <ul>
+            <li> $i$ is the index of selected player </li>
+            <li> \( -i \) all players except \(i\)  </li>
+        </ul>
+
+    <br><br><br><br>    
 
     <h2>Nim Game Description</h2>
 
-    <p> The nim game is a <b>two-player turn-based mathematical combinatorial game</b> involving piles of objects. The objective is to avoid being the player with no more possible moves.</p>
+    <p> The nim game is a <b>two-player turn-based mathematical combinatorial game</b> that involves piles of objects. </p>
     <br>
 
     <h3> Rules </h3>
     
-    <p> 1. <b>Initial setup</b>: The game begins with \(n\) piles of object. Each pile has \(p_i\) number of objects. 
-        The position of the game can be described as the tuple of every pile state. </p>
+    <p> 1. <b>Initial setup</b>: The game begins with \(n\) piles of object. \(i\)-th pile has \(p_i\) number of objects. 
+        The <b>game state</b> can be described as the <b>tuple</b> of every pile state. </p>
     
-    $$ P = (p_0, \ p_1, \dots , \ p_i, \dots , \ p_n) $$
+    $$ P = (p_0,  p_1, \dots ,  p_i, \dots ,  p_n) $$
     <br>
 
 
     <p> 2. <b>Turns</b>: On each player's turn, they must: </p>
 
     <ul>
-        <li> Select a pile \(p_i\).  </li>
+        <li> Select a pile \(p_i \neq 0\).  </li>
         <li> Remove \(k\) objects from selected pile.   \(  \ \ \  \{ k \in \mathbb{N} \  | \ 1 \leq k \leq p_i \} \)  </li>
     </ul>
 

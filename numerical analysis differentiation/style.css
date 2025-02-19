@@ -46,18 +46,7 @@ header a.contents {
   
 /* -------------------------------------------------------------------------------------------- */
 
-.MathJax {
-    font-size: 1.1em;
-}
 
-
-p .MathJax{
-    font-size: 1.0em;
-}
-
-equation .MathJax{
-    font-size: 15px;    
-}
 
 
 
@@ -139,7 +128,6 @@ p{
 .content {
     padding: 0 0px;
     display: none;
-    overflow: hidden;
 }
 
 

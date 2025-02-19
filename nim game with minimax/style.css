@@ -1,9 +1,7 @@
 body{
-    margin: 0 !important;
-    padding: 0 !important;
     background: #fbfcff;
     font-family: "Noto Sans", Calibri, sans-serif;
-    font-size: 1.0em;   
+    font-size: 1.125em;   
   
 }
 
@@ -48,14 +46,10 @@ header a.contents {
 
 
 
-
-p .MathJax{
-    font-size: 1.0em;
+.MathJax{
+    font-size: 1.125em;
 }
 
-equation .MathJax{
-    font-size: 15px;    
-}
 
 
 
@@ -71,8 +65,8 @@ hr.default{
 
 
 main{
-    margin-left: 20%;
-    margin-right: 25%;
+    margin-left: 18%;
+    margin-right: 18%;
     font-family: sans-serif; 
 }
     
@@ -90,7 +84,7 @@ p{
     font-weight: 500;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    font-size: 1.1em;
+    font-size: 1.125em;   
     color: black;
 }
 

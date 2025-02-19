@@ -15,7 +15,44 @@
   
 
     <!-- MathJax -->
-        
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+
+            options: {
+                enableMenu: false,          // set to false to disable the menu
+                menuOptions: {
+                settings: {
+                    texHints: true,        // put TeX-related attributes on MathML
+                    semantics: false,      // put original format in <semantic> tag in MathML
+                    zoom: 'NoZoom',        // or 'Click' or 'DoubleClick' as zoom trigger
+                    zscale: '200%',        // zoom scaling factor
+                    renderer: 'SVG',     // or 'SVG'
+                    alt: false,            // true if ALT required for zooming
+                    cmd: false,            // true if CMD required for zooming
+                    ctrl: false,           // true if CTRL required for zooming
+                    shift: false,          // true if SHIFT required for zooming
+                    scale: 1,              // scaling factor for all math
+                    inTabOrder: true,      // true if tabbing includes math
+
+                    assistiveMml: true,    // true if hidden assistive MathML should be generated for screen readers
+                    collapsible: false,    // true if complex math should be collapsible
+                    explorer: false,       // true if the expression explorer should be active
+                },
+                
+                annotationTypes: {
+                    TeX: ['TeX', 'LaTeX', 'application/x-tex'],
+                    StarMath: ['StarMath 5.0'],
+                    Maple: ['Maple'],
+                    ContentMathML: ['MathML-Content', 'application/mathml-content+xml'],
+                    OpenMath: ['OpenMath']
+                }
+                }
+            }
+        };
+    </script>
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
     </script>
 
@@ -48,8 +85,6 @@
 
 
 <main> 
-
-
     <h1> Numerical Analysis - Differentiation </h1>
     <hr>
     <br><br>
@@ -73,16 +108,14 @@
 
     </div>
 
+    <!------------------------------------------------------------------------------------------------------>
     <br>
-    <h2>
-        First-Order Derivative Formulas
-    </h2>
+    <h2> First-Order Derivative Formulas </h2>
 
     <br><br>
-
+    <!------------------------------------------------------------------------------------------------------>
 
     <h3> Forward Difference Formula </h3>
-
 
 
     <button type="button" class="collapsible"> Derivation </button>
@@ -109,8 +142,8 @@
     return (f(x + h) - f(x)) / h;
 }</code></pre>
 
+    <!------------------------------------------------------------------------------------------------------>
     <br><br>
-
     <h3> Central Difference Formula </h3>
 
 
@@ -235,13 +268,11 @@
         
     $$ 16f(x + h) - 32f(x) + 16f(x - h) =  \frac{2^4}{2!}h^2 f''(x) + \frac{2^5}{4!}h^4 f^{(4)}(x) + \frac{2^5}{6!}h^6f^{(6)}(c_1) $$
 
-
     $$ f(x + 2h) - 2f(x) + f(x - 2h) =  \frac{2^3}{2!} h^2 f''(x) + \frac{2^5}{4!} h^4 f^{(4)}(x) + \frac{2^7}{6!} h^6 f^{(6)}(c_2) $$
 
     <br><br> 
 
-    <equation> $$ - f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) -f(x - 2h) = 12 h^2 f''(x)  + h^6(\frac{2^5}{6!}f^{(6)}(c_1) - \frac{2^7}{6!}f^{(6)}(c_2)) $$  </equation>
-
+    $$ - f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) -f(x - 2h) = 12 h^2 f''(x)  + h^6(\frac{2^5}{6!}f^{(6)}(c_1) - \frac{2^7}{6!}f^{(6)}(c_2)) $$
     <br><br> 
 
     $$ \frac{- f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) -f(x - 2h)}{12h^2} = f''(x) - \frac{1}{90}h^4f^{(6)}(c) $$

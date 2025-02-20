@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=keyboard_arrow_down" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" href="style-code.css">
+    <link rel="stylesheet" href="style.css">
   
 
     <!-- MathJax -->
@@ -132,12 +132,12 @@
 
     <p> \(x < c < x + h \) </p>
 
-
-        <pizda>
     </div>
 
-    $$ f'(x) \approx \frac{f(x + h) - f(x)}{h} $$
     
+    $$ f'(x) \approx \frac{f(x + h) - f(x)}{h} $$
+    <br>
+
     <pre><code class="language-cpp">double FD(std::function&lt;double(double)&gt; f, double x, double h){
     return (f(x + h) - f(x)) / h;
 }</code></pre>
@@ -177,7 +177,7 @@
     
     $$ f'(x) \approx \frac{f(x + h) - f(x - h)}{2h} $$
 
-
+<br>
 
 <pre><code class="language-cpp">double CD(std::function&lt;double(double)&gt; f, double x, double h){
     return (f(x + h) - f(x - h)) / (2 * h);
@@ -225,7 +225,7 @@
 
 
     $$ f''(x) \approx \frac{f(x - h) - 2f(x) + f(x + h)}{h^2} $$
-
+    <br>
 
     <pre><code class="language-cpp">double CDSO(std::function&lt;double(double)&gt; f, double x, double h){
     return (f(x + h) - 2 * f(x) + f(x + h)) / (h * h);
@@ -288,12 +288,11 @@
     </div>
 
     $$ f''(x) \approx  \frac{- f(x + 2h) + 16f(x + h) - 30f(x) + 16f(x - h) - f(x - 2h)}{12h^2} $$
+    <br>
 
     <pre><code class="language-cpp">double FPCDSO(std::function<double(double)> f, double x, double h){
     return (-f(x + 2*h) + 16 * f(x + h) - 30 * f(x) + 16 * f(x - h) - f(x - 2*h)) / (12 * h * h);
 }</code></pre>
-
-    <h2> Partial Differentation </h2>
 
    
     <br><br><br><br><br><br><br><br><br>

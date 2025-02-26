@@ -47,26 +47,31 @@
 
 <main> 
 
-    <h1> Perceptron </h1>
+    <h1> Neural Networks </h1>
     <hr> 
 
     <br>
     
 
-    <h2> Mathematical Model </h2>
+    <h2> Artifical Neuron </h2>
+
+    <br>
+
+
+    <h3> Mathematical Model </h3>
 
     
-    <img width="75%" src="resources/perceptron.svg">
+    <img width="90%" src="resources/perceptron.svg">
 
     <p><b>Equivalently</b></p>
 
-    <img width="75%" src="resources/perceptron_simpler.svg">
+    <img width="90%" src="resources/perceptron_simpler.svg">
 
     <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
     <div class="content">
 
     <p>Sometimes, <b>bias</b> is handled as an additional input $1$ with weight $w_0$ </p>
-    <img width="75%" src="resources/perceptron_simpler_bias_w.svg">
+    <img width="90%" src="resources/perceptron_simpler_bias_w.svg">
 
 
 
@@ -77,14 +82,14 @@
 
 
 
-    <p>\(
+    <p>$
         \mathbf{x} =\begin{bmatrix}
         x_1 \\ 
         x_2 \\
         \vdots \\
-         x_N 
+        x_N 
         \end{bmatrix}
-        \) - <b>input signals vector</b>
+        $ - <b>input signals vector</b>
     </p>
 
     <p>$ 
@@ -148,11 +153,11 @@
 
     <p>Now the <b>$k$-th</b> output can be expressed </p>
 
-    $$ y_k (\mathbf{x}; \Theta) = f \bigg(\sum_{i=1}^{N} x_i w_{ki} + w_{k0} \bigg) = f(\mathbf{w}_k^\intercal \mathbf{x} + w_0) $$
+    $$ y_k (\mathbf{x}; \Theta) = f \bigg(\sum_{i=1}^{N} x_i w_{ki} + w_{k0} \bigg) = f(\mathbf{w}_k^\intercal \mathbf{x} + w_{k0}) $$
 
     <br>
 
-    <img width="95%" src="resources/perceptron_multiple.svg">
+    <img width="90%" src="resources/perceptron_multiple.svg">
 
     
     <br><br><br><br><br><br><br>

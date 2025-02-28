@@ -54,13 +54,13 @@
     <br><br>
 
 
-    <h1> Undirected Hypergraphs </h1>
+    <h1> Undirected Hypergraph </h1>
 
-    <p> A <b>undirected hypergraph $H$</b> is a <b>ordered pair $(V, E)$</b> comprising: </p>
+    <p> An <b>undirected hypergraph $H$</b> is an <b>ordered pair $(V, E)$</b> comprising: </p>
 
     <ul>
-        <li>$V$, set of <i>vertices</i></li>
-        <li>$E$, set of <b>hyperedges</b>.</li>
+        <li>$V$ - set of <i>vertices</i></li>
+        <li>$E$ - set of <b>hyperedges</b>.</li>
     </ul>
 
     <br>
@@ -69,7 +69,7 @@
 
     <p>Let $H$ be a <i>undirected hypergraph</i> with $V = \{v_1, v_2, v_3, v_4, v_5\}$ 
         and $E = \{ e_1, e_2, e_3\} = \{ \{v_1, v_2, v_3\} , \{ v_3, v_5 \}, \{ v_1, v_4, v_5 \} \}$. 
-        We can draw hypergraph using $2$ <i>illustration methods</i>. 
+        We can draw hypergraph using $2$ illustration methods. 
     </p>
     <br>
 
@@ -84,15 +84,20 @@
 
     <br>
 
-    <p> An <b>undirected hypergraph with weights</b> $G$ is definted similary to an <i>undirected hypergraph</i>, but we also
-        track the <b>weights of hyperedges</b> $e$. Instead of <i>ordered pair</i> $(V, E)$, we define <b>triple</b> $(V,E, \mathbf{W})$
-        where $\mathbf{W} \in \mathbb{R}^{|E| \times |E|}$ denote the <b>diagonal matrix</b> of <i>hyperedge weights</i>, formally 
+
+    <h1>Undirected Hypergraph with Weights</h1>
+    <br>
+
+
+    <p> An <b>undirected hypergraph with weights</b> $G$ is defined similarly to an <i>undirected hypergraph</i>, but we also
+        assign <b>weights</b> to <b>every hyperedge</b> $e$. Instead of <i>ordered pair</i> $(V, E)$, we define <b>triple</b> $(V,E, \mathbf{W})$,
+        where $\mathbf{W} \in \mathbb{R}^{|E| \times |E|}$ denote the <b>diagonal matrix</b> of <i>hyperedge weights</i> with 
         $\text{diag}(\mathbf{W}) = [w(e_1), w(e_2), \dots, w(e_{|E|})]$. 
     </p>
 
     <p>
-        The <b>structure of hypergraph</b> is usually represented by an <b>incidence matrix</b> $\mathbf{H} \in \{ 0, 1\}^{|V| \times |E|}$ where 
-        $\mathbf{H} (v, e)$ is <b>indicator function</b> that shows if <i>vertex</i> $v$ is in the <i>hyperedge</i> $e$
+        The <b>structure of hypergraph</b> is usually represented by an <b>incidence matrix</b> $\mathbf{H} \in \{ 0, 1\}^{|V| \times |E|}$, where 
+        $\mathbf{H} (v, e)$ is <b>indicator function</b> that shows if <i>vertex</i> $v \in e$
     </p>
 
 
@@ -114,21 +119,29 @@
 
     $$ d(v) = \sum_{e \in E} w(e)  \cdot \mathbf{H}(v, e) $$
 
+    <br><br>
     <p> 
-
+        Based on previous definitions we can also define the <b>diagonal matrix of </b>
     </p>
 
-    <h2> Example</h2>
+    <ul>
+        <li><b>vertex degrees</b> $\mathbf{D}_v$ with $\text{diag}(\mathbf{D}_v) = [d(v_1), d(v_2), \dots, d(v_{|V|})]$</li>
+        <li><b>hyperedge degrees</b> $\mathbf{D}_{e}$ with $\text{diag}(\mathbf{D}_e) = [\delta(e_1), \delta(e_2), \dots, \delta(e_{|E|})]$</li>
+    </ul>
 
-    <p>Let us use hypergraph from previous but this time we define additional <i>weights</i>. Our hypergraph $G$ is <i>triple</i> $(V ,E, \mathbf{W})$ where 
+    <br><br>
+
+    <h2> Example 2</h2>
+
+    <p>Let us use hypergraph from previous but this time we add <i>weights</i>. Our hypergraph $G$ is <i>triple</i> $(V ,E, \mathbf{W})$ where 
     $V = \{v_1, v_2, v_3, v_4, v_5\}$, $E = \{ e_1, e_2, e_3\} = \{ \{v_1, v_2, v_3\} , \{ v_3, v_5 \}, \{ v_1, v_4, v_5 \} \}$ and 
-    $\text{diag}(\mathbf{W}) = [1,1,2]$.
+    $\text{diag}(\mathbf{W}) = [1,1,1]$.
     </p>
 
     <img width="100%" src="resources/hypegraph_example_lines.svg">
 
 
-    <p> The <i>incidence matrix</i>  </p>
+
     $$ \mathbf{H} = 
     \begin{bmatrix}
     1 & 0 & 1 \\
@@ -140,8 +153,6 @@
     $$
 
     <br>
-
-    <p> The <i> diagonal matrix of hyperedge weigths </i> </p>
     $$ \mathbf{W} =
     \begin{bmatrix} 
     1 & 0 & 0 \\
@@ -149,6 +160,33 @@
     0 & 0 & 1 \\
     \end{bmatrix}
     $$
+
+    <br><br><br>
+
+    $$ 
+        \mathbf{D}_v =
+        \begin{bmatrix}
+            2 & 0 & 0 & 0 & 0 \\
+            0 & 1 & 0 & 0 & 0 \\
+            0 & 0 & 2 & 0 & 0 \\
+            0 & 0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 0 & 2 \\
+        \end{bmatrix}
+    $$
+
+    <br>
+
+
+    $$
+    \mathbf{D}_e =
+    \begin{bmatrix}
+        3 & 0 & 0 \\
+        0 & 2 & 0 \\
+        0 & 0 & 3 \\
+    \end{bmatrix}
+    $$
+
+
 
     <br><br><br><br>
 

@@ -14,8 +14,7 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- MathJax -->
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-    </script>
+    <script src="mathjax.js" async></script>
 
 
     <!-- Code display -->
@@ -48,25 +47,21 @@
 <main> 
 
 
-    <h1> Linear Regression in Rust </h1>
+    <h1> Simple Linear Regression in Rust  </h1>
     <hr>
     <br><br>
+ 
+    <!------------------------------------------------------------------------------------------------------>
 
     <!------------------------------------------------------------------------------------------------------>
 
-
-    <h2> Simple Linear Regression </h2>
-    <hr>
-
-    <!------------------------------------------------------------------------------------------------------>
-
-    <h3> Equation Model </h3>
+    <h2> Equation Model </h2>
     $$ y = \alpha + \beta x $$
     <br>
 
     <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Cost Function </h3>
+    <h2> Cost Function </h2>
 
     <h4> Least Squares </h4> 
 
@@ -76,7 +71,7 @@
    
 
 
-    <h3> \( \alpha \) and \( \beta \) Derivation </h3>
+    <h2> \( \alpha \) and \( \beta \) Derivation </h2>
 
     <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
     <div class="content">
@@ -180,12 +175,11 @@
 
      <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Optimal \(\beta\) calculation </h3>
+    <h2> Optimal \(\beta\) calculation </h2>
 
     $$ \hat{\beta} = \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }{\sum_{i=1}^n (x_i - \bar{x})^2} $$
 
-    <pre><code class="language-rust">
-fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
+    <pre><code class="language-rust">fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
     let (mut num, mut den) = (0.0, 0.0);
     let (x_mean, y_mean) = (mean(x), mean(y));
         
@@ -195,33 +189,29 @@ fn beta_hat( x: &Vec<f64>, y: & Vec<f64>) -> f64 {
     }
     
     num / den
-}
-    </code></pre>
+}</code></pre>
     <br>
 
     <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Optimal \(\alpha\) calculation </h3>
+    <h2> Optimal \(\alpha\) calculation </h2>
 
     $$ \hat{\alpha} = \bar{y} - \hat{\beta}  \bar{x} $$
 
-    <pre><code class="language-rust">
-fn alpha_hat(x: &Vec<f64>, y: &Vec<f64>, beta: f64) -> f64 {
+    <pre><code class="language-rust">fn alpha_hat(x: &Vec<f64>, y: &Vec<f64>, beta: f64) -> f64 {
     mean(y) - beta * mean(x)
-}
-    </code></pre>
+}</code></pre>
     <br>
 
     <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Regression Output </h3>
+    <h2> Regression Output </h2>
 
     
 
     $$ \hat{y}_i = \hat{\alpha} + \hat{\beta} x_i $$
 
-    <pre><code class="language-rust">
-fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
+    <pre><code class="language-rust">fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
     let beta: f64 = beta_hat(x, y);
     let alpha : f64 = alpha_hat(x, y, beta);
 
@@ -231,14 +221,13 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
         y_hat.push(alpha + beta * x[i]);
     }
 
-    y_hat
-}
-    </code></pre>
+    y_hat   
+}</code></pre>
     <br>
 
     <!------------------------------------------------------------------------------------------------------>
 
-    <h3> Correlation Coefficient </h3>
+    <h2> Correlation Coefficient </h2>
 
     $$ r = \frac{ \sum_{i=1}^n(x_i - \bar{x})(y_i - \bar{y}) }
     { \sqrt{\sum_{i=1}^n(x_i - \bar{x})^2} \sqrt{\sum_{i=1}^n(y_i - \bar{y})^2} }
@@ -249,17 +238,20 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
     <!------------------------------------------------------------------------------------------------------>
 
 
-    <h3> Coefficient of Determination \( r^2 \) </h3>
+    <h2> Coefficient of Determination \( r^2 \) </h2>
 
 
 
-    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+    <button type="button" class="collapsible"> Derivation </button>
     <div class="content">
 
-    <button type="button" class="collapsible"> 1 </button>
+    <br>
+
+
+    <button type="button" class="collapsible"> Analysis of Variance (ANOVA) Identity Proof </button>
     <div class="content"> 
 
-    <h3> Analysis of Variance (ANOVA) Identity Proof </h3>
+    <h2>  </h2>
 
     $$ \sum_{i=1}^n(y_i - \bar{y})^2 = \sum_{i=1}^n(y_i - \hat{y}_i)^2 + \sum_{i=1}^n  (\hat{y}_i - \bar{y})^2 $$
 
@@ -314,10 +306,12 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
 
     </div>
 
-    <button type="button" class="collapsible"> 2 </button>
+    <br>
+
+    <button type="button" class="collapsible"> \(r^2\) Derivation </button>
     <div class="content"> 
 
-        <h3> \( r^2 \) Derivation </h3>
+    
 
         $$ 
         r \frac{\sqrt{\sum_{i=1}^n (y_i - \bar{y})^2}}{\sqrt{\sum_{i=1}^n (x_i - \bar{x})^2}}  $$
@@ -338,6 +332,7 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
         <button type="button" class="collapsible"> 2.1 </button>
         <div class="content"> 
 
+            <hr>
         
 
             From 1.1
@@ -350,18 +345,26 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
 
             $$ \hat{\beta}^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (x_i - \bar{x})^2} $$
 
+            <hr>
+
         </div> 
         
+
+
 
         $$ r^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (x_i - \bar{x})^2} \cdot \frac{\sum_{i=1}^n (x_i - \bar{x})^2}{\sum_{i=1}^n (y_i - \bar{y})^2} $$
 
         $$ r^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (y_i - \bar{y})^2} $$
 
-    </div>
+    </div> 
 
-    <br>
+    
 
-    <h3> Formula Simplification </h3>
+
+
+    <button type="button" class="collapsible"> \(r^2\) Simplification </button>
+    <div class="content"> 
+
 
         $$ r^2 = \frac{\sum_{i=1}^n (\hat{y_i} - \bar{y})^2} {\sum_{i=1}^n (y_i - \bar{y})^2} $$ 
 
@@ -374,6 +377,7 @@ fn y_estimation(x: &Vec<f64>, y: &Vec<f64>) -> Vec<f64> {
 
         $$ r^2 = 1 - \frac{\sum_{i=1}^n  ({y}_i - \hat{y})^2}{\sum_{i=1}^n(y_i - \bar{y})^2} $$
 
+    </div>
     </div>
 
     $$ r^2 = 1 - \frac{\text{SSE}}{\text{SST}} $$
@@ -391,7 +395,7 @@ fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
     <!-------------------------------------------------------------------------------------------------------->
 
-    <h3> Error Variance </h3>
+    <h2> Error Variance </h2>
 
     $$ \sigma^2 = s^2 = \frac{\sum_{i=1}^n(y_i - \hat{y}_i)}{n - 2} $$
 
@@ -400,10 +404,10 @@ fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
     <h4> Equivalent Formula </h4>
 
-    <button type="button" class="collapsible"><span class="material-symbols-outlined"> keyboard_arrow_down </span> </button>
+    <button type="button" class="collapsible"> Derivation </button>
     <div class="content"> 
 
-        <p> from the coefficient of determination </p>
+        <p> from the <b>coefficient of determination</b> $r^2$ </p>
 
         $$ r^2 = 1 - \frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{\sum_{i=1}^n(y_i - \bar{y})^2} $$
 
@@ -424,7 +428,7 @@ fn  R2(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
     <!-------------------------------------------------------------------------------------------------------->
 
-    <h3> Estimate of the Error Standard Deviation</h3>
+    <h2> Estimate of the Error Standard Deviation </h2>
 
     $$ s = \sqrt{\frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n - 2}} = \sqrt{\frac{\text{SSE}}{n - 2}} $$
 
@@ -437,51 +441,13 @@ fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
     <!-------------------------------------------------------------------------------------------------------->
 
-    <h3> Standard Deviation of \( \hat{\alpha}\) and \( \hat{\beta} \) </h3>
+    <h2> Standard Deviation of \( \hat{\alpha}\) and \( \hat{\beta} \) </h2>
 
     $$ s_{\hat{\alpha}} = s \sqrt{\frac{1}{n} +  \frac{\bar{x}^2}{\sum_{i=1}^n (x_i - \bar{x})^2} } $$
 
     <br>
 
     $$ s_{\hat{\beta}} = \frac{s}{\sqrt{\sum_{i=1}^n(x_i - \bar{x})^2}}  $$
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -492,7 +458,7 @@ fn SE(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
         <!-------------------------------------------------------------------------------------------------------->
 
-        <h3> Mean </h3>
+        <h2> Mean </h2>
     
         <pre><code class="language-rust">
 fn mean(vec: &Vec<f64> ) -> f64 {
@@ -503,7 +469,7 @@ fn mean(vec: &Vec<f64> ) -> f64 {
 
         <!-------------------------------------------------------------------------------------------------------->
     
-        <h3> RSS (Sum of Squared Errors) </h3>
+        <h2> RSS (Sum of Squared Errors) </h2>
 
         <p> also called <b>sum of squares error (SSE) </b>  </p>
 
@@ -529,9 +495,9 @@ fn RSS(y: &Vec<f64>, y_hat: &Vec<f64>) -> f64 {
 
         <!--------------------------------------------------------------------------------------------->
 
-        <h3>
+        <h2>
             SST (Total Sum of Squares) 
-        </h3>
+        </h2>
 
         $$ \text{SST} = \sum_{i=1}^n (y_i - \bar{y})^2 $$
 
@@ -552,7 +518,7 @@ fn SST(y: &Vec<f64>) -> f64 {
 
 
 
-        <h3> SSR (Regression Sum of Squares) </h3>
+        <h2> SSR (Regression Sum of Squares) </h2>
 
         $$ \text{SSR} = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2 $$
 

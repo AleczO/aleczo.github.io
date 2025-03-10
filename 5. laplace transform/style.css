@@ -1,9 +1,7 @@
 body{
-    margin: 0 !important;
-    padding: 0 !important;
     background: #fbfcff;
     font-family: "Noto Sans", Calibri, sans-serif;
-    font-size: 1.0em;   
+    font-size: 1em;   
   
 }
 
@@ -23,6 +21,7 @@ header {
   margin-left: 20%;
   margin-right: 25%;
 }
+
 
 header a {
   float: left;
@@ -46,9 +45,8 @@ header a.contents {
   
 /* -------------------------------------------------------------------------------------------- */
 
-.MathJax {
-    font-size: 1.1em;
-}
+
+
 
 
 
@@ -64,8 +62,8 @@ hr.default{
 
 
 main{
-    margin-left: 20%;
-    margin-right: 25%;
+    margin-left: 18%;
+    margin-right: 18%;
     font-family: sans-serif; 
 }
     
@@ -75,7 +73,9 @@ main a{
     color: black;
 }
 
-
+.Mathjax {
+    font-size: 1.1em;   
+}
 
 p{
     font-optical-sizing: auto;
@@ -83,8 +83,9 @@ p{
     font-weight: 500;
     font-style: normal;
     font-variation-settings: "wdth" 100;
-    font-size: 1.1em;
-    color: #1f2a2d;
+    font-size: 1.1em;   
+    color: black;
+    padding: 3px;
 }
 
 /* -------------------------------------------------------------------------------------------- */
@@ -132,6 +133,7 @@ p{
     display: none;
     overflow: hidden;
 }
+
 
 /* -------------------------------------------------------------------------------------------- */
 

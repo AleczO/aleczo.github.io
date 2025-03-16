@@ -170,6 +170,8 @@ $$ = \sum_{i=1}^n (x_i^2 - 2\bar{x} x_i + \bar{x}^2) $$
 
 $$ = \sum_{i=1}^n (x_i -\bar{x})^2 $$
 
+
+
         \( \hat{f}(a) \) denotes \( f(a) \) with included \( \epsilon \) <b>machine epsilon</b>  
 
         <p> \( |\epsilon_1|, |\epsilon_2| \approx \epsilon   \) </p>

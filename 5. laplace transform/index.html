@@ -50,6 +50,15 @@
     <h1> Laplace Transform </h1>
     <hr>
 
+    <h2> Introduction </h2>
+
+    <p>This post is my notes and thoughts about Laplace transform. 
+        You can find here definition basic properties and interesting usage examples.
+    </p>
+
+    <br>
+
+
     <h2> Definition </h2>
 
     <p>Let $f(t)$ be a function defined for $t \in \mathbb{R}_+$. Then the function  </p>
@@ -62,7 +71,7 @@
     <br>
 
 
-    <h2> Properties </h2>
+    <h2> Important Theorems and Properties </h2>
 
     <br>
 
@@ -88,7 +97,7 @@
     <br>
 
 
-    <h3> 2 </h3>
+    <h3> 2. Transform of First Derivative  </h3>
 
     $$ \mathcal{L}[f'(t)] = s F(s) - f(0) $$
 
@@ -110,7 +119,7 @@
     </div>
     <br>
 
-    <h3> 3 </h3>
+    <h3> 3. Transform of Second Derivative </h3>
 
     $$ \mathcal{L}[f''(t)] = s^2 F(s) -s f(0) - f'(0) $$
 
@@ -130,13 +139,69 @@
     </div>
     <br>
 
-    <h3> 4. Transform of $n$-th Derivative </h3>
+    <h3> 4. Transform of $n$-th derivative </h3>
 
-    $$ \mathcal{L}[f^{(n)}(t)] = $$ 
 
+    $$ \mathcal{L}[f^{(n)}(t)] = s^n F(s) - s^{n-1} f(0) - s^{n-2} f'(0) - \dots - sf^{(n -2)}(0) - f^{(n - 1)} (0) $$
     
-    $$ $$
+    $$ = s^n F(s) - \sum_{k=1}^n s^{n-k} f^{(k - 1)} (0)  $$
+
+    <button type="button" class="collapsible"> Proof </button>
+    <div class="content">
+
+    $$ \mathcal{L}[f^{(n)}(t)] $$
+    
+    $$ = s\mathcal{L}[f^{(n-1)}(t)] - f^{(n - 1)}(0) $$
+
+    $$ =  s^2 \mathcal{L}[f^{(n-2)}(t)] - sf^{(n-2)} (0) - f^{(n - 1)}(0) $$
+
+    $$ = s^3 \mathcal{L}[f^{(n-3)}(t)] - s^2 f^{(n-3)}(0) - sf^{(n-2)}(0) - f^{(n-1)}(0) $$
+
+    $$ \vdots $$
+
+    $$ = s^n \mathcal{L}[f(t)] - s^{n-1} f(0) - s^{n-2}f'(0) - \dots - sf^{(n-2)}(0) - f^{(n-1)}(0)  $$
+
+    </div>
+
+    <br>
+
+
+    <h3> 5. Transform of the Integral </h3>
+
+    $$ \mathcal{L} \bigg[ \int_0^t f(\tau) d \tau  \bigg] = \frac{1}{s} F(s) $$
+    <br>
+
+
+    <h3> 6. Multiplication Function by $t$ </h3>
+
+    $$ \mathcal{L}[t f(t)] = - \frac{dF(s)}{ds} $$
+    <br>
+
+    <h3> 7. Dividing Function by $t$ </h3>
+
+    $$ \mathcal{L} \bigg[\frac{f(t)}{t} \bigg] = \int_s^{\infty} F(s) ds $$
+    <br>
+
+    <h3> 8. Time Scaling </h3>
+
+    $$ \mathcal{L} [f(at)] = \frac{1}{a} F\big( \frac{s}{a} \big) $$
+    <br>
+
+    <h3>9. Time Shift </h3>
+
+    $$ \mathcal{L}[f(t - T)] =  e^{-sT} F(s) $$
+    <br>
+
+    <h3>10. Frequency Shift  </h3>
+
+    $$ \mathcal{L}{f(t)e^{-at}} = F(s + a) $$
+    <br>
+
+    <h3>11. Convolution </h3>
+
+    $$ \mathcal{L}[f(t) \ast g(t)] = F(s) \cdot G(s) $$
    
+    <br><br><br><br><br><br>
     <br><br><br><br><br><br>
 
     <script src="index.js"></script>

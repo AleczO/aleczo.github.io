@@ -1,110 +1,243 @@
-body{
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fbfcff;
-    font-family: "Noto Sans", Calibri, sans-serif;
-    font-size: 1em;   
-  
+/* --- RESET I BAZA --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #ffffff;
+    color: #2b2d42;
+    line-height: 1.6;
 }
 
-/* Header section */
-
-* {box-sizing: border-box;}
-
-.header {
-  overflow: hidden;
-  background-color: transparent;
-  padding: 20px 0px;
-  margin-right: 30%;
-  margin-left: 22%;
+/* --- KONTENER GŁÓWNY --- */
+.align-wrapper {
+    max-width: 720px; 
+    margin: 0 auto;      
+    padding-left: 20px;  
+    padding-right: 20px; 
+    box-sizing: border-box; 
 }
 
-.header a {
-  float: left;
-  color: #222831;
-  text-align: center;
-  padding: 5px;
-  font-family: "Noto Sans", sans-serif;
-  text-decoration: none;
-  line-height: 25px;
+/* --- PASEK NAWIGACJI --- */
+.nav-background {
+    width: 100%;
+    background-color: #f8f9fa; 
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.header a.title {
-  font-size: 32px;
-  font-weight: normal;
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; 
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
 
-
-
-.header a.contents {
-  float: right;
-  font-size: 30px;
-}
-
-
-/* Main section */
-
-hr{
-    border: none;
-    color: #222831; 
-    background-color: #222831;
-    height: 2px;
-}
-
-
-
-.main{
-    margin-left: 22%;
-    margin-right: 30%;
-    font-family: sans-serif;
-}
-
-.main a{
+.nav-brand {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2b2d42;
     text-decoration: none;
-    color: black;
+    margin-right: 40px;
+    flex-shrink: 0;
 }
 
-
-
-p{
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
-    color: #1f2a2d;
+.nav-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-.project-name{
-    font-size: 1.7em;
-    font-family: "Open Sans", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
-    color: #222831;
-}
-
-.project-links{
-    font-family: "Open Sans", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
-    color: #1d3557;
-}
-
-
-/* icons */
-
-.fa-github {
-    color: #222831;
-    font-size: 23px;
-}
-
-/* fonts */
-.marcellus-regular {
-    font-family: "Marcellus", serif;
+.nav-links a {
+    text-decoration: none;
+    color: #4a4e57;
+    font-size: 1rem;
     font-weight: 400;
-    font-style: normal;
+    transition: color 0.2s;
 }
-  
+
+.nav-links a:hover { color: #000; }
+
+/* --- TREŚĆ --- */
+.main-content {
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+.text-block { width: 100%; }
+
+.profile-image-container {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    margin-bottom: 35px;
+}
+
+.profile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+}
+
+/* TYPOGRAFIA */
+h1 {
+    font-size: 2.2rem;
+    color: #1a1c29;
+    margin-top: 0;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 60px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    color: #1a1c29;
+}
+
+h3 {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    color: #2b2d42;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 1.2rem;
+    color: #374151;
+    font-size: 1.05rem;
+    text-align: left;
+}
+
+p a { color: #2054a5; text-decoration: none; }
+p a:hover { text-decoration: underline; }
+
+/* LISTY (Ogólne) */
+ul {
+    padding-left: 20px;
+    margin-bottom: 1.5rem;
+    color: #374151;
+}
+
+li {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+}
+
+li strong { color: #1a1c29; }
+
+/* --- KAFELKI (RESEARCH NOTES) --- */
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 20px;
+}
+
+.note-card {
+    display: block;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 25px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.note-card:hover {
+    border-color: #2b2d42;
+    transform: translateY(-2px);
+    background-color: #fafafa;
+}
+
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.note-tag {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #2054a5;
+    letter-spacing: 1px;
+}
+
+.note-date {
+    font-size: 0.85rem;
+    color: #8d99ae;
+}
+
+.note-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #2b2d42;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.note-card p {
+    font-size: 0.95rem;
+    color: #555;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* --- LISTA KONTAKTOWA --- */
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+    color: #374151;
+}
+
+.icon-svg {
+    width: 20px;
+    height: 20px;
+    fill: #6b7280;
+    flex-shrink: 0;
+}
+
+.contact-list a {
+    color: #2054a5;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-list a:hover {
+    text-decoration: underline;
+}
+
+.contact-label {
+    font-weight: 700;
+    color: #1a1c29;
+    margin-right: 5px;
+}
+
+/* --- MOBILE --- */
+@media (max-width: 800px) {
+    .nav-content {
+        flex-direction: column;
+        align-items: flex-start; 
+        gap: 20px;
+    }
+    .nav-brand { margin-right: 0; }
+    .nav-links { gap: 15px; }
+    .notes-grid { grid-template-columns: 1fr; }
+}

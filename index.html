@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aleksander Czop - Home</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    
+    
     <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body>
 
     <header class="nav-background">
@@ -22,6 +26,11 @@
                     <a href="#">About</a>
                     <a href="#">Research Notes</a>
                     <a href="#contact">Contact</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    </button>
                 </div>
             </nav>
         </div>
@@ -34,46 +43,64 @@
                 <img src="julia_set2.png" alt="Aleksander Czop">
             </div>
 
-            <h1>Systems Engineering Student</h1>
+            <h1>About</h1>
             
             <p>
-                I am a second-year Systems Engineering undergraduate at <a href="#">Wrocław University of Science and Technology</a> (WUST). 
-                My academic focus lies at the intersection of mathematical modeling, machine learning, and computational neuroscience.
-            </p>
-
-            <h3>Technical Background</h3>
-            <p>
-                My approach is based on the analysis of dynamic systems. I employ algorithmic simulations 
-                (e.g., compartmental epidemiological models like SIR) and classical machine learning techniques 
-                (classifier design, ANN training, time-series analysis) as primary tools to interpret complex data.
+                I am a second-year Systems Engineering undergraduate specializing in Data Engineering at the <a href="https://wit.pwr.edu.pl/en/">Faculty of 
+                Information and Communication Technology</a>, <a href="https://pwr.edu.pl/en/">Wrocław University of Science and Technology</a>.
             </p>
 
             <h3>Research Interests & Current Work</h3>
             <p>
-                Moving beyond standard engineering applications, I am researchinig biologically plausible 
-                computing architectures under scientific supervision. My current theoretical work and literature studies focus on:
+                My focus is on mathematical modeling, algorithmic simulations, and computational neuroscience.
             </p>
+            
+        <p><strong>Current Research Interests</strong>:</p>
+
+
             <ul>
                 <li>
-                    <strong>Basal Ganglia Dynamics:</strong> Understanding reinforcement learning through biological reward mechanisms.
+                    <strong>Basal Ganglia</strong>: Reinforcement learning mechanisms and reward prediction.
                 </li>
                 <li>
-                    <strong>Memory Systems:</strong> Analyzing the Complementary Learning Systems (CLS) theory and associative networks to mitigate catastrophic forgetting.
+                    <strong>Memory Systems</strong>: Complementary Learning Systems (CLS) theory and associative networks.
                 </li>
                 <li>
-                    <strong>Neuro-Glia Interaction:</strong> Exploring a novel hypothesis that integrates astrocyte dynamics with generative diffusion models, aiming to understand how biological noise modulation can improve artificial generative processes.
+                    <strong>Neuro-Glia Interaction</strong>: Investigating a new idea connecting astrocyte activity and generative diffusion models to see if biological noise can enhance artificial generation.
                 </li>
             </ul>
 
+        <p><strong>Technical Background</strong>:</p>
+            <ul>
+                <li>
+                    <strong>Simulations</strong>: Compartmental models (e.g., SIR) and dynamical systems.
+                </li>
+                <li>
+                    <strong>Machine Learning</strong>: Classifier design, ANN training, and time-series analysis.
+                </li>
+            </ul>
+
+        <p>You can find my repositories, including active research and experimental projects, on <a href="https://github.com/AleczO">GitHub</a>.</p>
+
             <h2>Latest Research Notes</h2>
+    
             <div class="notes-grid">
                 <a href="#" class="note-card">
-                    <div class="note-header">
-                        <span class="note-tag">ML</span>
-                        <span class="note-date">Oct 2025</span>
+
+                    <div class="note-image">
+                        <img src="attachments/1.svg" alt="Miniaturka notatki">
                     </div>
-                    <h3>Transformer</h3>
-                    <p>...</p>
+
+                    <div class="note-content">
+                        <div class="note-header">
+                            <span class="note-tag">ML</span>
+                            <span class="note-date">Oct 2025</span>
+                        </div>
+                        <h3>Transformer Architecture - Self-Attention</h3>
+                        <p>
+                            ...
+                        </p>
+                    </div>
                 </a>
             </div>
 
@@ -115,5 +142,8 @@
         </div>
     </main>
 
+    <script src="script.js"></script>
+
 </body>
+
 </html>

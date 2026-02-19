@@ -1,0 +1,108 @@
+/* =========================================
+   NOTE.CSS - Style dla pojedynczej notatki
+   ========================================= */
+
+/* --- ZMIENNE TYLKO DLA NOTATEK --- */
+:root {
+    /* Jasny Motyw */
+    --pre-bg: #1e1e1e;       /* Ciemne tło dla bloków kodu w jasnym motywie dla kontrastu */
+    --pre-text: #d4d4d4;     
+    --inline-code-bg: #f4f4f5; 
+    --inline-code-text: #e11d48; /* Akcent dla kodu w linii */
+    --blockquote-border: #2563eb; 
+    --blockquote-bg: #eff6ff;
+}
+
+[data-theme="dark"] {
+    /* Ciemny Motyw */
+    --pre-bg: #000000;       /* Głęboka czerń dla kodu w trybie nocnym */
+    --pre-text: #e5e5e5;
+    --inline-code-bg: #27272a;
+    --inline-code-text: #fda4af;
+    --blockquote-border: #60a5fa;
+    --blockquote-bg: #1e293b;
+}
+
+/* --- KONTENER I NAGŁÓWEK ARTYKUŁU --- */
+.article-container {
+    margin-top: 10px;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.article-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.article-lead {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.article-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 40px 0;
+}
+
+/* --- KOD I CYTATY --- */
+
+/* Kod osadzony w tekście (np. pojedyncze słowa) */
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    background-color: var(--inline-code-bg);
+    color: var(--inline-code-text);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Duże bloki kodu */
+pre {
+    background-color: var(--pre-bg);
+    color: var(--pre-text);
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto; /* Przewijanie poziome dla długich linii */
+    margin: 25px 0;
+}
+
+/* Zapobiega podwójnemu stylowaniu kodu, gdy jest wewnątrz <pre> */
+pre code {
+    background-color: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: 0.95em;
+}
+
+/* Cytaty i ważne bloki tekstu (Blockquotes) */
+blockquote {
+    margin: 30px 0;
+    padding: 20px;
+    border-left: 4px solid var(--blockquote-border);
+    background-color: var(--blockquote-bg);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-main);
+    font-style: italic;
+}
+
+blockquote p {
+    margin-bottom: 0;
+}
+
+/* Wzory matematyczne wyśrodkowane */
+.math-block {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 1.1em;
+    overflow-x: auto; /* Zapobiega wychodzeniu długich wzorów poza ekran mobilny */
+}

@@ -1,18 +1,18 @@
 /* --- ZMIENNE KOLORYSTYCZNE (THEMING) --- */
 :root {
     /* Jasny Motyw */
-    --bg-body: #ffffff;      
-    --bg-nav: #ffffff;       
+    --bg-body: #f2f3f4;      
+    --bg-nav: #ebecf0;       
     --text-main: #171717;    
     --text-muted: #525252;   
     --link-color: #2563eb;   
     --border-color: #e5e5e5; 
     
     /* Karty i Przyciski */
-    --card-bg: #f5f5f5;           
-    --card-border: #a8a8a0;       
-    --card-border-hover: #000000; 
-    --btn-hover-bg: #f4f4f5; /* DODANE: Delikatne tło przycisku hover */
+    --card-bg: #ebecf0;           
+    --card-border: #ffffff;       
+    --card-border-hover: #171717; 
+    --btn-hover-bg: #f4f4f5; 
     
     /* Inne */
     --tag-bg: #eff6ff;
@@ -22,18 +22,18 @@
 
 [data-theme="dark"] {
     /* Ciemny Motyw */
-    --bg-body: #1a1a1a;      
-    --bg-nav: #1a1a1a;
+    --bg-body: #282c34;      
+    --bg-nav: #21252c;
     --text-main: #e5e5e5;    
     --text-muted: #a3a3a3;
     --link-color: #60a5fa;   
     --border-color: #333333;
     
     /* Karty i Przyciski */
-    --card-bg: #262626;      
-    --card-border: #404040;
+    --card-bg: #21252c;      
+    --card-border: #1b1e22;
     --card-border-hover: #ffffff; 
-    --btn-hover-bg: #27272a; /* DODANE: Delikatne tło przycisku hover */
+    --btn-hover-bg: #27272a; 
     
     /* Inne */
     --tag-bg: #312e81;       
@@ -71,16 +71,15 @@ body {
 .nav-background {
     width: 100%;
     background-color: var(--bg-nav); 
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    /* ZMIANA: Usunięto border-bottom: 1px solid var(--border-color); */
+    transition: background-color 0.3s ease; /* Usunięto border-color z transition */
 }
 
 .nav-content {
     display: flex;
     align-items: center;
-    justify-content: flex-start; 
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .nav-brand {
@@ -88,7 +87,6 @@ body {
     font-weight: 700;
     color: var(--text-main);
     text-decoration: none;
-    margin-right: 40px;
     flex-shrink: 0;
 }
 
@@ -97,6 +95,7 @@ body {
     gap: 20px;
     flex-wrap: wrap;
     align-items: center;
+    margin-left: auto; /* To rozpycha nawigację - linki lecą na prawo */
 }
 
 .nav-links a {
@@ -111,7 +110,7 @@ body {
     opacity: 0.7;
 }
 
-/* Wyłączenie efektu hover dla linków bez atrybutu href (np. na podstronie Research) */
+/* Wyłączenie efektu hover dla linków bez atrybutu href */
 .nav-links a:not([href]) {
     cursor: default;
     color: var(--text-muted);
@@ -139,7 +138,7 @@ body {
     justify-content: center;
     border-radius: 4px;
     transition: background-color 0.2s;
-    margin-left: auto;
+    margin-left: 15px; /* Sztywny odstęp od linków zamiast auto */
 }
 
 .theme-toggle-btn:hover {
@@ -275,18 +274,17 @@ li strong { color: var(--text-main); }
     width: 100%;
     height: 180px; 
     background-color: #ffffff; 
-    border-bottom: 1px solid var(--card-border);
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Kluczowe, żeby obrazek nie wyszedł poza kartę */
+    overflow: hidden; 
 }
 
 .note-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;  /* Wypełnia cały kontener, docinając boki jak "zoom" */
-    padding: 0;         /* Usunięcie białej ramki dookoła */
+    object-fit: cover;  
+    padding: 0;         
     display: block;
 }
 
@@ -418,15 +416,20 @@ li strong { color: var(--text-main); }
 /* --- RWD (MOBILE) --- */
 @media (max-width: 800px) {
     .nav-content {
-        flex-direction: column;
-        align-items: flex-start; 
+        flex-direction: row; 
+        flex-wrap: wrap; 
+        justify-content: space-between;
         gap: 20px;
     }
     .nav-links { 
         gap: 15px; 
         width: 100%;
+        margin-left: 0; /* Reset dla mobilki */
         justify-content: flex-start;
+        order: 3; /* Linki schodzą pod spód */
     }
-    .theme-toggle-btn { margin-left: auto; }
+    .theme-toggle-btn { 
+        margin-left: auto; /* Guzik wraca do prawej obok logo */
+    }
     .notes-grid { grid-template-columns: 1fr; }
 }

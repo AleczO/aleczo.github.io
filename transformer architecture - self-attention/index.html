@@ -24,12 +24,12 @@
     <header class="nav-background">
         <div class="align-wrapper">
             <nav class="nav-content">
-                <a class="nav-brand" href="index.html">Aleksander Czop</a>
+                <a class="nav-brand" href="../index.html">Aleksander Czop</a>
 
                 <div class="nav-links">
-                    <a href="index.html#About">About</a>
-                    <a href="research.html" class="active">Research Notes</a>
-                    <a href="index.html#contact">Contact</a>
+                    <a href="../index.html#About">About</a>
+                    <a href="../research.html" class="active">Research Notes</a>
+                    <a href="../index.html#contact">Contact</a>
 
                     <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
                         <span class="material-symbols-outlined icon-moon">dark_mode</span>
@@ -41,68 +41,9 @@
     </header>
 
     <main class="align-wrapper main-content">
-        
-        <a href="research.html" class="back-link">
-            <span class="material-symbols-outlined">arrow_left_alt</span>
-            Back to Notes
-        </a>
-
-        <article class="text-block article-container">
-            
-            <div class="article-meta">
-                <span class="note-tag">ML</span>
-                <span class="note-date">October 15, 2025</span>
-            </div>
-            
-            <h1 class="article-title">Transformer Architecture Deep Dive</h1>
-            
-            <p class="article-lead">
-                This note explores the core mathematical foundations of the self-attention mechanism, 
-                breaking down how queries, keys, and values interact to model sequences.
-            </p>
-
-            <hr class="article-divider">
-
-            <h2>1. The Self-Attention Mechanism</h2>
-            <p>
-                The fundamental building block of the Transformer is scaled dot-product attention. 
-                Instead of processing tokens sequentially, it computes attention scores across the entire sequence simultaneously.
-            </p>
-
-            <p>The matrix of outputs is computed as:</p>
-            <p class="math-block">
-                $$ \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V $$
-            </p>
-
-            <p>
-                Where \( Q \), \( K \), and \( V \) represent the Query, Key, and Value matrices respectively. 
-                The scaling factor \( \frac{1}{\sqrt{d_k}} \) is crucial because it prevents the dot products from growing too large in magnitude, which would push the softmax function into regions with extremely small gradients.
-            </p>
-
-            <h2>2. Implementation Details</h2>
-            <p>
-                Below is a conceptual snippet showing how one might implement a basic self-attention block in Python using PyTorch. 
-                Notice the use of <code>torch.matmul</code> for the dot products.
-            </p>
-
-            <pre><code>import torch
-import torch.nn.functional as F
-import math
-
-def scaled_dot_product_attention(query, key, value):
-    d_k = query.size(-1)
-    scores = torch.matmul(query, key.transpose(-2, -1)) / math.sqrt(d_k)
-    p_attn = F.softmax(scores, dim=-1)
-    
-    return torch.matmul(p_attn, value), p_attn</code></pre>
-
-            <blockquote>
-                <strong>Note:</strong> In practice, Multi-Head Attention applies this operation in parallel across different projected versions of the queries, keys, and values.
-            </blockquote>
-
-        </article>
+        <p>under construction...</p>
     </main>
 
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
 </body>
 </html>

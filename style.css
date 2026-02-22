@@ -41,6 +41,10 @@
     --image-bg: #333333;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 /* --- RESET I BAZA --- */
 body {
     margin: 0;
@@ -177,8 +181,6 @@ h2 {
 
 h3 {
     font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     font-weight: 700;
     color: var(--text-main);
     margin-top: 30px;

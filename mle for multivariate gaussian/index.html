@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLE for Multivariate Gaussian - Aleksander Czop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="note.css">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../index.html#About">About</a>
+                    <a href="../research.html" class="active">Articles</a>
+                    <a href="../index.html#contact">Contact</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+        
+        <a href="../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+            <div class="article-meta">
+                <span class="note-tag">MATH</span>
+                <span class="note-date">Published: Feb 22, 2026</span>
+            </div>
+
+            <h1 class="article-title">Maximum Likelihood Estimation for Multivariate Gaussian</h1>
+            <p class="article-lead">
+                Step-by-step mathematical derivation of the Maximum Likelihood Estimates (MLE) for the mean vector and covariance matrix of a Multivariate Gaussian Distribution.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>1. The Likelihood Function</h2>
+            <p>
+                We start with the Probability Density Function (PDF) of a multivariate Gaussian distribution for a random vector \( \mathbf{x} \):
+            </p>
+
+            <div class="math-block">
+                $$ \text{Gaussian}(\mathbf{x}) = p(\mathbf{x} | \boldsymbol{\mu}, \mathbf{\Sigma}) =
+                \frac{1}{\sqrt{(2\pi)^k |\mathbf{\Sigma}|}} \exp{ \bigg\{-\frac{1}{2}(\mathbf{x} - \boldsymbol{\mu})^T 
+                \mathbf{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu}) 
+                \bigg\} } $$
+            </div>
+
+            <p>
+                Given a dataset of \( N \) independent and identically distributed (i.i.d.) observations \( \{ \mathbf{x}_i \}_{i=1}^N \), the log-likelihood function \( \mathcal{l}(\boldsymbol{\mu}, \mathbf{\Sigma}) \) is:
+            </p>
+
+            <div class="math-block">
+                $$ \log \mathcal{L}(\boldsymbol{\mu}, \mathbf{\Sigma}) = \mathcal{l}(\boldsymbol{\mu}, \mathbf{\Sigma}) =
+                \log \prod_{i=1}^{N} p(\mathbf{x}_i | \boldsymbol{\mu}, \mathbf{\Sigma}) $$
+            </div>
+
+            <div class="math-block">
+                $$ = N\log \frac{1}{\sqrt{(2\pi)^k |\mathbf{\Sigma}|}} 
+                - \frac{1}{2} \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu}) $$
+            </div>
+
+            <div class="math-block">
+                $$ = -\frac{N}{2} \log{(2\pi)^k} 
+                -\frac{N}{2}\log{|\mathbf{\Sigma}|} 
+                - \frac{1}{2} \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu})^T \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu}) $$
+            </div>
+
+            <h2>2. MLE for the Mean Vector</h2>
+            <p>
+                To find the optimal mean vector, we take the partial derivative of the log-likelihood with respect to \( \boldsymbol{\mu} \) and set it to zero:
+            </p>
+
+            <div class="math-block">
+                $$\frac{\partial \mathcal{l}}{\partial \boldsymbol{\mu}} = 0$$
+            </div>
+
+            <p>Using the matrix calculus identity for symmetric matrices \( \frac{d}{d\mathbf{x}} (\mathbf{x}^T \mathbf{B} \mathbf{x}) = 2\mathbf{B}\mathbf{x} \):</p>
+
+            <div class="math-block">
+                $$2 \sum_{i=1}^N \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu}) = 0 $$
+            </div>
+
+            <div class="math-block">
+                $$\sum_{i=1}^N \mathbf{\Sigma}^{-1} \mathbf{x}_i - \sum_{i=1}^N \mathbf{\Sigma}^{-1} \boldsymbol{\mu} = 0 $$
+            </div>
+
+            <p>Since the inverse covariance matrix \( \mathbf{\Sigma}^{-1} \) is positive-definite, we can simplify this to:</p>
+
+            <div class="math-block">
+                $$\sum_{i=1}^N \mathbf{x}_i = \sum_{i=1}^N \boldsymbol{\mu} = N\boldsymbol{\mu}$$
+            </div>
+
+            <div class="math-block">
+                $$\boldsymbol{\mu} = \frac{1}{N} \sum_{i=1}^N \mathbf{x}_i = \bar{\mathbf{x}}$$
+            </div>
+
+            <h2>3. MLE for the Covariance Matrix</h2>
+            <p>
+                To differentiate with respect to \( \mathbf{\Sigma} \), it is mathematically more convenient to optimize with respect to the precision matrix \( \mathbf{\Sigma}^{-1} \). We use the property \( \log|\mathbf{\Sigma}| = -\log|\mathbf{\Sigma}^{-1}| \) to rewrite the log-likelihood:
+            </p>
+
+            <div class="math-block">
+                $$\mathcal{l}(\boldsymbol{\mu}, \mathbf{\Sigma}^{-1}) = -\frac{N}{2} \log{(2\pi)^k} +\frac{N}{2}\log{|\mathbf{\Sigma}^{-1}|}  - \frac{1}{2} \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu})^T  \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu}) $$
+            </div>
+
+            <p>
+                Knowing that a scalar is equal to its trace, and utilizing the cyclic property of the trace operation \( \text{tr}[\mathbf{A}\mathbf{B}\mathbf{C}] = \text{tr}[\mathbf{C}\mathbf{A}\mathbf{B}] \), we can rearrange the term inside the sum:
+            </p>
+
+            <div class="math-block">
+                $$ (\mathbf{x}_i - \boldsymbol{\mu})^T  \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu}) = \text{tr} 
+                \big[  (\mathbf{x}_i - \boldsymbol{\mu})^T  \mathbf{\Sigma}^{-1} (\mathbf{x}_i - \boldsymbol{\mu})   \big] = \text{tr} 
+                \big[ (\mathbf{x}_i - \boldsymbol{\mu})  (\mathbf{x}_i - \boldsymbol{\mu})^T  \mathbf{\Sigma}^{-1}   \big] $$
+            </div>
+
+            <p>Now, we take the derivative with respect to \( \mathbf{\Sigma}^{-1} \) and set it to zero <a href="#ref-1" class="citation">[1]</a>:</p>
+
+            <div class="math-block">
+                $$\frac{\partial\mathcal{l}}{\partial \mathbf{\Sigma}^{-1}} = \frac{N}{2}\mathbf{\Sigma} - \frac{1}{2} \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu})  (\mathbf{x}_i - \boldsymbol{\mu})^T = 0$$
+            </div>
+
+            <p>Solving for \( \mathbf{\Sigma} \) yields the final estimate:</p>
+
+            <div class="math-block">
+                $$\mathbf{\Sigma} = \frac{1}{N} \sum_{i=1}^N (\mathbf{x}_i - \boldsymbol{\mu})  (\mathbf{x}_i - \boldsymbol{\mu})^T$$
+            </div>
+
+            <hr class="article-divider">
+
+            <h2 id="references">References & Further Reading</h2>
+            <ol class="reference-list">
+                <li id="ref-1">
+                    Petersen, K. B., & Pedersen, M. S. (2012). <em>The Matrix Cookbook</em>. Technical University of Denmark. <a href="https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf" target="_blank">PDF Link</a>
+                </li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="../script.js"></script>
+</body>
+</html>

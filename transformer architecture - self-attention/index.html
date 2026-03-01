@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="note.css">
 
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
@@ -51,7 +50,7 @@
                 <span class="note-tag">DL</span>
                 <span class="note-date">Published: Feb 21, 2026</span>
                 <span class="meta-separator">•</span>
-                <span class="note-date update-date">Last updated: Feb 22, 2026</span>
+                <span class="note-date update-date">Last updated: Mar 1, 2026</span>
             </div>
 
             <h1 class="article-title">Transformer Architecture - Self-Attention</h1>
@@ -67,8 +66,254 @@
 
             <hr class="article-divider">
 
-            <h2 id="references">References & Further Reading</h2>
-            
+            <h2>1. Modeling Token Interactions</h2>
+                <p>
+                    To understand the self-attention process, we first need to understand how a transformer processes data. 
+                    Mathematically, the input data to a transformer is a set of vectors \( \{ \mathbf{x}_n \} \), where \( n = 1, \dots, N \) and \( \mathbf{x}_n \in \mathbb{R}^{D} \). Each data vector represents a <strong>token</strong>.
+                </p>
+
+                <p>
+                    The input to the transformer will be a matrix \( \mathbf{X} \) of dimensions \( N \times D \), where the \( n \)-th row is the transposed token vector \( \mathbf{x}_n^T \).
+                </p>
+
+                <p>
+                    To capture the relationships between all tokens in the set, we need a mechanism that updates each token's representation based on the others. At this stage, before diving into the specifics of <i>attention</i>, we can simply view this as a function \(F \) that transforms an input matrix into an output matrix of the same size:
+                </p>
+
+                <div class="math-block">
+                    $$ F: \mathbb{R}^{N \times D} \to \mathbb{R}^{N \times D} $$
+                    $$ F(\mathbf{X}) = \mathbf{X}' $$
+                </div>
+
+                <p>
+                    In the following sections, we will unpack this function \(F \) to see exactly how the self-attention mechanism computes this output.
+                </p>
+
+
+
+
+
+            <h2>2. Mathematical Assumptions of Attention</h2>
+
+                <p>
+                    Given the mapping
+                </p>
+
+                <div class="math-block">
+                    $$ F(\mathbf{X}) = \mathbf{X}' $$
+                </div>
+
+                <p>
+                    we want the output matrix \( \mathbf{X}' \) to capture richer contextual information about the relationships between tokens.
+                </p>
+
+                <p>
+                    Let's analyze how a single output token \( \mathbf{x}_n' \) can be constructed based on the input data \( \mathbf{X} \). 
+                    The first thing we notice is that to fully understand its context, it should draw information from <i>all</i> input tokens, not just a few of them. To achieve this mathematically, we can express the new token as a linear combination of all input tokens:
+                </p>
+
+                <div class="math-block">
+                    $$ \mathbf{x}_n' = \sum_{m=1}^N \alpha_{nm} \mathbf{x}_m $$
+                </div>
+
+                <p>
+                    where \( \alpha_{nm} \) is called the <strong>attention weight</strong>.
+                </p>
+
+                <p>
+                    To give meaning to the linear combination, we can analyze it with a probabilistic approach.
+                </p>
+
+                <p>
+                    The weights represent a discrete probability distribution over the input sequence. More precisely, 
+                    \( \alpha_{nm} \) represents the probability that the updated representation of the \(n\)-th token integrates information from the \(m\)-th token.
+                </p>
+
+                <p>
+                    With this approach, the new token representation \(\mathbf{x}_n'\) is defined as the expected value of the input tokens under this probability distribution. 
+                    To form a valid probability distribution, the weights must satisfy two fundamental axioms:
+                </p>
+
+                <ul>
+                    <li><strong>Non-negativity:</strong> \( \alpha_{nm} \ge 0 \).</li>
+                    <li><strong>Summation to one:</strong> \( \sum_{m=1}^N \alpha_{nm} = 1 \).</li>
+                </ul>
+
+                <p>
+                    Due to these requirements, it is highly probable that our derivation will employ the <strong>softmax</strong> function in the subsequent steps.
+                </p>
+
+
+
+            <h2>3. Defining Attention</h2>
+                <p>
+                    Having established the fundamental properties of the attention weights, the next step is to define how to calculate them from the input data. To determine how closely token \( \mathbf{x}_n \) relates to token \( \mathbf{x}_m \), we must measure the mathematical similarity between their corresponding vectors.
+                </p>
+
+                <p>
+                    There are multiple methods to measure vector similarity, including Euclidean distance and kernel functions. 
+                    However, we will use the <strong>dot product</strong>, defined algebraically as the matrix multiplication \( \mathbf{x}_n^T \mathbf{x}_m \), following the architecture proposed in the paper <em>Attention Is All You Need</em><a href="#ref-3" class="citation">[3]</a>.
+                </p>
+
+                <p>
+                    This method is advantageous for several reasons. Primarily, it requires fewer mathematical operations than computing the \( L_2 \) norm. Furthermore, as we will demonstrate later, we can mitigate the curse of dimensionality associated with the dot product by applying a scaling operation.
+                </p>
+
+                <p>
+                    We define the raw similarity score between the \( n \)-th token and the \( m \)-th token as their dot product: \( \mathbf{x}_n^T \mathbf{x}_m \).
+                </p>
+
+                <p>
+                    However, raw dot products can yield negative values, and their sum is not guaranteed to equal \( 1 \). To enforce the previously established probabilistic axioms, we apply the <strong>softmax</strong> function over all \( N \) tokens in the sequence. This yields the final attention weights:
+                </p>
+
+                <div class="math-block">
+                    $$ \alpha_{nm} = \frac{\exp(\mathbf{x}_n^T \mathbf{x}_m)}{\sum_{j=1}^N \exp(\mathbf{x}_n^T \mathbf{x}_j)} $$
+                </div>
+
+                <p>
+                    Expressing this operation in matrix form yields:
+                </p>
+
+                <div class="math-block">
+                    $$\mathbf{X}' = \text{Softmax}\big(\mathbf{X}\mathbf{X}^T \big) \mathbf{X}$$
+                </div>
+
+                <p>
+                    where the term \(\text{Softmax}\big(\mathbf{X}\mathbf{X}^T \big)\) represents a <strong>"naive"</strong> version of self-attention. Because this formulation currently lacks learnable parameters, the necessary next step is to introduce weight matrices into the model to enable training.
+                </p>
+
+
+            <h2>4. Model Parametrization</h2>
+                <p>
+                    The current formulation of the self-attention model has a fundamental limitation: it lacks learnable parameters. This absence of trainable weights leads to two specific mathematical issues:
+                </p>
+
+                <ol>
+                    <li>
+                        <strong>Symmetry of weights:</strong> The basic dot product operation \( \mathbf{x}_n^T \mathbf{x}_m \) yields symmetric attention scores. Consequently, the attention token \( n \) pays to token \( m \) is forced to be identical to the attention token \( m \) pays to token \( n \). This contradicts the directed nature of relationships in sequence processing.
+                    </li>
+                    <li>
+                        <strong>Lack of feature extraction:</strong> The model cannot isolate specific features of a token that might be relevant for a given context. It is restricted to using the exact same raw input representations both for computing similarity and for constructing the final output.
+                    </li>
+                </ol>
+
+                <p>
+                    To address the limitation of parameterization, we can apply a <strong>linear transformation</strong> to the input data \( \mathbf{X} \) using a learnable weight matrix \( \mathbf{U} \):
+                </p>
+
+                <div class="math-block">
+                    $$ \mathbf{X} \rightarrow \mathbf{X}\mathbf{U} $$
+                </div>
+
+                <p>
+                    Consequently, the self-attention equation takes the following form:
+                </p>
+
+                <div class="math-block">
+                    $$ \mathbf{X}' = \text{Softmax}\big(\mathbf{X}\mathbf{U}\mathbf{U}^T\mathbf{X}^T \big) \mathbf{X}\mathbf{U} $$
+                </div>
+
+                <p>
+                    Although this modification resolves the feature extraction problem, a critical flaw remains: the attention weights are still symmetric. The term \( \mathbf{U}\mathbf{U}^T \) guarantees a symmetric output, meaning the attention score between token \( n \) and token \( m \) is identical to the score between token \( m \) and token \( n \).
+                </p>
+
+                <p>
+                    In natural language processing, dependencies between tokens are strictly asymmetric. For instance, consider the semantic relationship between the words <em>square</em> and <em>rectangle</em>. This association is fundamentally directional: every square is a rectangle, but not every rectangle is a square. A symmetric attention mechanism fails to capture this directional dependency.
+                </p>
+
+                <p>
+                    To break the structural symmetry caused by the term \( \mathbf{U}\mathbf{U}^T \), we must project the input sequence matrix \( \mathbf{X} \in \mathbb{R}^{N \times D} \) into distinct feature spaces. We achieve this by introducing three independent, learnable weight matrices: \( \mathbf{W}^Q \in \mathbb{R}^{D \times D_k} \), \( \mathbf{W}^K \in \mathbb{R}^{D \times D_k} \), and \( \mathbf{W}^V \in \mathbb{R}^{D \times D_v} \).
+                </p>
+
+                <p>
+                    The naming convention for these matrices is derived directly from the <strong>Information Retrieval</strong> paradigm in computer science:
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>Query (\( \mathbf{Q} = \mathbf{X}\mathbf{W}^Q \in \mathbb{R}^{N \times D_k} \))</strong>: This matrix represents the tokens when they are seeking context. A query vector encodes the specific information a token requires from the rest of the sequence.
+                    </li>
+                    <li>
+                        <strong>Key (\( \mathbf{K} = \mathbf{X}\mathbf{W}^K \in \mathbb{R}^{N \times D_k} \))</strong>: This matrix represents the tokens when they are being evaluated by others. A key vector encodes the specific information a token contains.
+                    </li>
+                    <li>
+                        <strong>Value (\( \mathbf{V} = \mathbf{X}\mathbf{W}^V \in \mathbb{R}^{N \times D_v} \))</strong>: This matrix represents the actual content. A value vector contains the extracted features that will be incorporated into the final output.
+                    </li>
+                </ul>
+
+                <p>
+                    By separating the similarity computation into Queries and Keys, the interaction becomes strictly asymmetric. The dot product \( \mathbf{Q}\mathbf{K}^T \) results in an \( N \times N \) matrix of alignment scores, ensuring that the score between token \( n \) and token \( m \) is entirely independent of the score between token \( m \) and token \( n \).
+                </p>
+
+                <p>
+                    Substituting these distinct projections into our equation yields the standard, unscaled self-attention formula:
+                </p>
+
+                <div class="math-block">
+                    $$ \mathbf{X}' = \text{Softmax}\big(\mathbf{Q}\mathbf{K}^T\big) \mathbf{V} $$
+                </div>
+
+            <h2>5. Scaled Dot-Product Attention</h2>
+                <p>
+                    As previously mentioned, the dot product operation suffers from the curse of dimensionality. To understand this mathematically, 
+                    we must analyze the variance of the dot product between a query vector \( \mathbf{q} \) and a key vector \( \mathbf{k} \).
+                </p>
+
+                <p>
+                    Let us assume that the components of \( \mathbf{q} \) and \( \mathbf{k} \) are independent random variables with a mean of \(0\) and a variance of \(1\). 
+                    This assumption is practically justified in the Transformer architecture by standard weight initialization schemes and the continuous application of 
+                    Layer Normalization, which forces the activations to maintain these exact statistical properties.
+                </p>
+
+                <p>
+                    Under this assumption, we denote the components as \( q_d \) and \( k_d \), where \( \mathbb{E}[q_d] = \mathbb{E}[k_d] = 0 \) and \( \mathbb{E}[q_d^2] 
+                    = \mathbb{E}[k_d^2] = 1 \). We can now derive the variance of their dot product over \( D_k \) dimensions:
+                </p>
+
+                <div class="math-block">
+                    $$
+                    \begin{aligned}
+                    \text{Var}(\mathbf{q}^T \mathbf{k}) &= \mathbb{E}\big[(\mathbf{q}^T\mathbf{k})^2\big] - \big(\mathbb{E}[\mathbf{q}^T\mathbf{k}]\big)^2 \\
+                    &= \mathbb{E}\bigg[ \bigg( \sum_{d=1}^{D_k} q_d k_d \bigg)^2 \bigg] - 0 \\
+                    &= \mathbb{E}\bigg[  \sum_{d=1}^{D_k} ( q_d k_d )^2 + \sum_{d=1}^{D_k} \sum_{\substack{e = 1 \\ e \neq d}}^{D_k} q_d k_d q_e k_e \bigg] 
+                    \end{aligned}
+                    $$
+                </div>
+
+                <p>
+                    Utilizing the linearity of expectation and the assumption of independence among the variables, we separate the expectations:
+                </p>
+
+                <div class="math-block">
+                    $$
+                    \begin{aligned}
+                    \text{Var}(\mathbf{q}^T \mathbf{k}) &= \sum_{d=1}^{D_k} \mathbb{E}\big[q_d^2\big]\mathbb{E}\big[k_d^2\big]  +  \sum_{d=1}^{D_k} \sum_{\substack{e = 1 \\ e \neq d}}^{D_k} \mathbb{E}[q_d] \mathbb{E}[k_d] \mathbb{E}[q_e] \mathbb{E}[k_e] 
+                    \end{aligned}
+                    $$
+                </div>
+
+                <p>
+                    Given that the mean \( \mathbb{E}[q_d] = \mathbb{E}[k_d] = 0 \) and the variance \( \mathbb{E}[q_d^2] = \mathbb{E}[k_d^2] = 1 \), the equation simplifies to:
+                </p>
+
+                <div class="math-block">
+                    $$ \text{Var}(\mathbf{q}^T \mathbf{k}) = \sum_{d=1}^{D_k} (1 \cdot 1) + 0 = D_k $$
+                </div>
+
+                <p>
+                    This mathematical proof demonstrates that the variance of the dot product grows linearly with the dimensionality \( D_k \). Consequently, for large values of \( D_k \), the dot product yields extremely large magnitudes. These large values push the softmax function into regions where the gradients approach zero, impeding the training process.
+                </p>
+
+                <p>
+                    To counteract this growth and maintain a variance of 1, we must divide the dot product by its standard deviation, which is \( \sqrt{D_k} \). Incorporating this scaling factor yields the final, complete formula for the attention mechanism as defined in the standard Transformer architecture:
+                </p>
+
+                <div class="math-block">
+                    $$ \mathbf{X}' = \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{Softmax}\bigg( \frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{D_k}} \bigg) \mathbf{V} $$
+                </div>
+
+                            
             <h3>Cited Sources</h3>
             <ol class="reference-list">
                 <li id="ref-1">

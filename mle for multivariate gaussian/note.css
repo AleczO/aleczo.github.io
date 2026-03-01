@@ -1,3 +1,7 @@
+/* =========================================
+   NOTE.CSS - Style dla pojedynczej notatki
+   ========================================= */
+
 /* --- ZMIENNE TYLKO DLA NOTATEK --- */
 :root {
     /* Jasny Motyw */
@@ -95,7 +99,8 @@ blockquote p {
     margin-bottom: 0;
 }
 
-/* Wzory matematyczne wyśrodkowane */
+/* --- WZORY MATEMATYCZNE --- */
+
 /* Wzory matematyczne wyśrodkowane */
 .math-block {
     text-align: center;
@@ -122,13 +127,13 @@ pre::-webkit-scrollbar-track {
 
 .math-block::-webkit-scrollbar-thumb,
 pre::-webkit-scrollbar-thumb {
-    background: var(--border-color); /* Pasek dopasowany do motywu strony */
+    background: var(--text-muted); /* Pasek dopasowany, widoczny również w ciemnym motywie */
     border-radius: 4px;
 }
 
 .math-block::-webkit-scrollbar-thumb:hover,
 pre::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted); /* Ciemnieje po najechaniu myszką */
+    background: var(--text-main); /* Ciemnieje/jaśnieje po najechaniu myszką */
 }
 
 /* Opcjonalnie: poprawia wygląd samego kontenera MathJax wewnątrz Twojego bloku */
@@ -189,5 +194,23 @@ pre::-webkit-scrollbar-thumb:hover {
 .reference-list li:target {
     background-color: var(--blockquote-bg);
     border-left-color: var(--blockquote-border);
+    color: var(--text-main);
+}
+
+/* --- LISTY W TREŚCI ARTYKUŁU --- */
+.article-container ul,
+.article-container ol {
+    color: var(--text-main); /* Wymusza główny, mocny kolor tekstu */
+    line-height: 1.7;        /* Taka sama wysokość linii jak w zwykłych akapitach */
+    margin-bottom: 20px;
+    padding-left: 30px;      /* Zapewnia ładne wcięcie dla punktorów */
+}
+
+.article-container li {
+    margin-bottom: 10px;     /* Dodaje trochę oddechu między kolejnymi punktami */
+}
+
+/* Zabezpieczenie: jeśli w liście użyjesz pogrubienia, niech też dziedziczy właściwy kolor */
+.article-container li strong {
     color: var(--text-main);
 }

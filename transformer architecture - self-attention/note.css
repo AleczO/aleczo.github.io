@@ -158,3 +158,32 @@ blockquote p {
     border-left-color: var(--blockquote-border);
     color: var(--text-main);
 }
+
+
+.math-block {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 1.1em;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Zmień padding z "5px 0 15px 0" na większy z góry i z dołu: */
+    padding: 15px 0 20px 0; 
+}
+
+/* --- LISTY W TREŚCI ARTYKUŁU --- */
+.article-container ul,
+.article-container ol {
+    color: var(--text-main); /* Wymusza główny, mocny kolor tekstu */
+    line-height: 1.7;        /* Taka sama wysokość linii jak w zwykłych akapitach */
+    margin-bottom: 20px;
+    padding-left: 30px;      /* Zapewnia ładne wcięcie dla punktorów */
+}
+
+.article-container li {
+    margin-bottom: 10px;     /* Dodaje trochę oddechu między kolejnymi punktami */
+}
+
+/* Zabezpieczenie: jeśli w liście użyjesz pogrubienia, niech też dziedziczy właściwy kolor */
+.article-container li strong {
+    color: var(--text-main);
+}

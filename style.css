@@ -290,7 +290,7 @@ li strong { color: var(--text-main); }
     display: block;
 }
 
-[data-theme="dark"] .note-image img {
+[data-theme="dark"] .note-image {
     filter: brightness(0.9);
 }
 
@@ -344,6 +344,7 @@ li strong { color: var(--text-main); }
     line-height: 1.6;
 }
 
+
 /* Przycisk See All */
 .view-all-container {
     margin-top: 32px;
@@ -377,6 +378,8 @@ li strong { color: var(--text-main); }
 .btn-see-all:hover .btn-arrow {
     transform: translateX(4px);
 }
+
+
 
 /* --- KONTAKT --- */
 .contact-list {
@@ -435,3 +438,4 @@ li strong { color: var(--text-main); }
     }
     .notes-grid { grid-template-columns: 1fr; }
 }
+

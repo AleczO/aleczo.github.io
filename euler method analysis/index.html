@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerical Analysis of Euler Method - Aleksander Czop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../index.html#About">About</a>
+                    <a href="../research.html" class="active">Articles</a>
+                    <a href="../index.html#contact">Contact</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+        
+        <a href="../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">DS</span>
+                <span class="note-date">Published: Mar 5, 2026</span>
+                <span class="meta-separator">•</span>
+                <span class="note-date update-date">Last updated: Mar 5, 2026</span>
+            </div>
+
+            <h1 class="article-title">Numerical Analysis of Dynamical Systems: The Euler Method</h1>
+            
+            <blockquote>
+                <p>
+                    Originally an optional exercise in model discretization for the <strong>Modeling of Dynamical Systems</strong> course (2024/2025).
+                </p>
+                <p>
+                    <strong>Note:</strong> While only the basic numerical form of the LV and Lorenz models was requested, 
+                    the formal derivation and comprehensive error analysis presented here were self-initiated to explore the mathematical foundations of the Euler scheme.
+                </p>
+            </blockquote>
+
+            <h2>Abstract</h2>
+            <p class="article-lead">
+                This report presents a formal derivation of the Euler method and an analysis of its local and global truncation errors. 
+                The scheme is applied to the numerical simulation of dynamical systems, specifically the Lotka-Volterra and Lorenz models. 
+                As established in large-scale simulation frameworks like <i>NEST</i><a href="#ref-1" class="citation">[1]</a> and in 
+                computationally efficient neuron models such as Izhikevich's<a href="#ref-2" class="citation">[2]</a>, the forward Euler scheme is frequently chosen as a "golden mean." 
+                It allows for the simulation of massive neural ensembles where the computational overhead of higher-order methods is prohibitive, 
+                and the inherent stochasticity of biological systems makes extreme numerical precision unnecessary.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>1. Euler Method - Theory</h2>
+            <p>
+                Let us consider an ordinary differential equation: 
+            </p>
+
+            <div class="math-block">
+                $$ y'(t) = f(t, y(t)) $$
+            </div>
+
+            <p>
+                for which an initial condition \( y(t_0) = y_0 \) is given, and \( t \in [0, T] \).
+            </p>
+
+            <p>
+                The function \( y(t) \) can be expanded into a Taylor series around the point \( t_0 \) for \( t_1 = t_0 + \Delta t \):
+            </p>
+
+            <div class="math-block">
+                $$ y(t_1) = y(t_0 + \Delta t) = y(t_0) + \Delta t\ y'(t_0) + \frac{(\Delta t)^2}{2!} y''(t_0) + \frac{(\Delta t)^3}{3!} y'''(t_0) + \dots $$
+            </div>
+
+            <p>
+                By omitting the higher-order terms, we obtain the approximation:
+            </p>
+
+            <div class="math-block">
+                $$ y(t_1) = y(t_0 + \Delta t) = y(t_0) + \Delta t \ y'(t_0) + \mathcal{O}(\Delta t^2) $$
+                <br>
+                $$ y(t_1) \approx y(t_0) + \Delta t \ y'(t_0) $$
+            </div>
+
+            <p>
+                Next, by substituting the function \( f(t, y(t)) \) for \( y'(t) \), we get:
+            </p>
+
+            <div class="math-block">
+                $$ y(t_1) \approx y(t_0) + \Delta t \ f(t_0, y(t_0)) $$
+                <br>
+                $$ y_1 = y_0 + \Delta t \ f(t_0, y_0) $$
+            </div>
+
+            <p>
+                Similarly, we can determine the subsequent terms for \( t_2 = t_1 + \Delta t, \dots \)
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{aligned}
+                y_2 &= y_1 + \Delta t \ f(t_1, y_1) \\ 
+                y_3 &= y_2 + \Delta t \ f(t_2, y_2) \\
+                &\vdots \\
+                y_n &= y_{n-1} + \Delta t \ f(t_{n-1}, y_{n-1}) 
+                \end{aligned}
+                $$
+            </div>
+
+            <p>
+                The above iterations can be written in the form of a general formula, yielding:
+            </p>
+
+            <div class="math-block">
+                $$ y_{i + 1} = y_{i} + \Delta t \ f(t_{i}, y_{i}) \quad \text{for } i \in \{0, \dots, n - 1\} $$
+            </div>
+
+            <p>
+                The equation can naturally be generalized for multidimensional systems \( \mathbf{x}'(t) = \mathbf{f}(t, \mathbf{x}(t)) \), which in its expanded form gives:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                x_1'(t) = f_1(t, x_1(t), x_2(t), \dots, x_n(t)) \\
+                \vdots \\
+                x_n'(t) = f_n(t, x_1(t), x_2(t), \dots, x_n(t)) 
+                \end{cases}
+                $$
+            </div>
+
+            <p>
+                Returning to a compact vector form, the algorithm takes the form:
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{x}_{i+1} = \mathbf{x}_{i} + \Delta t \ \mathbf{f}(t_i, \mathbf{x}_i) $$
+            </div>
+
+
+            <h2>2. Lotka-Volterra Model</h2>
+
+            <h3>Method 1: Direct Vector Formula</h3>
+            <p>
+                The Lotka-Volterra predator-prey model can be represented as a system: 
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                x'(t) = f(t, x(t), y(t)) \\
+                y'(t) = g(t, x(t), y(t)) 
+                \end{cases}
+                $$
+            </div>
+
+            <p>
+                From the original LV equations:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                \dot{x} = (\alpha - \beta y) x \\
+                \dot{y} = (\gamma x - \delta) y
+                \end{cases}
+                $$
+            </div>
+
+            <p>
+                we obtain the discrete system:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                    x_{i+1} = x_i + \Delta t \ (\alpha - \beta y_i)x_i \\ 
+                    y_{i+1} = y_i + \Delta t \ (\gamma x_i - \delta) y_i
+                \end{cases}
+                $$
+            </div>
+
+            <h3>Method 2: Finite Differences</h3>
+            <p>
+                Discretization can also be approached from the perspective of finite differences. Given the continuous equations, we replace the derivatives with forward difference approximations.
+            </p>
+
+            <p>
+                For the first equation:
+            </p>
+
+            <div class="math-block">
+                $$ \frac{\Delta x_i}{\Delta t} = (\alpha - \beta y_i ) \ x_i $$  
+                <br>
+                $$ \frac{x_{i + 1} - x_{i}}{\Delta t} = (\alpha - \beta y_i ) \ x_i $$
+                <br>
+                $$ x_{i + 1} = x_{i} + (\alpha - \beta y_{i}) \ x_{i} \ \Delta t $$
+            </div>
+
+            <p>
+                Similarly for the second equation:
+            </p>
+
+            <div class="math-block">
+                $$ \frac{\Delta y_i}{\Delta t} = (\gamma x_i - \delta) \ y_i $$
+                <br>
+                $$ y_{i + 1} = y_{i} + (\gamma x_i - \delta) \ y_i \ \Delta t $$
+            </div>
+
+
+            <h2>3. Lorenz System</h2>
+
+            <p>
+                The Lorenz system can be represented as a three-dimensional system. Taking the original equations:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                    \dot{x} = \sigma (y - x) \\
+                    \dot{y} = x ( \rho - z) - y \\
+                    \dot{z} = xy - \beta z
+                \end{cases}
+                $$
+            </div>
+
+            <p>
+                we obtain the discrete numerical scheme:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{cases}
+                    x_{i + 1} = x_i + \Delta t \ \sigma (y_i - x_i) \\
+                    y_{i + 1} = y_i + \Delta t \ (x_i(\rho - z_i) - y_i) \\
+                    z_{i + 1} = z_i + \Delta t \ (x_i y_i - \beta z_i)
+                \end{cases}
+                $$
+            </div>
+
+
+            <h2>4. Euler Method - Error Analysis</h2>
+
+            <p>
+                The error of the method can be rigorously analyzed using the Taylor series with a remainder. For a vector function \( \mathbf{x}(t) \), expanding into a Taylor series with a remainder of the second degree for \( t = t_{i + 1} \) and \( a = t_i \), we obtain:
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{x}(t_{i + 1}) = \mathbf{x}(t_i) + \mathbf{x}'(t_i) \Delta t + \int_{t_i}^{t_{i + 1}} (t_{i + 1} - \tau) \mathbf{x}''(\tau) d\tau $$
+            </div>
+
+            <p>
+                The magnitude of the local truncation error can be estimated using the norm of the remainder. From the mean value theorem:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{aligned}
+                    \bigg\| \int_{t_i}^{t_{i + 1}} (t_{i + 1} - \tau) \mathbf{x}''(\tau) d\tau \bigg\| &\leq \int_{t_i}^{t_{i + 1}} \big(t_{i + 1} - \tau\big) \| \mathbf{x}''(\tau) \| d\tau \\
+                    &\leq \max_{t_i \leq c \leq t_{i+1}} \| \mathbf{x}''(c) \| \frac{(\Delta t)^2}{2}
+                \end{aligned}
+                $$
+            </div>
+
+            <p>
+                Thus, we can write the remainder integral as a vector:
+            </p>
+
+            <div class="math-block">
+                $$ \int_{t_i}^{t_{i + 1}} (t_{i + 1} - \tau) \mathbf{x}''(\tau) d\tau = \frac{(\Delta t)^2}{2} \boldsymbol{\xi}_i $$
+            </div>
+
+            <p>
+                where \( \|\boldsymbol{\xi}_i\| \leq \max \| \mathbf{x}''(c) \| \).
+            </p>
+
+            <p>
+                The exact value of the solution satisfies:
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{x}(t_{i + 1}) = \mathbf{x}(t_i) + \Delta t \ \mathbf{f}(t_i, \mathbf{x}(t_i)) + \frac{(\Delta t)^2}{2} \boldsymbol{\xi}_i $$
+            </div>
+
+            <p>
+                Subtracting our Euler method iterative formula \( \mathbf{x}_{i+1} = \mathbf{x}_{i} + \Delta t \ \mathbf{f}(t_i, \mathbf{x}_i) \), we introduce the global truncation error vector \( \mathbf{e}_j = \mathbf{x}(t_j) - \mathbf{x}_j \):
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{e}_{i + 1} = \mathbf{e}_{i} + \Delta t \big[ \mathbf{f}(t_i, \mathbf{x}(t_i)) - \mathbf{f}(t_i, \mathbf{x}_i) \big] + \frac{(\Delta t)^2}{2} \boldsymbol{\xi}_i $$
+            </div>
+
+            <p>
+                Assuming that the function \( \mathbf{f} \) satisfies the Lipschitz condition with constant \( L \) with respect to the second argument:
+            </p>
+
+            <div class="math-block">
+                $$
+                \begin{aligned}
+                    \| \mathbf{e}_{i + 1} \| &\leq \|\mathbf{e}_{i}\| + \Delta t \ \| \mathbf{f}(t_i, \mathbf{x}(t_i)) - \mathbf{f}(t_i, \mathbf{x}_i) \| + \frac{(\Delta t)^2}{2} \|\boldsymbol{\xi}_i\| \\
+                    &\leq \|\mathbf{e}_{i}\| + \Delta t \ L \ \| \mathbf{x}(t_i) - \mathbf{x}_i \| + \frac{(\Delta t)^2}{2}\| \boldsymbol{\xi}_i\| \\
+                    &\leq (1 + \Delta t \ L) \|\mathbf{e}_i\| + \frac{(\Delta t)^2}{2} M 
+                \end{aligned}
+                $$
+            </div>
+
+            <p>
+                where \( M = \max_t \|\mathbf{x}''(t)\| \).
+            </p>
+
+            <p>
+                Assuming \( \mathbf{x}_0 = \mathbf{x}(t_0) \) is known exactly, we obtain \( \|\mathbf{e}_0\| = 0 \). Solving the resulting recurrence, we get the error at the \( k \)-th step:
+            </p>
+
+            <div class="math-block">
+                $$ \|\mathbf{e}_k\| \leq \sum_{j=0}^{k-1}(1+ \Delta t \ L)^j \frac{(\Delta t)^2}{2}M $$
+            </div>
+
+            <p>
+                From the formula for the partial sum of a geometric sequence:
+            </p>
+
+            <div class="math-block">
+                $$ \|\mathbf{e}_k\| \leq \frac{(1 + \Delta t \ L)^k - 1}{(1 + \Delta t \ L) - 1} \frac{(\Delta t)^2}{2}M = \frac{(\Delta t)}{2L}\big[ (1 + \Delta t L)^k - 1 \big] M $$
+            </div>
+
+            <p>
+                Using the expansion of the exponential function (\( 1 + x \leq e^x \)), hence \( 1 + \Delta t \ L \leq e^{\Delta t \ L} \):
+            </p>
+
+            <div class="math-block">
+                $$ \|\mathbf{e}_k\| \leq \frac{\Delta t \ M}{2 L} \big[ (e^{\Delta t \ L})^k - 1 \big] = \frac{\Delta t \ M}{2 L} \big[ e^{L(t_k - t_0)} - 1 \big] $$
+            </div>
+
+            <p>
+                One can observe a key property of the Euler method: despite the fact that the error committed in a single iteration (<em>local truncation error</em>) is of order \( \mathcal{O}(\Delta t^2) \), the accumulation of errors causes the overall error (<em>global truncation error</em>) at the end of the interval to grow linearly with respect to the time step and is ultimately of order \( \mathcal{O}(\Delta t) \).
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ul class="reference-list">
+                <li id="ref-1">Gewaltig, M. O., & Diesmann, M. (2007). <strong>NEST (NEural Simulation Tool)</strong>. <em>Scholarpedia</em>, 2(4), 1430.</li>
+                <li id="ref-2">Izhikevich, E. M. (2003). <strong>Simple model of spiking neurons</strong>. <em>IEEE Transactions on Neural Networks</em>, 14(6), 1569-1572.</li>
+                <li id="ref-3">Hansel, D., Mato, G., Meunier, C., & Neltner, L. (1998). <strong>On Numerical Simulations of Integrate-and-Fire Neural Networks</strong>. <em>Neural Computation</em>, 10(2), 467-483.</li>
+            </ul>
+
+        </article>
+    </main>
+
+    <script src="../script.js"></script>
+</body>
+</html>

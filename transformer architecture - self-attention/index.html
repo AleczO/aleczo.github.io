@@ -50,7 +50,7 @@
                 <span class="note-tag">DL</span>
                 <span class="note-date">Published: Feb 21, 2026</span>
                 <span class="meta-separator">•</span>
-                <span class="note-date update-date">Last updated: Mar 1, 2026</span>
+                <span class="note-date update-date">Last updated: Mar 5, 2026</span>
             </div>
 
             <h1 class="article-title">Transformer Architecture - Self-Attention</h1>
@@ -312,6 +312,19 @@
                 <div class="math-block">
                     $$ \mathbf{X}' = \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{Softmax}\bigg( \frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{D_k}} \bigg) \mathbf{V} $$
                 </div>
+
+            <h2>6. Conclusion and Next Steps</h2>
+                <p>
+                    In this text, we derived the Scaled Dot-Product Attention mechanism. Starting with the mathematical definition of tokens, we addressed the limitations of symmetric dot products by introducing the Query, Key, and Value matrices. Finally, we mathematically proved the necessity of the \( \sqrt{D_k} \) scaling factor to preserve gradients during training.
+                </p>
+
+                <p>
+                    Our next step will be a brief exploration of <strong>Hopfield Networks</strong> to understand the mathematical relationship between self-attention and associative memory.
+                </p>
+
+                <p>
+                    Afterward, we will build upon our current foundation by introducing <strong>Multi-Head Attention</strong> and detailing how these components integrate into the complete Transformer model.
+                </p>
 
                             
             <h3>Cited Sources</h3>

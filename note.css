@@ -9,8 +9,8 @@
     --pre-text: #d4d4d4;     
     --inline-code-bg: #f4f4f5; 
     --inline-code-text: #e11d48; /* Akcent dla kodu w linii */
-    --blockquote-border: #2563eb; 
-    --blockquote-bg: #eff6ff;
+    --blockquote-border: var(--text-muted); /* Szary akcent zamiast niebieskiego - spójnie z resztą motywu */
+    --blockquote-bg: var(--card-bg);
 }
 
 [data-theme="dark"] {
@@ -19,8 +19,8 @@
     --pre-text: #e5e5e5;
     --inline-code-bg: #27272a;
     --inline-code-text: #fda4af;
-    --blockquote-border: #60a5fa;
-    --blockquote-bg: #1e293b;
+    --blockquote-border: var(--text-muted);
+    --blockquote-bg: var(--card-bg);
 }
 
 /* --- KONTENER I NAGŁÓWEK ARTYKUŁU --- */
@@ -86,17 +86,27 @@ pre code {
 
 /* Cytaty i ważne bloki tekstu (Blockquotes) */
 blockquote {
-    margin: 20px 0;
-    padding: 2px 2px 2px 2px;
-    border-left: 4px solid var(--blockquote-border);
+    margin: 28px 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--blockquote-border);
     background-color: var(--blockquote-bg);
-    border-radius: 0 8px 8px 0;
+    border-radius: 4px 12px 12px 4px;
     color: var(--text-main);
     font-style: italic;
+    line-height: 1.7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] blockquote {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
 blockquote p {
-    margin-bottom: 0;
+    margin: 0;
+}
+
+blockquote p + p {
+    margin-top: 14px;
 }
 
 /* --- WZORY MATEMATYCZNE --- */

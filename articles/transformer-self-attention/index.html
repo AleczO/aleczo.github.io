@@ -50,7 +50,7 @@
                 <span class="note-tag">DL</span>
                 <span class="note-date">Published: Feb 21, 2026</span>
                 <span class="meta-separator">•</span>
-                <span class="note-date update-date">Last updated: Mar 5, 2026</span>
+                <span class="note-date update-date">Last updated: Jul 12, 2026</span>
             </div>
 
             <h1 class="article-title">Transformer Architecture - Self-Attention</h1>
@@ -60,8 +60,8 @@
                 The concept of self-attention is especially interesting to me because of its connection to 
                 computational neuroscience, seen in modern Hopfield networks<a href="#ref-1" class="citation">[1]</a>  
                 or Transformer implementations modeled with neurons and astrocytes<a href="#ref-2" class="citation">[2]</a>. 
-                My exploration here is primarily based on the famous paper 'Attention Is All You Need<a href="#ref-3" class="citation">[3]</a> and the book 
-                'Deep Learning: Foundations and Concepts<a href="#ref-4" class="citation">[4]</a>.
+                My exploration here is primarily based on the famous paper 'Attention Is All You Need'<a href="#ref-3" class="citation">[3]</a> and the book 
+                'Deep Learning: Foundations and Concepts'<a href="#ref-4" class="citation">[4]</a>.
             </p>
 
             <hr class="article-divider">
@@ -81,7 +81,7 @@
                 </p>
 
                 <div class="math-block">
-                    $$ F: \mathbb{R}^{N \times D} \to \mathbb{R}^{N \times D} $$
+                    $$ F: \mathbb{R}^{N \times D} \to \mathbb{R}^{N \times D} \newline $$
                     $$ F(\mathbf{X}) = \mathbf{X}' $$
                 </div>
 
@@ -140,7 +140,7 @@
                 </ul>
 
                 <p>
-                    Due to these requirements, it is highly probable that our derivation will employ the <strong>softmax</strong> function in the subsequent steps.
+                    Due to these requirements, these two axioms are precisely satisfied by the <strong>softmax</strong>.
                 </p>
 
 
@@ -219,7 +219,9 @@
                 </p>
 
                 <p>
-                    In natural language processing, dependencies between tokens are strictly asymmetric. For instance, consider the semantic relationship between the words <em>square</em> and <em>rectangle</em>. This association is fundamentally directional: every square is a rectangle, but not every rectangle is a square. A symmetric attention mechanism fails to capture this directional dependency.
+                    In natural language processing, dependencies between tokens are strictly asymmetric: the relevance of one word to another is rarely mutual in the same way. For instance, consider the semantic relationship between the words square and rectangle. 
+                    This association is fundamentally directional: every square is a rectangle, but not every rectangle is a square. Analogously, in a sequence, the token "square" should attend strongly to "rectangle" to retrieve its defining properties, while the reverse attention carries much less informational value. 
+                    A symmetric attention mechanism, by construction, cannot express this kind of directional dependency.
                 </p>
 
                 <p>
@@ -232,13 +234,13 @@
 
                 <ul>
                     <li>
-                        <strong>Query (\( \mathbf{Q} = \mathbf{X}\mathbf{W}^Q \in \mathbb{R}^{N \times D_k} \))</strong>: This matrix represents the tokens when they are seeking context. A query vector encodes the specific information a token requires from the rest of the sequence.
+                        <strong>Query \( \mathbf{Q} = \mathbf{X}\mathbf{W}^Q \in \mathbb{R}^{N \times D_k} \)</strong>: This matrix represents the tokens when they are seeking context. A query vector encodes the specific information a token requires from the rest of the sequence.
                     </li>
                     <li>
-                        <strong>Key (\( \mathbf{K} = \mathbf{X}\mathbf{W}^K \in \mathbb{R}^{N \times D_k} \))</strong>: This matrix represents the tokens when they are being evaluated by others. A key vector encodes the specific information a token contains.
+                        <strong>Key \( \mathbf{K} = \mathbf{X}\mathbf{W}^K \in \mathbb{R}^{N \times D_k} \)</strong>: This matrix represents the tokens when they are being evaluated by others. A key vector encodes the specific information a token contains.
                     </li>
                     <li>
-                        <strong>Value (\( \mathbf{V} = \mathbf{X}\mathbf{W}^V \in \mathbb{R}^{N \times D_v} \))</strong>: This matrix represents the actual content. A value vector contains the extracted features that will be incorporated into the final output.
+                        <strong>Value \( \mathbf{V} = \mathbf{X}\mathbf{W}^V \in \mathbb{R}^{N \times D_v} \)</strong>: This matrix represents the actual content. A value vector contains the extracted features that will be incorporated into the final output.
                     </li>
                 </ul>
 
@@ -330,13 +332,13 @@
             <h3>Cited Sources</h3>
             <ol class="reference-list">
                 <li id="ref-1">
-                    H. Ramsauer et al., „Hopfield Networks is All You Need”, 2020, arXiv. doi: 10.48550/ARXIV.2008.02217
+                    H. Ramsauer et al., "Hopfield Networks is All You Need", 2020, arXiv. doi: 10.48550/ARXIV.2008.02217
                 </li>
                 <li id="ref-2">
-                    L. Kozachkov, K. V. Kastanenka, i D. Krotov, „Building transformers from neurons and astrocytes”, Proc. Natl. Acad. Sci., t. 120, nr 34, s. e2219150120, sie. 2023, doi: 10.1073/pnas.2219150120.
+                    L. Kozachkov, K. V. Kastanenka, i D. Krotov, "Building transformers from neurons and astrocytes", Proc. Natl. Acad. Sci., t. 120, nr 34, s. e2219150120, sie. 2023, doi: 10.1073/pnas.2219150120.
                 </li>
                 <li id="ref-3">
-                    A. Vaswani et al., „Attention Is All You Need”, 2017, arXiv. doi: 10.48550/ARXIV.1706.03762.
+                    A. Vaswani et al., "Attention Is All You Need", 2017, arXiv. doi: 10.48550/ARXIV.1706.03762.
                 </li>
                 <li id="ref-4">
                     C. M. Bishop i H. Bishop, Deep Learning: Foundations and Concepts. Cham: Springer International Publishing, 2024. doi: 10.1007/978-3-031-45468-4.

@@ -4,7 +4,7 @@ const htmlElement = document.documentElement;
 
 const savedTheme = localStorage.getItem('theme');
 
-if (savedTheme === 'dark') {
+if (savedTheme !== 'light') {
     htmlElement.setAttribute('data-theme', 'dark');
 }
 

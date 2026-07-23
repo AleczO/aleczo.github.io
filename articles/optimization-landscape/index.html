@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Methods on an Energy Landscape - Aleksander Czop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">OPT</span>
+                <span class="note-date">Published: Jul 22, 2026</span>
+            </div>
+
+            <h1 class="article-title">Optimization Methods on an Energy Landscape</h1>
+
+            <h2>Abstract</h2>
+            <p class="article-lead">
+                This note is intended to build intuition for a set of standard optimization methods used in machine learning. 
+                In practice, using Adam or AdamW is largely a matter of calling an optimizer class and reading its 
+                specification in a framework's documentation; neither exercise reveals much about the qualitative 
+                behavior of the underlying algorithm, or why it can become trapped in a particular state of the loss 
+                surface. Here, each method is instead examined directly on three fixed, non-convex landscapes, 
+                chosen to isolate specific failure modes and structural bottlenecks.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>1. The Energy Landscapes</h2>
+            <p>
+                The functions below serve as controlled test cases for isolating specific difficulties 
+                in finding optimal solutions. Realistic training scenarios are typically far more complex: 
+                the energy landscape is highly non-convex and irregular, and the dynamics of optimization 
+                over such surfaces are themselves a substantial area of study in their own right.
+            </p>
+
+            <h3>Himmelblau's function</h3>
+            <p>
+                <strong>Himmelblau's function</strong><a href="#ref-1" class="citation">[1]</a> is a standard non-convex 
+                benchmark with four global minima of equal depth, marked as blue dots on the plot below.
+            </p>
+
+            <div class="math-block">
+                $$ E(x, y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2 $$
+            </div>
+
+
+            <p>
+                It is used here because it isolates one specific question — <em>which</em> minimum a method finds —
+                without the complication of any minimum being worse than another. A method that only follows the
+                local slope cannot know which of the four basins is best; it can only find the one it happens to fall
+                into. There is no shallow trap to escape from, and that is why the other two landscapes exist.
+            </p>
+
+            <figure class="plot-figure">
+                <div id="preview-himmelblau" class="plot-container plot-preview"></div>
+                <figcaption>Himmelblau's function, viewed from above. All four wells reach the same depth.</figcaption>
+            </figure>
+
+            <h3>Rastrigin function</h3>
+            <p>
+                The <strong>Rastrigin function</strong><a href="#ref-2" class="citation">[2]</a> adds a periodic term
+                on top of a simple quadratic bowl:
+            </p>
+
+            <div class="math-block">
+                $$ E(x, y) = 20 + \big(x^2 - 10\cos(2\pi x)\big) + \big(y^2 - 10\cos(2\pi y)\big) $$
+            </div>
+
+            <p>
+                The result is a surface tiled with local minima at a regular lattice of points, with a single global
+                minimum at the origin; minima farther from the origin sit systematically higher, but nearby ones are
+                close enough in depth to be difficult to distinguish from the true optimum by local information alone.
+                Unlike Himmelblau's function, most of these local minima are strictly worse than the global one. The resulting 
+                surface is rugged enough that gradient-based methods struggle to navigate it reliably: as the later simulations 
+                show, a method frequently settles into one of the nearby local minima rather than reaching the global one.
+            </p>
+
+            <figure class="plot-figure">
+                <div id="preview-rastrigin" class="plot-container plot-preview"></div>
+                <figcaption>Rastrigin function, viewed from above. The global minimum sits at the origin, surrounded by a lattice of local minima of comparable depth nearby.</figcaption>
+            </figure>
+
+
+            <h3>Double Well (asymmetric)</h3>
+            <p>
+                The last landscape is not a named benchmark; it is built specifically for this series:
+            </p>
+
+            <div class="math-block">
+                $$ E(x, y) = x^4 - 4x^2 - x + 0.5\,y^2 $$
+            </div>
+
+            <p>
+                Neither of the first two landscapes is a good test of momentum specifically: Himmelblau has no
+                shallow traps at all, and Rastrigin's traps sit too close together for a build-up of speed to matter
+                much. This one has exactly two wells — a shallow local minimum and a much deeper global minimum —
+                 separated by a single barrier. The layout is such that a natural starting point rolls into the shallow well first.
+            </p>
+
+            <figure class="plot-figure">
+                <div id="preview-doublewell" class="plot-container plot-preview"></div>
+                <figcaption>The asymmetric double well, viewed from above. The shallow well on the left is reached first; the deep global minimum sits on the right, past the barrier.</figcaption>
+            </figure>
+
+            <h2>2. Gradient Descent</h2>
+            <p>
+                The update rule can be derived directly, rather than just stated. Take a first-order Taylor expansion
+                of \( E \) around the current point \( \boldsymbol{\theta}_t \), for a small step \( \Delta\boldsymbol{\theta} \):
+            </p>
+
+            <div class="math-block">
+                $$ E(\boldsymbol{\theta}_t + \Delta\boldsymbol{\theta}) \approx E(\boldsymbol{\theta}_t) + \nabla E(\boldsymbol{\theta}_t)^{\!\top} \Delta\boldsymbol{\theta} $$
+            </div>
+
+            <p>
+                To decrease \( E \) as much as possible for a step of fixed length \( \| \Delta\boldsymbol{\theta} \| = \eta \),
+                we need the direction \( \Delta\boldsymbol{\theta} \) that minimizes \( \nabla E(\boldsymbol{\theta}_t)^{\!\top} \Delta\boldsymbol{\theta} \).
+                By the Cauchy–Schwarz inequality,
+            </p>
+
+            <div class="math-block">
+                $$ \nabla E(\boldsymbol{\theta}_t)^{\!\top} \Delta\boldsymbol{\theta} \geq -\| \nabla E(\boldsymbol{\theta}_t) \| \, \| \Delta\boldsymbol{\theta} \| $$
+            </div>
+
+            <p>
+                with equality exactly when \( \Delta\boldsymbol{\theta} \) points opposite to the gradient. This gives the steepest local descent direction,
+                 \( \Delta\boldsymbol{\theta} = -\eta \, \nabla E(\boldsymbol{\theta}_t) / \| \nabla E(\boldsymbol{\theta}_t) \| \). In practice this normalized
+                  form is rarely used directly; dropping the normalization and letting \( \eta \) scale the raw gradient instead gives the familiar update rule:
+            </p>
+
+            <div class="math-block">
+                $$ \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \, \nabla E(\boldsymbol{\theta}_t) $$
+            </div>
+
+            <p>
+                The Taylor expansion is only accurate for small \( \Delta\boldsymbol{\theta} \), so this derivation
+                already tells us why \( \eta \) has to be kept small enough — for larger steps, the linear
+                approximation no longer holds and the resulting direction is no longer reliably a descent direction.
+            </p>
+
+            <p>
+                The update rule is applied iteratively from some initial point \( \boldsymbol{\theta}_0 = (x_0, y_0) \)
+                until the gradient norm falls below a tolerance, or a maximum number of iterations is reached.
+            </p>
+
+            <h2>3. Stochastic Gradient Descent</h2>
+            <p>
+                In actual training, \( \nabla E(\boldsymbol{\theta}_t) \) is rarely available exactly: it is typically
+                estimated from a random mini-batch of data, and that estimate carries noise relative to the true gradient.
+                <strong>Stochastic Gradient Descent</strong> (SGD) is what Gradient Descent becomes once this estimation
+                noise is taken into account:
+            </p>
+
+            <div class="math-block">
+                $$ \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \, \big( \nabla E(\boldsymbol{\theta}_t) + \boldsymbol{\varepsilon}_t \big), \qquad \boldsymbol{\varepsilon}_t \sim \mathcal{N}(\mathbf{0}, \sigma^2 I) $$
+            </div>
+
+            <p>
+                There is no dataset behind \( E(x, y) \) here, so mini-batch noise cannot arise on its own — instead,
+                the simulation below adds independent Gaussian noise \( \boldsymbol{\varepsilon}_t \) directly to the
+                exact gradient at every step, which reproduces the same qualitative effect.
+            </p>
+
+            <p>
+                That noise works both ways. Because a noisy step is not guaranteed to be a descent direction, it can
+                carry the iterate out of a shallow basin that plain Gradient Descent would be permanently stuck in —
+                giving it a chance to find a better minimum nearby. The same noise also means SGD never truly settles:
+                even once it reaches a minimum, it keeps jittering around it rather than coming to rest exactly on it.
+            </p>
+
+
+            <h2>4. Momentum, RMSProp, and Adam</h2>
+            <p>
+                A reasonable next guess is that averaging out that noise — giving each step some "momentum" from the
+                recent past instead of reacting to a single noisy gradient — would already get most of the way to a
+                modern optimizer. <strong>SGD with Momentum</strong> does exactly that: rather than moving by the
+                (possibly noisy) gradient directly, it accumulates a velocity term over time and moves by that instead:
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{v}_t = \beta \mathbf{v}_{t-1} + \eta \, \big( \nabla E(\boldsymbol{\theta}_t) + \boldsymbol{\varepsilon}_t \big), \qquad \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \mathbf{v}_t $$
+            </div>
+
+            <p>
+                A consistent downhill direction builds up speed over several steps, the same way a heavy ball gains
+                speed rolling down a slope. As a result, an iterate moving fast enough by the time it reaches a shallow
+                dip can carry straight through it instead of stopping there, purely from accumulated inertia and with
+                no noise required at all.
+            </p>
+
+            <p>
+                <strong>RMSProp</strong><a href="#ref-3" class="citation">[3]</a> takes a different, independent idea:
+                instead of accumulating the gradient itself, it maintains a per-dimension exponential moving average
+                of the squared gradient \( \mathbf{s}_t \) as an estimate of each dimension's recent gradient
+                magnitude. The update then divides the current gradient by the square root of this estimate before
+                scaling by \( \eta \):
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{s}_t = \beta \mathbf{s}_{t-1} + (1-\beta)\,\nabla E(\boldsymbol{\theta}_t)^2, \qquad \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta\,\frac{\nabla E(\boldsymbol{\theta}_t)}{\sqrt{\mathbf{s}_t} + \epsilon} $$
+            </div>
+
+            <p>
+                Here \( \epsilon \) is a small constant (typically around \( 10^{-8} \)) added purely to prevent
+                division by zero in dimensions where \( \mathbf{s}_t \) is still close to zero; it plays no other role
+                in the dynamics. Dividing by \( \sqrt{\mathbf{s}_t} \) means each dimension is scaled down in
+                proportion to how large its gradient has typically been, independently of the others — but unlike
+                momentum, there is no velocity term, so RMSProp has no memory of direction, only of magnitude. On its
+                own, it does not carry through a local minimum the way momentum can.
+            </p>
+
+            <p>
+                <strong>Adam</strong><a href="#ref-4" class="citation">[4]</a> (Adaptive Moment Estimation) combines
+                both ideas rather than choosing between them: a per-dimension exponential moving average of the
+                gradient itself \( \mathbf{m}_t \) and an exponential moving average of the squared gradient
+                \( \mathbf{v}_t \), playing the same role as \( \mathbf{s}_t \) in RMSProp:
+            </p>
+
+            <div class="math-block">
+                $$ \mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1-\beta_1)\,\nabla E(\boldsymbol{\theta}_t), \qquad \mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1-\beta_2)\,\nabla E(\boldsymbol{\theta}_t)^2 $$
+            </div>
+
+            <p>
+                Both are initialized at zero, which biases them toward zero during the first few steps — the effect is
+                more pronounced here than in RMSProp, since \( \beta_1 \) and \( \beta_2 \) are typically larger, giving
+                more weight to the (empty) history; a standard correction removes this bias before the values are used:
+            </p>
+
+            <div class="math-block">
+                $$ \hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1-\beta_1^t}, \qquad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1-\beta_2^t}, \qquad \boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta\,\frac{\hat{\mathbf{m}}_t}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} $$
+            </div>
+
+            <p>
+                As before, \( \epsilon \) only guards against division by zero and otherwise plays no role. Because
+                \( \mathbf{m}_t \) has the same structure as the velocity term in the Momentum update above, Adam
+                inherits the same inertia effect described there: it can carry through a shallow local minimum the same
+                way Momentum can, on top of its per-dimension rescaling. Because of that rescaling, \( \eta \) here (and
+                for RMSProp) operates on a different natural scale than in plain Gradient Descent, so it is treated as a
+                separate setting below. The standard values \( \beta = 0.9 \) (RMSProp), \( \beta_1 = 0.9 \),
+                \( \beta_2 = 0.999 \), \( \epsilon = 10^{-8} \) are used throughout.
+            </p>
+
+
+            <h2>5. Methods Sandbox</h2>
+
+            <p>
+                The controls below run any of the five methods on any of the three landscapes and animate the
+                resulting path in both views at once, updating the status line with the current step as it runs.
+                "Stop" halts a run in progress; "Show gradient" draws the current gradient direction on the 2D view,
+                updating live while a run is in progress.
+            </p>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="gd-landscape">Landscape</label>
+                    <select id="gd-landscape">
+                        <option value="himmelblau">Himmelblau's function</option>
+                        <option value="rastrigin">Rastrigin function</option>
+                        <option value="doublewell">Double Well (asymmetric)</option>
+                    </select>
+                    <label for="gd-method">Method</label>
+                    <select id="gd-method">
+                        <option value="gd">Gradient Descent</option>
+                        <option value="sgd">Stochastic Gradient Descent</option>
+                        <option value="momentum">SGD with Momentum</option>
+                        <option value="rmsprop">RMSProp</option>
+                        <option value="adam">Adam</option>
+                    </select>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="gd-x0">x&#8320;</label>
+                    <input type="number" id="gd-x0" value="-4" step="0.1">
+                    <label for="gd-y0">y&#8320;</label>
+                    <input type="number" id="gd-y0" value="4" step="0.1">
+                    <button type="button" id="gd-randomize" class="gd-btn gd-btn-secondary">Randomize initial state</button>
+                </div>
+                <div class="gd-controls-row" id="gd-eta-row">
+                    <label for="gd-eta">Learning rate &#951;</label>
+                    <input type="number" id="gd-eta" value="0.01" step="0.001" min="0.0001">
+                    <label for="gd-iters">Iterations</label>
+                    <input type="number" id="gd-iters" value="80" step="1" min="1" max="500">
+                </div>
+                <div class="gd-controls-row" id="gd-noise-row">
+                    <label for="gd-noise" id="gd-noise-label">Noise &#963; (SGD / Momentum only)</label>
+                    <input type="number" id="gd-noise" value="8" step="0.5" min="0">
+                </div>
+                <div class="gd-controls-row">
+                    <button type="button" id="gd-run" class="gd-btn gd-btn-primary">Run</button>
+                    <button type="button" id="gd-stop" class="gd-btn gd-btn-secondary" disabled>Stop</button>
+                    <label for="gd-speed">Step delay</label>
+                    <input type="range" id="gd-speed" min="10" max="400" step="10" value="120">
+                    <span id="gd-speed-label" class="gd-speed-label">120 ms/step</span>
+                    <button type="button" id="gd-show-gradient" class="gd-btn gd-btn-secondary">Show gradient</button>
+                </div>
+                <p class="gd-status" id="gd-status">Set a starting point and press Run.</p>
+            </div>
+
+            <figure class="plot-figure">
+                <div id="landscape-3d" class="plot-container plot-3d"></div>
+                <figcaption>Interactive 3D surface — drag to rotate, scroll to zoom, right-click-drag to pan. The path animates once you press Run.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="landscape-2d" class="plot-container plot-2d"></div>
+                <figcaption>The same surface and the same path, viewed from above as contour lines.</figcaption>
+            </figure>
+
+            <h2>6. Comparing the Methods</h2>
+            <p>
+                Running plain Gradient Descent on \( E(x, y) \) makes its two defining limitations easy to see:
+            </p>
+            <ul>
+                <li><strong>Initialization determines the outcome</strong>: since the method only ever follows the local downhill direction, it converges to whichever of the four minima is "downhill" from the starting point. Two nearby starting points on opposite sides of a ridge can converge to entirely different basins.</li>
+                <li><strong>No mechanism to escape a basin</strong>: once inside the basin of attraction of a minimum, there is nothing in the update rule that could push the point back out, even if a better minimum is nearby.</li>
+                <li><strong>Sensitivity to the learning rate</strong>: too small an \( \eta \) makes convergence slow, particularly near the saddle region around the origin where the gradient is close to zero. Too large an \( \eta \) causes overshooting and oscillation around steep regions of the surface, and can diverge entirely.</li>
+            </ul>
+            <p>
+                On the Rastrigin function, the second point stops being a corner case and becomes the typical outcome:
+                switch to it in the controls above and run Gradient Descent from a few different starting points. It
+                converges quickly every time — just almost never to the global minimum at the origin, since it stops
+                at whichever nearby local minimum it happens to fall into first. RMSProp, run on the same case, behaves
+                no differently in this respect: its per-dimension rescaling changes how quickly it approaches a minimum,
+                not whether it can leave one once inside.
+            </p>
+            <p>
+                Switching to Stochastic Gradient Descent, on the same Rastrigin landscape and the same starting point,
+                changes this picture: run it a few times in a row and the endpoint is no longer the same every time.
+                With enough noise \( \sigma \), some runs escape the first local minimum they reach and settle in a
+                different, sometimes better, one — at the cost of never quite standing still once they get there,
+                visibly jittering around the minimum instead. Momentum shows a related but distinct effect: on the
+                Double Well, a run that reaches the shallow well with enough accumulated velocity carries straight
+                through the barrier into the deep one, with no noise involved at all.
+            </p>
+            <p>
+                Adam, run on the same Rastrigin case, tends to sit somewhere between the noise-driven and velocity-driven
+                pictures: its own accumulated gradient history smooths out the raw oscillation from the
+                \( 20\pi\sin(2\pi x) \) term, so it moves more steadily than SGD does, but it is still following the
+                same local landscape and can still settle into a local rather than the global minimum. The
+                per-dimension rescaling changes how it gets there, not fundamentally whether it can see past a nearby
+                basin.
+            </p>
+            <p>
+                Across all three landscapes, then, the same pattern recurs. Gradient Descent and RMSProp follow only the
+                local gradient and commit to whichever basin they first encounter, with no way back out. SGD, Momentum,
+                and Adam can each occasionally carry a run past a nearby basin — through noise, through inertia, or
+                through both — but none of them does so reliably or by design: escaping a basin, where it happens at
+                all, is a side effect of a mechanism built for a different purpose, not a deliberate search strategy.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+                <li id="ref-1">Himmelblau, D. M. (1972). <strong>Applied Nonlinear Programming</strong>. McGraw-Hill.</li>
+                <li id="ref-2">Rastrigin, L. A. (1974). <strong>Systems of Extremal Control</strong>. Nauka.</li>
+                <li id="ref-3">Ruder, S. (2016). <strong>An overview of gradient descent optimization algorithms</strong>. <a href="https://arxiv.org/pdf/1609.04747" target="_blank" rel="noopener">arXiv:1609.04747</a>.</li>
+                <li id="ref-4">Kingma, D. P., & Ba, J. (2015). <strong>Adam: A Method for Stochastic Optimization</strong>. ICLR.</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="landscape-plot.js"></script>
+</body>
+</html>

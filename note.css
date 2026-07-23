@@ -109,6 +109,127 @@ blockquote p + p {
     margin-top: 14px;
 }
 
+/* --- INTERAKTYWNE WYKRESY (Plotly) --- */
+.plot-figure {
+    margin: 28px 0;
+}
+
+.plot-container {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.plot-3d {
+    height: 480px;
+}
+
+.plot-2d {
+    height: 420px;
+}
+
+.plot-preview {
+    height: 260px;
+}
+
+.plot-figure figcaption {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+}
+
+/* --- PANEL STEROWANIA SYMULACJĄ GD --- */
+.gd-controls {
+    margin: 28px 0 0 0;
+    padding: 18px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--card-bg);
+}
+
+.gd-controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.gd-controls-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.gd-controls label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.gd-controls input[type="number"] {
+    width: 80px;
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background-color: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+}
+
+.gd-controls select {
+    padding: 5px 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background-color: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+}
+
+.gd-btn {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.gd-btn:hover {
+    opacity: 0.75;
+}
+
+.gd-btn-primary {
+    background-color: var(--text-main);
+    color: var(--bg-body);
+    border: 1px solid var(--text-main);
+}
+
+.gd-btn-secondary {
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.gd-status {
+    margin: 12px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.gd-controls input[type="range"] {
+    width: 160px;
+    accent-color: var(--text-main);
+}
+
+.gd-speed-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    min-width: 80px;
+}
+
 /* --- WZORY MATEMATYCZNE --- */
 
 /* Wzory matematyczne wyśrodkowane */

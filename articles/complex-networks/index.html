@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TODO: short description of the article for search engines and social previews.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/articles/complex-networks/">
+    <meta property="og:title" content="Complex Networks">
+    <meta property="og:description" content="TODO: short description of the article for search engines and social previews.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/thumbnails/complex-networks.png">
+
+    <title>Complex Networks - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">NET</span>
+                <span class="note-date">Published: TODO</span>
+            </div>
+
+            <h1 class="article-title">Complex Networks</h1>
+
+            <h2>Abstract</h2>
+            <p class="article-lead">
+                TODO: abstract.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>1. Introduction</h2>
+            <!-- TODO: what is a complex network, why graphs alone aren't enough, roadmap of the article -->
+
+            <h2>2. Erdős–Rényi Random Graphs</h2>
+            <!-- TODO: G(n,p) / G(n,m) construction, degree distribution, connectivity threshold -->
+
+            <h3>Degree Distribution</h3>
+            <!-- TODO -->
+
+            <h3>Connectivity and the Giant Component</h3>
+            <!-- TODO -->
+
+            <div class="gd-controls" id="er-controls">
+                <!-- TODO: n, p inputs, generate button -->
+            </div>
+
+            <figure class="plot-figure">
+                <div id="er-graph" class="plot-container plot-2d"></div>
+                <figcaption>TODO: Erdős–Rényi graph, generated live from n and p.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="er-degree-dist" class="plot-container plot-2d"></div>
+                <figcaption>TODO: degree distribution of the generated graph vs. the Poisson prediction.</figcaption>
+            </figure>
+
+            <h2>3. Watts–Strogatz Small-World Model</h2>
+            <!-- TODO: ring lattice + rewiring, clustering coefficient, average path length, small-world regime -->
+
+            <h3>Clustering Coefficient</h3>
+            <!-- TODO -->
+
+            <h3>Average Path Length and the Small-World Regime</h3>
+            <!-- TODO -->
+
+            <div class="gd-controls" id="ws-controls">
+                <!-- TODO: n, k, rewiring probability beta inputs, generate button -->
+            </div>
+
+            <figure class="plot-figure">
+                <div id="ws-graph" class="plot-container plot-2d"></div>
+                <figcaption>TODO: ring lattice morphing into a random graph as rewiring probability beta increases.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ws-metrics" class="plot-container plot-2d"></div>
+                <figcaption>TODO: clustering coefficient and average path length vs. beta, showing the small-world regime.</figcaption>
+            </figure>
+
+            <h2>4. Barabási–Albert Scale-Free Networks</h2>
+            <!-- TODO: preferential attachment, growth, power-law degree distribution, hubs -->
+
+            <h3>Preferential Attachment</h3>
+            <!-- TODO -->
+
+            <h3>Power-Law Degree Distribution</h3>
+            <!-- TODO -->
+
+            <div class="gd-controls" id="ba-controls">
+                <!-- TODO: n, m (edges per new node) inputs, generate button -->
+            </div>
+
+            <figure class="plot-figure">
+                <div id="ba-graph" class="plot-container plot-2d"></div>
+                <figcaption>TODO: Barabási–Albert graph grown live via preferential attachment, hubs visible by size.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ba-degree-dist" class="plot-container plot-2d"></div>
+                <figcaption>TODO: degree distribution on a log-log scale vs. the power-law prediction.</figcaption>
+            </figure>
+
+            <h2>5. Comparing the Models</h2>
+            <!-- TODO: side-by-side comparison of clustering, path length, degree distribution shape; when each model is a realistic proxy for real-world networks -->
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+                <li id="ref-1">TODO</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="network-plot.js"></script>
+</body>
+</html>

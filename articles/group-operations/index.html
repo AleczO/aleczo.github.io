@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wyprowadzenie i analiza pracy 'A Toy Model of Universality: Reverse Engineering how Networks Learn Group Operations' — od charakterów grup cyklicznych po reprezentacje uczone przez sieci neuronowe.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/articles/group-operations/">
+    <meta property="og:title" content="Toy Model of Universality: Jak Sieci Uczą Się Działań Grupowych">
+    <meta property="og:description" content="Wyprowadzenie i analiza pracy 'A Toy Model of Universality: Reverse Engineering how Networks Learn Group Operations' — od charakterów grup cyklicznych po reprezentacje uczone przez sieci neuronowe.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/thumbnails/group-operations.png">
+
+    <title>Toy Model of Universality: Jak Sieci Uczą Się Działań Grupowych - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">DL</span>
+                <span class="note-date">Published: TODO</span>
+            </div>
+
+            <h1 class="article-title">Reprezentacje grup cyklicznych w sieciach neuronowych</h1>
+
+            <h2>Abstract</h2>
+
+            <hr class="article-divider">
+
+            <h2>Wstęp</h2>
+            <p>
+                W kontekście uczenia się reprezentacji przez sieci neuronowe, fundamentalnym problemem
+                analitycznym jest operacja dodawania modulo \( p \). Pomimo swojej prostoty implementacyjnej,
+                zadanie to doskonale ilustruje procesy powstawania wewnętrznych reprezentacji w modelach.
+            </p>
+            <p>
+                W poniższej analizie opisujemy strukturę tych reprezentacji korzystając z dwóch perspektyw
+                matematycznych. Z jednej strony wykorzystujemy teorię charakterów, pozwalającą spojrzeć na
+                problem odgórnie, przez pryzmat struktury samej grupy. Z drugiej strony stosujemy aparat
+                klasycznej algebry liniowej, sprowadzając problem do badania operatorów przesunięcia i
+                wyznaczania ich wartości własnych w przestrzeniach funkcji. Ponieważ standardowe architektury
+                sieci neuronowych operują na wartościach rzeczywistych, nasze rozważania poprzedzamy
+                uzasadnieniem, dlaczego spójny i domknięty matematycznie opis tych reprezentacji wymaga
+                odwołania się do dziedziny liczb zespolonych.
+            </p>
+
+            <h2>Dlaczego Liczby Zespolone</h2>
+            <p>
+                Zanim przejdziemy do formalnego dowodu, warto zapytać: czy do opisu tego zachowania liczby
+                rzeczywiste w ogóle wystarczają? Rozważmy więc na początek grupę \( \operatorname{SO}(2) \)
+                reprezentowaną przez macierz:
+            </p>
+            $$ R(\theta) = \begin{bmatrix}
+            \cos\theta & -\sin\theta \\
+            \sin\theta & \cos \theta
+            \end{bmatrix}. $$
+            <p>
+                Geometryczną interpretacją tej macierzy jest obrót wektora o kąt \( \theta \). Znajdźmy teraz dla
+                tej macierzy wartości własne. Z równania charakterystycznego \( \det(R(\theta) - \lambda I) = 0 \):
+            </p>
+            $$ \begin{vmatrix} \cos\theta - \lambda & -\sin\theta \\ \sin\theta & \cos \theta - \lambda \end{vmatrix} = 0 $$
+            $$ (\cos\theta - \lambda)^2 + \sin^2\theta = 0 $$
+            $$ \cos^2\theta - 2\lambda\cos\theta + \lambda^2 + \sin^2\theta = 0 $$
+            $$ \lambda^2 - 2\lambda\cos\theta + 1 = 0 $$
+            <p>Licząc deltę:</p>
+            $$ \Delta = 4\cos^2\theta - 4 = 4(\cos^2\theta - 1) $$
+            <p>
+                Oznacza to, że równanie to ma rzeczywiste rozwiązania dla \( \lambda \) tylko przy warunku
+                \( \cos^2\theta = 1 \), a więc dla parametru \( \theta = 0 \) (przekształcenie tożsamościowe) i
+                \( \theta = \pi \) (obrót o \( 180^\circ \), symetria środkowa względem początku układu
+                współrzędnych). Geometrycznie są to dokładnie te przypadki, w których wektor obrócony jest
+                współliniowy z wektorem wyjściowym. Dla dowolnego innego kąta obrotu wektor obrócony nigdy nie
+                jest równoległy do wektora wyjściowego, więc nie istnieje rzeczywista wartość własna. Macierz
+                \( R(\theta) \) jest diagonalizowalna tylko nad \( \mathbb{C} \):
+            </p>
+            $$ \lambda_{\pm} = \cos\theta + i\sin\theta = e^{\pm i\theta}. $$
+            <p>
+                To pokazuje, że wprowadzenie liczb zespolonych w tym problemie nie jest kwestią wygody notacji,
+                a koniecznością wynikającą z algebraicznej domkniętości \( \mathbb{C} \). Zbiór ten gwarantuje
+                istnienie pełnego zestawu wartości własnych dla macierzy ortogonalnych.
+            </p>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="rot-theta">Kąt obrotu &theta;</label>
+                    <input type="range" id="rot-theta" min="-180" max="180" step="1" value="40">
+                    <input type="number" id="rot-theta-num" min="-180" max="180" step="1" value="40">
+                    <span class="gd-speed-label">&deg;</span>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="rot-phi">Kąt wektora &phi;</label>
+                    <input type="range" id="rot-phi" min="-180" max="180" step="1" value="20">
+                    <input type="number" id="rot-phi-num" min="-180" max="180" step="1" value="20">
+                    <span class="gd-speed-label">&deg;</span>
+                </div>
+                <p class="gd-status" id="rot-status">Ustaw &theta; na 0&deg; lub 180&deg;, aby zobaczyć rzeczywisty wektor własny.</p>
+            </div>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="rotation-vector-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Wektor \( v \) (niebieski) i jego obraz \( R(\theta)v \) (czerwony) na płaszczyźnie \( \mathbb{R}^2 \).</figcaption>
+                </figure>
+
+                <figure class="plot-figure">
+                    <div id="rotation-eigen-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Wartości własne \( \lambda_\pm = e^{\pm i\theta} \) na okręgu jednostkowym płaszczyzny zespolonej \( \mathbb{C} \).</figcaption>
+                </figure>
+            </div>
+
+            <h2>Charaktery grupy cyklicznej</h2>
+            <p>
+                Rozważmy grupę cykliczną \( (\mathbb{Z}_p, +) \), czyli zbiór reszt z dzielenia przez \( p \) z
+                działaniem dodawania modulo \( p \), gdzie \( p \) jest liczbą pierwszą.
+            </p>
+            <p>
+                W ogólnej teorii reprezentacji szukamy homomorfizmów \( \rho : G \rightarrow \operatorname{GL}(V) \),
+                które przypisują elementom grupy \( G \) odwracalne macierze. Charakter takiej reprezentacji
+                definiuje się formalnie jako ślad przypisanej macierzy, czyli
+                \( \chi_\rho(g) = \operatorname{Tr}(\rho(g)) \). W przypadku grupy \( \mathbb{Z}_p \) zachodzi
+                jednak kluczowe uproszczenie. Ponieważ dodawanie modulo \( p \) jest działaniem przemiennym,
+                \( \mathbb{Z}_p \) jest grupą abelową. Z lematu Schura wynika, że nad ciałem liczb zespolonych
+                wszystkie nierozkładalne reprezentacje grup abelowych są jednowymiarowe.
+            </p>
+            <p>
+                Oznacza to, że nasza przestrzeń wektorowa \( V \) sprowadza się do \( \mathbb{C}^1 \), a macierze
+                z grupy \( \operatorname{GL}(V) \) redukują się do pojedynczych, niezerowych skalarów. Ponieważ
+                ślad macierzy rozmiaru \( 1 \times 1 \) jest równy jej jedynemu elementowi, wielowymiarowa
+                reprezentacja i jej charakter stają się tym samym obiektem matematycznym
+                (\( \rho \equiv \chi_\rho \)). Dzięki temu możemy całkowicie pominąć aparat macierzowy i
+                zdefiniować charakter bezpośrednio jako odwzorowanie w zbiór liczb zespolonych \( \mathbb{C}^* \).
+            </p>
+            <p>
+                Aby zrozumieć, jaką postać mogą przyjmować te reprezentacje w sieci neuronowej, rozpocznijmy od
+                wyprowadzenia ich analitycznej formy. Charakterem grupy \( G \) nazywamy odwzorowanie
+                \( \chi : G \rightarrow \mathbb{C}^* \) spełniające własność homomorfizmu:
+            </p>
+            $$ \chi(g + h) = \chi(g) \cdot \chi(h), \qquad \forall g, h \in G $$
+            <p>
+                Aby wyznaczyć postać takiej funkcji dla \( G = \mathbb{Z}_p \), zaobserwujmy najpierw jej
+                podstawowe własności. Po pierwsze, każdy element \( k \in \mathbb{Z}_p \) można zapisać jako
+                \( k \)-krotną sumę elementu \( 1 \), z własności homomorfizmu otrzymujemy:
+            </p>
+            $$ \chi(k) = \chi(\underbrace{1+1+\dots+1}_{k \text{ razy}}) = \chi(1)\cdot\chi(1)\cdots\chi(1) = \chi(1)^k. \tag{1} $$
+            <p>
+                Dodatkowo możemy zaobserwować, że skoro grupa \( \mathbb{Z}_p \) ma rząd \( p \), zachodzi
+                \( p \cdot 1 \equiv 0 \pmod{p} \). Podstawiając \( k = p \) do \( (1) \) i korzystając z
+                \( \chi(0) = 1 \) (co wynika wprost z warunku homomorfizmu dla \( g=h=0 \)), otrzymujemy
+            </p>
+            $$ \chi (1)^p = \chi(0) = 1 $$
+            <p>Oznaczając \( z := \chi(1) \), dochodzimy do warunku:</p>
+            $$ z^p = 1, $$
+            <p>
+                czyli \( \chi(1) \) musi być pierwiastkiem stopnia \( p \) z jedynki. Równanie \( z^p = 1 \) ma
+                dokładnie \( p \) rozwiązań w dziedzinie liczb zespolonych. Korzystając ze wzoru Eulera, można
+                je zapisać jako:
+            </p>
+            $$ z_m = e^{2\pi i m/p}, \qquad m = 0, 1, \dots, p - 1. $$
+            <p>
+                Każdy wybór \( m \) daje inną wartość \( \chi(1) \), a więc inny charakter, stąd oznaczenie
+                \( \chi_m(1) := z_m =e^{2\pi i m/p} \). Podstawiając to do wzoru \( (1) \) z poprzedniego
+                fragmentu, \( \chi(k) = \chi(1)^k \), otrzymujemy zupełną rodzinę charakterów grupy
+                \( \mathbb{Z}_p \):
+            </p>
+            $$ \chi_m(k)= \left( e^{2\pi i m /p} \right)^k = e^{2\pi i mk /p} $$
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="char-p">Liczba pierwsza p</label>
+                    <select id="char-p">
+                        <option value="5">5</option>
+                        <option value="7" selected>7</option>
+                        <option value="11">11</option>
+                        <option value="13">13</option>
+                        <option value="17">17</option>
+                        <option value="19">19</option>
+                    </select>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="char-m">Parametr m</label>
+                    <input type="range" id="char-m" min="0" max="6" step="1" value="2">
+                    <input type="number" id="char-m-num" min="0" max="6" step="1" value="2">
+                </div>
+                <div class="gd-controls-row">
+                    <label for="char-k">Parametr k</label>
+                    <input type="range" id="char-k" min="0" max="6" step="1" value="3">
+                    <input type="number" id="char-k-num" min="0" max="6" step="1" value="3">
+                </div>
+                <p class="gd-status" id="char-status">Wybierz m i k, aby zobaczyć wartość charakteru.</p>
+            </div>
+
+            <figure class="plot-figure">
+                <div id="character-plot" class="plot-container plot-2d"></div>
+                <figcaption>Orbita \( \chi_m(0), \dots, \chi_m(p-1) \) na okręgu jednostkowym; podświetlony punkt to wybrane \( \chi_m(k) \).</figcaption>
+            </figure>
+
+            <h2>Podejście Algebry Liniowej</h2>
+            <p>
+                Analogicznie można podejść do problemu ze strony czystej algebry liniowej. Rozważmy przestrzeń
+                funkcji \( V := \operatorname{Fun}(\mathbb{Z}_p, \mathbb{C}) \) oraz działanie elementu
+                \( h \in \mathbb{Z}_p \) na funkcjach \( f: \mathbb{Z}_p \rightarrow \mathbb{C} \) przez
+                przesunięcie argumentu \( f \mapsto f(\cdot - h) \). Dla dowolnego elementu \( h \in \mathbb{Z}_p \)
+                definiujemy operator \( S_h \) jako \( (S_hf)(k) := f(k - h \pmod p) \).
+            </p>
+            <p>
+                Naszym celem jest znalezienie bazy przestrzeni \( V \), która będzie optymalna do reprezentowania
+                działania tej grupy. W języku algebry liniowej oznacza to poszukiwanie funkcji, które nie
+                zmieniają swojej postaci pod wpływem przesunięcia, a jedynie skalują się o pewną wartość.
+                Szukamy zatem wspólnych wektorów własnych dla całej rodziny operatorów \( S_h \).
+            </p>
+            <p>
+                Zamiast analizować każdy element \( h \) z osobna, możemy uprościć ten proces, rozpoczynając
+                analizę wyłącznie od operatora \( S_1 \). Wynika to z faktu, że działanie grupy \( \mathbb{Z}_p \)
+                na przestrzeni funkcji to odwzorowanie \( \rho : \mathbb{Z}_p \rightarrow \operatorname{GL}(V) \),
+                gdzie \( \rho(h):=S_h \). Analogicznie do \( \chi \), funkcja \( \rho \) spełnia własność
+                homomorfizmu, co można zapisać w postaci:
+            </p>
+            $$ S_{g + h} = S_g \circ S_h $$
+            <p>
+                Po wyborze bazy przestrzeni \( V \) złożenie operatorów \( \circ \) odpowiada zwykłemu mnożeniu
+                macierzy, więc kontynuujemy dalej na notacji \( S_g \cdot S_h \). Bazując na analogicznych
+                działaniach na charakterach, wyprowadzamy:
+            </p>
+            $$ S_h = S_{\underbrace{1+1+\dots+1}_{h \text{ razy}}} = \underbrace{S_1\cdot S_1 \cdot \dots \cdot  S_1}_{h \text{ razy}} = S_1^h $$
+            <p>
+                Oznacza to, że faktycznie wystarczy zbadać własności samego operatora \( S_1 \). Jeśli \( f \)
+                jest wektorem własnym \( S_1 \) z wartością własną \( \lambda \), to jest on automatycznie
+                wektorem własnym każdego \( S_h \), z wartością własną \( \lambda^h \).
+            </p>
+            <p>
+                Teraz przechodzimy do wyznaczenia wektorów własnych operatora \( S_1 \). Formalnie szukamy
+                takiego \( f \), że \( S_1f = \lambda f \), czyli \( f(k - 1) = \lambda f(k) \) dla wszystkich
+                \( k \in \mathbb{Z}_p \). Operator \( S_1 \) odpowiada cyklicznej macierzy permutacji rozmiaru
+                \( p \times p \). Z jej równania charakterystycznego \( \det(S_1 - \lambda I) = 0 \) otrzymujemy:
+            </p>
+            $$ (-1)^{p}(\lambda^p - 1) = 0 $$
+            $$ \lambda^p = 1 $$
+            <p>
+                Oznacza to, analogicznie do warunku charakterystyki, że \( \lambda \) musi być pierwiastkiem
+                \( p \)-tego stopnia z jedynki.
+            </p>
+            <p>
+                Mając do dyspozycji zupełną bazę, możemy zacząć nasze rozważania w kontekście reprezentacji w
+                sieciach neuronowych. Po pierwsze warto zauważyć, że wartości, na jakich bazują modele sieci
+                neuronowych, są rzeczywiste. Oznacza to, że w kontekście obserwacji charakteru musimy pozbyć się
+                liczb zespolonych.
+            </p>
+            $$ \chi_m(k)= e^{2\pi i mk /p} = \cos{\left(\frac{2\pi m k}{p}\right)} + i\sin{\left(\frac{2\pi m k}{p}\right)} $$
+            <p>
+                Możemy teraz skorzystać z sumy charakteru \( \chi_m(k) \) i jego sprzężenia
+                \( \overline{\chi_m(k)} \):
+            </p>
+            $$ \chi_m(k) + \overline{\chi_m(k)} = \cos{\left(\frac{2\pi m k}{p}\right)} + i\sin{\left(\frac{2\pi m k}{p}\right)} + \cos{\left(\frac{2\pi m k}{p}\right)} - i\sin{\left(\frac{2\pi m k}{p}\right)} = 2\cos{\left(\frac{2\pi m k}{p}\right)} $$
+            <p>
+                Możemy skorzystać ze sprzężenia, ponieważ \( \overline{\chi_m(k)}= \overline{e^{2\pi i mk /p}} =
+                e^{-2\pi i mk /p} = \chi_{-m}(k) \). Analogicznie dla sinusa:
+            </p>
+            $$ \chi_m(k) - \overline{\chi_m(k)} = \cos{\left(\frac{2\pi m k}{p}\right)} + i\sin{\left(\frac{2\pi m k}{p}\right)} - \cos{\left(\frac{2\pi m k}{p}\right)} + i\sin{\left(\frac{2\pi m k}{p}\right)} = 2i\sin{\left(\frac{2\pi m k}{p}\right)} $$
+            <p>
+                Dzieląc wyrażenie \( \chi_m(k) - \overline{\chi_m(k)} \) przez stałą \( 2i \), otrzymujemy
+                rzeczywistą reprezentację:
+            </p>
+            $$ \sin{\left(\frac{2\pi m k}{p}\right)} $$
+            <p>
+                Para funkcji \( \left\{\cos\left(\frac{2\pi m k}{p}\right), \sin\left(\frac{2\pi m k}{p}\right)\right\} \)
+                stanowi więc rzeczywistą bazę, rozpinającą dwuwymiarową przestrzeń \( V_m \), na której grupa
+                \( \mathbb{Z}_p \) działa bez konieczności odwoływania się do liczb zespolonych.
+            </p>
+            <p>
+                Warto wspomnieć, że sam \( \cos(2\pi m k / p) \) nie wystarcza. Działanie operatora \( S_h \)
+                nie skaluje wyrażenia, a przekształca je w kombinację liniową cosinusa i sinusa:
+            </p>
+            $$ (S_h \cos)(k) = \cos\left(\frac{2\pi m (k - h)}{p}\right) = \cos{\left(\frac{2\pi m k}{p}\right)} \cos{\left(\frac{2\pi m h}{p}\right)} + \sin{\left(\frac{2\pi m k}{p}\right)} \sin{\left(\frac{2\pi m h}{p}\right)} $$
+            <p>
+                z tożsamości \( \cos{(\alpha - \beta)} = \cos\alpha\cos\beta + \sin\alpha\sin\beta \). Oznacza to,
+                że przestrzeń rozpięta przez sam cosinus nie jest niezmiennicza względem działania grupy \( S_h \)
+                i przekształca wynik do przestrzeni zawierającej także sinus. Dopiero para
+                \( \left\{\cos\left(\frac{2\pi m k}{p}\right), \sin\left(\frac{2\pi m k}{p}\right)\right\} \)
+                rozpina przestrzeń \( V_m \), która jest niezmiennicza, ponieważ dla dowolnego elementu
+                \( h \in \mathbb{Z}_p \) i dowolnego elementu \( v \in V_m \) zachodzi \( S_h(v) \in V_m \).
+            </p>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="inv-p">Liczba pierwsza p</label>
+                    <select id="inv-p">
+                        <option value="5">5</option>
+                        <option value="7" selected>7</option>
+                        <option value="11">11</option>
+                        <option value="13">13</option>
+                        <option value="17">17</option>
+                        <option value="19">19</option>
+                    </select>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="inv-m">Parametr m</label>
+                    <input type="range" id="inv-m" min="0" max="6" step="1" value="2">
+                    <input type="number" id="inv-m-num" min="0" max="6" step="1" value="2">
+                </div>
+                <div class="gd-controls-row">
+                    <label for="inv-h">Przesunięcie h</label>
+                    <input type="range" id="inv-h" min="0" max="6" step="1" value="0">
+                    <input type="number" id="inv-h-num" min="0" max="6" step="1" value="0">
+                </div>
+                <p class="gd-status" id="inv-status">Ustaw h = 0, aby zobaczyć, że tylko wtedy wynik jest czystym cosinusem.</p>
+            </div>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="invariance-signal-plot" class="plot-container plot-2d"></div>
+                    <figcaption>\( (S_h\cos)(k) \) (słupki) na tle \( \cos(2\pi m k/p) \) (przerywana linia), dla \( k = 0, \dots, p-1 \).</figcaption>
+                </figure>
+
+                <figure class="plot-figure">
+                    <div id="invariance-coeff-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Współczynniki \( (S_h\cos)(k) \) w bazie \( \{\cos, \sin\} \) — punkt opuszcza oś cosinusa dla każdego \( h \neq 0 \).</figcaption>
+                </figure>
+            </div>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+                <li id="ref-1">Chughtai, B., Chan, L., & Nanda, N. (2023). <strong>A Toy Model of Universality: Reverse Engineering how Networks Learn Group Operations</strong>. ICML.</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="rotation-plot.js"></script>
+    <script src="character-plot.js"></script>
+    <script src="invariance-plot.js"></script>
+</body>
+</html>

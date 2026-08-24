@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Przegląd zjawiska grokkingu — opóźnionej generalizacji w sieciach neuronowych — od pierwszej obserwacji empirycznej po wyjaśnienia z interpretowalności mechanistycznej.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/articles/grokking/">
+    <meta property="og:title" content="Czym Jest Grokking">
+    <meta property="og:description" content="Przegląd zjawiska grokkingu — opóźnionej generalizacji w sieciach neuronowych — od pierwszej obserwacji empirycznej po wyjaśnienia z interpretowalności mechanistycznej.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/thumbnails/grokking.png">
+
+    <title>Czym Jest Grokking - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">DL</span>
+                <span class="note-date">Published: Aug 14, 2026</span>
+            </div>
+
+            <h1 class="article-title">Czym Jest Grokking</h1>
+
+            <h2>Abstrakt</h2>
+            <p class="article-lead">
+                W ciągu ostatnich miesięcy poświęciłem sporo czasu na eksplorację i zrozumienie zjawiska
+                opóźnionej generalizacji, znanego formalnie jako grokking. Zjawisko to jest interesujące,
+                ponieważ całkowicie przeczy założeniu "przetrenowanie uniemożliwia zdolność do generalizacji",
+                w kontekście klasycznego uczenia maszynowego. Jest także bardzo ciekawym obiektem do obserwacji
+                tego, jak model tworzy reprezentacje w różnych problemach algorytmicznych. Poniższy artykuł ma
+                na celu przeprowadzenie przez ostatnie lata rozwoju tego pojęcia oraz przedstawienie ciekawych
+                obserwacji i badań.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>Wstęp</h2>
+            <p>
+                Zjawisko grokowania i sam termin, przedstawione zostały w pracy "Grokking: Generalization Beyond
+                Overfitting on Small Algorithmic Datasets"<a href="#ref-1" class="citation">[1]</a>. Autorzy
+                przeprowadzili serię treningów na zbiorach algorytmicznych z użyciem architektury
+                transformer<a href="#ref-2" class="citation">[2]</a>, które przebiegły w sposób nietypowy z
+                punktu widzenia dynamiki uczenia. Przy pewnych konfiguracjach: (i) model zapamiętywał zbiór
+                treningowy, (ii) następowała długa faza przetrenowania, (iii) po bardzo dużej liczbie epok model
+                wykazywał gwałtowną (skokową) poprawę metryki na zbiorze walidacyjnym (Rysunek 1).
+            </p>
+
+            <figure class="plot-figure">
+                <img src="attachments/figure1.png" alt="Wykres dokładności treningowej i walidacyjnej pokazujący grokking">
+                <figcaption>
+                    Rysunek 1: "Grokking: A dramatic example of generalization far after overfitting on an
+                    algorithmic dataset. We train on the binary operation of division mod 97 with 50% of the
+                    data in the training set". Źródło: Power et al.<a href="#ref-1" class="citation">[1]</a> (Figure 1).
+                </figcaption>
+            </figure>
+
+            <p>
+                Wspomniana publikacja miała charakter głównie empiryczny, bez przedstawienia formalnego
+                wyjaśnienia zjawiska. Autorzy nie badali chociażby tego, czy skokowa generalizacja stanowi
+                przejście fazowe, jak ewoluuje struktura reprezentacji w przestrzeni osadzeń ani jak dynamika
+                tego procesu kształtuje się na innych architekturach. Odpowiedzi na te zagadnienia dostarcza
+                nurt interpretowalności mechanistycznej.
+            </p>
+
+            <h2>Interpretowalność Mechanistyczna</h2>
+            <p>
+                Interpretowalność mechanistyczna jest dziedziną badań nad sztuczną inteligencją zajmującą się
+                analizą sieci neuronowych za pomocą inżynierii wstecznej ich struktur
+                obliczeniowych<a href="#ref-3" class="citation">[3]</a>. Przełomowym sformalizowaniem tego
+                podejścia w kontekście architektury Transformer była praca "A Mathematical Framework for
+                Transformer Circuits"<a href="#ref-4" class="citation">[4]</a>. Autorzy zaproponowali
+                metodologię matematyczną pozwalającą dekomponować działanie sieci na <strong>obwody</strong> —
+                wybrane podstruktury funkcjonalne architektury realizujące konkretne operacje algorytmiczne.
+            </p>
+
+            <p>
+                Głównym założeniem formalizmu jest traktowanie strumienia rezydualnego jako magistrali danych.
+                Koncepcja ta została oparta na wykorzystaniu połączeń rezydualnych (skip connections). W
+                kontekście procesu optymalizacji wprowadzono je, aby rozwiązać problem zanikającego
+                gradientu<a href="#ref-5" class="citation">[5]</a>, wspomagając tym samym proces uczenia się
+                sieci. Z perspektywy obserwacji reprezentacji zastosowanie tych połączeń wymusza addytywność.
+                Warstwy uwagi i perceptronu nie nadpisują stanu na obecnym etapie ani nie tworzą jednej
+                skompresowanej reprezentacji, przez którą musiałaby przejść cała informacja (jak w klasycznym
+                autoenkoderze), a raczej dodają pewien kontekst wynikający z poddawanej transformacji.
+            </p>
+
+            <p>
+                Powyższe narzędzia pozwoliły na bardziej świadome analizy architektur i tego, co się w nich
+                pojawia. Praca, która jako pierwsza zbadała zjawisko w kontekście grokowania, bazując na
+                interpretowalności mechanistycznej jest "Progress measures for grokking via mechanistic
+                interpretability"<a href="#ref-6" class="citation">[6]</a>. Autorzy przeanalizowali w niej
+                proces uczenia jednopoziomowego transformera na zadaniu dodawania modularnego
+                \( a + b \ (\text{mod} \ P) \).
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+                <li id="ref-1">Power, A., Burda, Y., Edwards, H., Babuschkin, I., & Sutskever, I. (2022). <strong>Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets</strong>. arXiv:2201.02177.</li>
+                <li id="ref-2">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., & Polosukhin, I. (2017). <strong>Attention Is All You Need</strong>. NeurIPS.</li>
+                <li id="ref-3">Olah, C., Cammarata, N., Schubert, L., Goh, G., Petrov, M., & Carter, S. (2020). <strong>Zoom In: An Introduction to Circuits</strong>. Distill.</li>
+                <li id="ref-4">Elhage, N., Nanda, N., Olsson, C., Henighan, T., Joseph, N., Mann, B., et al. (2021). <strong>A Mathematical Framework for Transformer Circuits</strong>. Transformer Circuits Thread, Anthropic.</li>
+                <li id="ref-5">He, K., Zhang, X., Ren, S., & Sun, J. (2016). <strong>Deep Residual Learning for Image Recognition</strong>. CVPR.</li>
+                <li id="ref-6">Nanda, N., Chan, L., Lieberum, T., Smith, J., & Steinhardt, J. (2023). <strong>Progress Measures for Grokking via Mechanistic Interpretability</strong>. ICLR.</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="../../script.js"></script>
+</body>
+</html>

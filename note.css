@@ -110,14 +110,32 @@ blockquote p + p {
 }
 
 /* --- INTERAKTYWNE WYKRESY (Plotly) --- */
+.plot-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
 .plot-figure {
     margin: 28px 0;
 }
 
+.plot-figure-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin: 28px 0;
+}
+
+.plot-figure-row .plot-figure {
+    flex: 1 1 320px;
+    min-width: 0;
+    margin: 0;
+}
+
 .plot-container {
     width: 100%;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
 }
 
 .plot-3d {
@@ -293,8 +311,9 @@ pre::-webkit-scrollbar-thumb:hover {
 .citation {
     color: var(--link-color);
     text-decoration: none;
-    font-size: 0.85em;
-    vertical-align: super; /* Podnosi przypis do indeksu górnego - klasyka w artykułach */
+    font-size: 0.75em;
+    vertical-align: super;
+    line-height: 0;
     font-weight: 600;
     padding: 0 2px;
     transition: color 0.2s ease;

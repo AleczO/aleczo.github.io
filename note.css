@@ -158,6 +158,46 @@ blockquote p + p {
     text-align: center;
 }
 
+/* --- ZWIJANY BLOK DOWODU --- */
+.proof-block {
+    margin: 28px 0;
+    padding: 14px 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.proof-block summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-main);
+    list-style: none;
+    padding: 4px 0;
+}
+
+.proof-block summary::-webkit-details-marker {
+    display: none;
+}
+
+.proof-block summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 0.7em;
+    transition: transform 0.15s ease;
+}
+
+.proof-block[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.proof-block .proof-content {
+    margin-top: 14px;
+}
+
+.proof-block .proof-content > *:first-child {
+    margin-top: 0;
+}
+
 /* --- PANEL STEROWANIA SYMULACJĄ GD --- */
 .gd-controls {
     margin: 28px 0 0 0;

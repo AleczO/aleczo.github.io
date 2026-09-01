@@ -72,6 +72,200 @@
         return { color: c.muted, gridcolor: c.border, zeroline: true, zerolinecolor: c.border, fixedrange: true };
     }
 
+    // Classic cyclic Jacobi eigenvalue algorithm for a small symmetric matrix.
+    // Returns all eigenvalues/eigenvectors; good enough for the <=58x58 covariance
+    // matrices here, no external linear-algebra library needed.
+    function jacobiEigen(matrix, n) {
+        const a = matrix.map(row => row.slice());
+        const v = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));
+        for (let sweep = 0; sweep < 100; sweep++) {
+            let off = 0;
+            for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += a[p][q] * a[p][q];
+            if (off < 1e-10) break;
+            for (let p = 0; p < n; p++) {
+                for (let q = p + 1; q < n; q++) {
+                    if (Math.abs(a[p][q]) < 1e-14) continue;
+                    const theta = (a[q][q] - a[p][p]) / (2 * a[p][q]);
+                    const sign = theta >= 0 ? 1 : -1;
+                    const t = sign / (Math.abs(theta) + Math.sqrt(theta * theta + 1));
+                    const c = 1 / Math.sqrt(t * t + 1);
+                    const s = t * c;
+                    const app = a[p][p], aqq = a[q][q], apq = a[p][q];
+                    a[p][p] = c * c * app - 2 * s * c * apq + s * s * aqq;
+                    a[q][q] = s * s * app + 2 * s * c * apq + c * c * aqq;
+                    a[p][q] = 0;
+                    a[q][p] = 0;
+                    for (let i = 0; i < n; i++) {
+                        if (i !== p && i !== q) {
+                            const aip = a[i][p], aiq = a[i][q];
+                            a[i][p] = c * aip - s * aiq; a[p][i] = a[i][p];
+                            a[i][q] = s * aip + c * aiq; a[q][i] = a[i][q];
+                        }
+                    }
+                    for (let i = 0; i < n; i++) {
+                        const vip = v[i][p], viq = v[i][q];
+                        v[i][p] = c * vip - s * viq;
+                        v[i][q] = s * vip + c * viq;
+                    }
+                }
+            }
+        }
+        const eigenvalues = Array.from({ length: n }, (_, i) => a[i][i]);
+        const eigenvectors = Array.from({ length: n }, (_, i) => v.map(row => row[i]));
+        return { eigenvalues, eigenvectors };
+    }
+
+    function dot(a, b) {
+        let s = 0;
+        for (let i = 0; i < a.length; i++) s += a[i] * b[i];
+        return s;
+    }
+
+    // Projects each row of dataMatrix onto its top-2 principal components.
+    function pca2D(dataMatrix) {
+        const n = dataMatrix.length;
+        const d = dataMatrix[0].length;
+        const mean = new Array(d).fill(0);
+        for (const row of dataMatrix) for (let j = 0; j < d; j++) mean[j] += row[j];
+        for (let j = 0; j < d; j++) mean[j] /= n;
+        const centered = dataMatrix.map(row => row.map((v, j) => v - mean[j]));
+
+        const cov = Array.from({ length: d }, () => new Array(d).fill(0));
+        for (const row of centered) {
+            for (let i = 0; i < d; i++) {
+                for (let j = i; j < d; j++) cov[i][j] += row[i] * row[j];
+            }
+        }
+        for (let i = 0; i < d; i++) {
+            for (let j = i; j < d; j++) {
+                cov[i][j] /= (n - 1);
+                cov[j][i] = cov[i][j];
+            }
+        }
+
+        const { eigenvalues, eigenvectors } = jacobiEigen(cov, d);
+        const order = eigenvalues.map((_, i) => i).sort((x, y) => eigenvalues[y] - eigenvalues[x]);
+        const pc1 = eigenvectors[order[0]];
+        const pc2 = eigenvectors[order[1]];
+        const totalVar = eigenvalues.reduce((a, b) => a + b, 0);
+        const scores = centered.map(row => [dot(row, pc1), dot(row, pc2)]);
+        return {
+            scores,
+            explained: [eigenvalues[order[0]] / totalVar, eigenvalues[order[1]] / totalVar]
+        };
+    }
+
+    function hueColor(k, p) {
+        return 'hsl(' + Math.round((360 * k) / p) + ', 70%, 50%)';
+    }
+
+    let pcaCache = null;
+
+    function computePCA() {
+        if (pcaCache) return pcaCache;
+        const p = model.p;
+        const hidden = model.hidden;
+        const w1 = model['fc1.weight'].data;
+        const w2 = model['fc2.weight'].data;
+
+        // fc1 columns: one 58-dim (per-neuron) direction for each input unit k = 0..2p-1.
+        const fc1Cols = [];
+        for (let k = 0; k < 2 * p; k++) {
+            const col = new Array(hidden);
+            for (let n = 0; n < hidden; n++) col[n] = w1[n * 2 * p + k];
+            fc1Cols.push(col);
+        }
+        const fc1Pca = pca2D(fc1Cols);
+
+        // fc2 rows: one 58-dim direction for each output result r = 0..p-1.
+        const fc2Rows = [];
+        for (let r = 0; r < p; r++) fc2Rows.push(w2.slice(r * hidden, (r + 1) * hidden));
+        const fc2Pca = pca2D(fc2Rows);
+
+        pcaCache = { fc1Pca, fc2Pca };
+        return pcaCache;
+    }
+
+    function closedLoopTrace(scores, color) {
+        const xs = scores.map(s => s[0]).concat([scores[0][0]]);
+        const ys = scores.map(s => s[1]).concat([scores[0][1]]);
+        return { type: 'scatter', mode: 'lines', x: xs, y: ys, line: { color: color, width: 1 }, hoverinfo: 'skip' };
+    }
+
+    function renderPcaFc1() {
+        const c = themeColors();
+        const p = model.p;
+        const { fc1Pca } = computePCA();
+        const aScores = fc1Pca.scores.slice(0, p);
+        const bScores = fc1Pca.scores.slice(p, 2 * p);
+        const aColors = Array.from({ length: p }, (_, k) => hueColor(k, p));
+        const bColors = aColors;
+
+        const layout = {
+            margin: { l: 45, r: 10, t: 10, b: 45 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: c.muted, family: fontFamily() },
+            showlegend: false,
+            dragmode: false,
+            xaxis: Object.assign(baseAxisLayout(c), { title: 'PC1', zeroline: true }),
+            yaxis: Object.assign(baseAxisLayout(c), { title: 'PC2', zeroline: true })
+        };
+
+        Plotly.react('net-pca-fc1-plot', [
+            closedLoopTrace(aScores, c.border),
+            closedLoopTrace(bScores, c.border),
+            {
+                type: 'scatter', mode: 'markers', x: aScores.map(s => s[0]), y: aScores.map(s => s[1]),
+                marker: { size: 9, symbol: 'circle', color: aColors, line: { color: c.text, width: 0.5 } },
+                text: Array.from({ length: p }, (_, k) => 'a = ' + k), hovertemplate: '%{text}<extra></extra>'
+            },
+            {
+                type: 'scatter', mode: 'markers', x: bScores.map(s => s[0]), y: bScores.map(s => s[1]),
+                marker: { size: 9, symbol: 'diamond', color: bColors, line: { color: c.text, width: 0.5 } },
+                text: Array.from({ length: p }, (_, k) => 'b = ' + k), hovertemplate: '%{text}<extra></extra>'
+            }
+        ], layout, { responsive: true, displaylogo: false, displayModeBar: false });
+    }
+
+    function renderPcaFc2() {
+        const c = themeColors();
+        const p = model.p;
+        const { fc2Pca } = computePCA();
+        const colors = Array.from({ length: p }, (_, r) => hueColor(r, p));
+
+        const layout = {
+            margin: { l: 45, r: 10, t: 10, b: 45 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: c.muted, family: fontFamily() },
+            showlegend: false,
+            dragmode: false,
+            xaxis: Object.assign(baseAxisLayout(c), { title: 'PC1', zeroline: true }),
+            yaxis: Object.assign(baseAxisLayout(c), { title: 'PC2', zeroline: true })
+        };
+
+        Plotly.react('net-pca-fc2-plot', [
+            closedLoopTrace(fc2Pca.scores, c.border),
+            {
+                type: 'scatter', mode: 'markers', x: fc2Pca.scores.map(s => s[0]), y: fc2Pca.scores.map(s => s[1]),
+                marker: { size: 9, symbol: 'circle', color: colors, line: { color: c.text, width: 0.5 } },
+                text: Array.from({ length: p }, (_, r) => 'r = ' + r), hovertemplate: '%{text}<extra></extra>'
+            }
+        ], layout, { responsive: true, displaylogo: false, displayModeBar: false });
+    }
+
+    function renderPca() {
+        renderPcaFc1();
+        renderPcaFc2();
+        const { fc1Pca, fc2Pca } = computePCA();
+        const statusEl = document.getElementById('net-pca-status');
+        if (statusEl) {
+            statusEl.textContent = 'PC1+PC2: fc1 wyjaśnia ' + (100 * (fc1Pca.explained[0] + fc1Pca.explained[1])).toFixed(1) +
+                '% wariancji, fc2 wyjaśnia ' + (100 * (fc2Pca.explained[0] + fc2Pca.explained[1])).toFixed(1) + '%.';
+        }
+    }
+
     // Magnitude of the DFT of a length-p real vector, for frequencies m = 0 .. floor(p/2).
     // For a real signal, X[p-m] is the conjugate of X[m], so these frequencies carry all the information.
     function dftMagnitudes(vec, p) {
@@ -312,6 +506,7 @@
         renderOutput(a, b);
         renderFc1Heatmap(sortFc1ByFreq);
         renderSpectrum();
+        renderPca();
     }
 
     function linkSliderAndNumber(sliderId, numberId, onChange) {

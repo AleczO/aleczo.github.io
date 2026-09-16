@@ -514,3 +514,132 @@ li strong { color: var(--text-main); }
     }
 }
 
+/* Primers — accordion of categories/topics */
+.primers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.primer-category {
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
+}
+
+.primer-category-header {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 18px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    color: var(--text-main);
+    list-style: none;
+}
+
+.primer-category-header::-webkit-details-marker {
+    display: none;
+}
+
+.primer-category-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.primer-category-header .material-symbols-outlined {
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.primer-category[open] .primer-category-header .material-symbols-outlined {
+    transform: rotate(180deg);
+}
+
+.primer-category-body {
+    padding: 0 20px 20px 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 16px;
+}
+
+.primer-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.primer-tree li {
+    margin: 0;
+    padding: 0;
+}
+
+.primer-tree > li {
+    margin-bottom: 14px;
+}
+
+.primer-tree > li:last-child {
+    margin-bottom: 0;
+}
+
+.primer-topic {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0 0 8px 0;
+}
+
+.primer-subtree {
+    list-style: none;
+    margin: 0;
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 1px solid var(--border-color);
+}
+
+.primer-subtree li {
+    padding-left: 14px;
+}
+
+.primer-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.primer-link:hover {
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.primer-link.is-placeholder {
+    cursor: default;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.primer-link.is-placeholder:hover {
+    text-decoration: none;
+}
+
+.primer-soon {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 1px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+

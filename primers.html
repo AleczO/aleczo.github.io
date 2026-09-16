@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Primers — short notes and technicalities breaking down concepts in mathematics, machine learning, and dynamical systems.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aleczo.github.io/primers.html">
+    <meta property="og:title" content="Primers — Aleksander Czop">
+    <meta property="og:description" content="Short notes and technicalities breaking down concepts in mathematics, machine learning, and dynamical systems.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/julia_set_plotly.png">
+
+    <title>Aleksander Czop - Primers</title>
+
+    <link rel="icon" type="" href="attachments/julia_set_plotly.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="index.html#About">About</a>
+                    <a href="research.html">Articles</a>
+                    <a class="active">Primers</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle theme">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="index.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Home
+        </a>
+
+        <div class="text-block">
+            <h1>Primers</h1>
+
+            <p class="section-desc">
+                Short notes and technicalities — single concepts broken down and grouped by topic.
+                Unlike the <a href="research.html">articles</a>, these are loose flashcards and
+                reminders rather than full write-ups.
+            </p>
+
+            <div class="primers-list">
+
+                <details class="primer-category" open>
+                    <summary class="primer-category-header">
+                        <h3>Artificial Intelligence</h3>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </summary>
+                    <div class="primer-category-body">
+                        <ul class="primer-tree">
+                            <li>
+                                <p class="primer-topic">Loss Functions</p>
+                                <ul class="primer-subtree">
+                                    <li>
+                                        <span class="primer-link is-placeholder">Cross-Entropy</span>
+                                        <span class="primer-soon">Coming soon</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

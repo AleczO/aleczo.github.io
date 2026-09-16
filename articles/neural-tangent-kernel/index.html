@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Neural Tangent Kernel: wprowadzenie matematyczne do funkcji jądrowych i kernel trick jako fundament analizy pracy Jacota, Hongler i Gabriela.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/articles/neural-tangent-kernel/">
+    <meta property="og:title" content="Neural Tangent Kernel">
+    <meta property="og:description" content="Neural Tangent Kernel: wprowadzenie matematyczne do funkcji jądrowych i kernel trick jako fundament analizy pracy Jacota, Hongler i Gabriela.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/thumbnails/neural-tangent-kernel.png">
+
+    <title>Neural Tangent Kernel - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+                    <a href="../../primers.html">Primers</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">DL</span>
+                <span class="note-date">Published: TBD</span>
+            </div>
+
+            <h1 class="article-title">Neural Tangent Kernel</h1>
+
+            <h2>Abstrakt</h2>
+
+            <hr class="article-divider">
+
+            <h2>Wstęp</h2>
+
+            <hr class="article-divider">
+
+            <h2>Formalizm Matematyczny</h2>
+            
+            <p>
+                Przed właściwą analizą pracy naukowej "Neural Tangent Kernel: Convergence and Generalization 
+                in Neural Networks" wprowadzimy formalizm matematyczny opisujący główne założenia i intuicję  
+                stojące za metodami wykorzystywanymi w publikacji. 
+            </p>
+
+            <h3>Czym jest funkcja jądrowa</h3>
+            <p>
+                Pojęcie "jądro" bywa mylące, bo w matematyce oznacza dwa zupełnie inne obiekty. W algebrze
+                liniowej <strong>jądrem przekształcenia liniowego</strong> \( L: V \rightarrow W \) nazywamy zbiór wektorów
+                zerowanych przez to przekształcenie: \( \ker{(L)} = \{ v \in V : L(v) = 0 \} \). Z kolei, w
+                uczeniu maszynowym odnosimy się do <strong>funkcji jądrowej</strong> (<em>kernel function</em>), która jest formalnie
+                definiowana jako <strong>Positive-definite kernel</strong><a href="#ref-2" class="citation">[2]</a>. W dalszej
+                części artykułu, mówiąc "jądro" lub "funkcja jądrowa", mamy na myśli wyłącznie obiekt w
+                kontekście uczenia maszynowego.
+            </p>
+
+            <p>
+                Formalnie, funkcja jądrowa to przekształcenie \( k: X \times X \rightarrow \mathbb{R} \), które
+                mierzy "podobieństwo" między dwoma punktami. Odpowiada ona iloczynowi skalarnemu w wybranej
+                przestrzeni \( H \):
+            </p>
+
+            <div class="math-block">
+                $$ k(x, x') = \langle \phi(x), \phi(x')\rangle_H \quad \forall x, x' \in X $$
+            </div>
+
+            <p>
+                gdzie \( \langle \cdot, \cdot \rangle_H \) oznacza iloczyn skalarny w przestrzeni \( H \) a
+                \( \phi \) jest przekształceniem \( \phi: X \rightarrow H \). Dodatkowo, funkcja jądrowa musi
+                spełniać warunek Mercera, na który składają się dwa wymogi:
+            </p>
+
+            <ul>
+                <li>
+                    <strong>symetria</strong>
+                    <div class="math-block">
+                        $$ k(x, x') = k(x', x) \quad \forall x, x' \in X $$
+                    </div>
+                </li>
+                <li>
+                    <strong>dodatnia półokreśloność</strong>
+                    <div class="math-block">
+                        $$ \sum_{i=1}^n\sum_{j=1}^n c_i c_j \ k(x_i, x_j) \geq 0 \quad \forall n \in \mathbb{N}, \ \forall x_1, \dots, x_n \in X, \ \forall c_1, \dots, c_n \in \mathbb{R} $$
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kernel Trick</h3>
+            <p>
+                Naturalnie narzuca się pytanie: po co w ogóle wprowadzać nowy, dosyć restrykcyjny obiekt,
+                skoro mamy już klasyczny iloczyn skalarny? Zastanówmy się, jak metody uczenia maszynowego korzystają
+                z iloczynu. Dla przykładu skorzystamy z regresji liniowej.
+            </p>
+
+            <p>
+                Rozważmy zbiór danych \( \{(x_i, y_i) \}_{i=1}^N \), \( x_i \in \mathbb{R}^d \),
+                \( y_i \in \mathbb{R} \). Szukamy wag \( w \in \mathbb{R}^d \) minimalizującej błąd
+                kwadratowy z regularyzacją grzbietową:
+            </p>
+
+            <div class="math-block">
+                $$ w^* = \arg\min_w \sum_{i=1}^N(w^T x_i - y_i)^2 + \lambda\| w \|^2 $$
+            </div>
+
+            <p>
+                Rozwiązanie powyższej funkcji możemy zapisać w postaci zamkniętej:
+            </p>
+
+            <div class="math-block">
+                $$ w^* = (X^TX + \lambda I)^{-1}X^Ty $$
+            </div>
+
+            <p>
+                gdzie \( X \in \mathbb{R}^{N \times d} \) to macierz danych, a i-ty wiersz to \( x_i^T \).
+            </p>
+
+            <p>
+                Postać ta ma jednak zasadnicze ograniczenie. Wymaga ona odwrócenia macierzy
+                \( X^T X \in \mathbb{R}^{d \times d} \), a więc jest zależna bezpośrednio od wymiaru cech
+                \( d \). Brakuje nam dokładnego powiązania iloczynu skalarnego między punktami danych.
+            </p>
+
+            <p>
+                Możemy jednak wykazać, że optymalne \( w^* \) zawsze można zapisać jako kombinację liniową
+                punktów danych (representer theorem):
+            </p>
+
+            <div class="math-block">
+                $$ w^* = \sum_{i=1}^N \alpha_i x_i = X^T \alpha $$
+            </div>
+
+            <p>
+                dla pewnego wektora współczynników \( \alpha \in \mathbb{R}^N \). Podstawiając nową
+                kombinację liniową z powrotem do pierwotnej funkcji:
+            </p>
+
+            <div class="math-block">
+                $$ w^* = \arg\min_w \sum_{i=1}^N(w^T x_i - y_i)^2 + \lambda\| w \|^2 = \min_w \| Xw - y \|^2 + \lambda \|w \|^2 $$
+            </div>
+
+            <p>
+                dla \( w = X^T\alpha \), otrzymujemy
+            </p>
+
+            <div class="math-block">
+                $$ \min_\alpha \| XX^T\alpha - y \|^2 + \lambda \| X^T \alpha \|^2 $$
+            </div>
+
+            <p>
+                Rozwiązując względem \( \alpha \) otrzymujemy rozwiązanie w formie dualnej:
+            </p>
+
+            <div class="math-block">
+                $$ \alpha^* = (XX^T + \lambda I)^{-1}y $$
+            </div>
+
+            <p>
+                Różnica między powyższymi dwoma formami jest istotna. W formie pierwotnej pracujemy na
+                macierzy \( X^TX \) zbudowanej z cech, natomiast w formie dualnej cała konstrukcja opiera
+                się głównie na macierzy \( XX^T \), której elementy \( (i, j) \) to iloczyn skalarny
+                \( x_i \cdot x_j \).
+            </p>
+
+            <p>
+                Mając wyliczone \( \alpha^* \), predykcję dla nowego punktu \( x \) liczymy jako:
+            </p>
+
+            <div class="math-block">
+                $$ \hat{y}(x) = {w^*}^Tx = (X^T\alpha^*)^Tx = {\alpha^*}^TXx = \sum_{i=1}^N \alpha_i^*(x_i \cdot x) $$
+            </div>
+
+            <p>
+                Zarówno przy wyznaczaniu \( \alpha^* \), jak i przy samej predykcji, dane wejściowe pojawiają
+                się wyłącznie jako iloczyny skalarne między parami punktów. To tutaj następuje cała zmiana
+                konstrukcji, bo skoro udało się przedstawić model w takiej postaci, to możemy każdy taki
+                iloczyn zastąpić funkcją jądrową:
+            </p>
+
+            <div class="math-block">
+                $$ x_i \cdot x_j \rightarrow k(x_i, x_j) $$
+            </div>
+
+            <p>
+                Definiując macierz Grama \( K_{ij} := k(x_i, x_j) \), otrzymujemy <strong>jądrową regresję grzbietową</strong>:
+            </p>
+
+            <div class="math-block">
+                $$ \alpha^* = (K + \lambda I)^{-1} y, \quad \hat{y}(x) = \sum_{i=1}^N \alpha_i^* k(x_i, x) $$
+            </div>
+
+            <p>
+                Model zachowuje się tak, jakby trenował regresję liniową w przestrzeni cech \( H \) (na
+                wektorach \( \phi(x_i) \)), mimo, że \( \phi \) nigdy nie zostało jawnie obliczone.
+            </p>
+
+            <figure class="plot-figure">
+                <div id="krr-plot" class="plot-container plot-2d"></div>
+                <figcaption>Kernel Ridge Regression z jądrem RBF \( k(x, x') = \exp\left(-\frac{(x-x')^2}{2\sigma^2}\right) \) na zaszumionych danych \( y = \sin(2x) + \varepsilon \), zestawiona ze zwykłą regresją liniową bez jądra 
+                    (ta sama regularyzacja \( \lambda \)). Suwaki \( \sigma \) i \( \lambda \) przeliczają dopasowanie KRR na żywo.</figcaption>
+            </figure>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="krr-sigma">σ (szerokość jądra)</label>
+                    <input type="range" id="krr-sigma" min="0.05" max="2" step="0.01" value="0.4">
+                    <span class="gd-speed-label" id="krr-sigma-value">0.40</span>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="krr-lambda">λ (regularyzacja)</label>
+                    <input type="range" id="krr-lambda" min="0" max="1" step="0.005" value="0.05">
+                    <span class="gd-speed-label" id="krr-lambda-value">0.050</span>
+                </div>
+                <div class="gd-controls-row">
+                    <button type="button" id="krr-reset" class="gd-btn gd-btn-secondary">Domyślne wartości</button>
+                </div>
+            </div>
+
+            <h2>
+                Definicja sieci neuronowej
+            </h2>
+
+            <p>
+                Rozważamy sztuczną sieć neuronową w pełni połączoną, z warstwami oznaczonymi od \( 0 \)
+                (wejście) do \( L \) (wyjście), z której każda zawiera \( n_0, \dots, n_L \) neuronów. Każda
+                warstwa posiada funkcję aktywacji \( \sigma: \mathbb{R} \rightarrow \mathbb{R} \), która
+                spełnia warunek Lipschitza, jest dwukrotnie różniczkowalna z ograniczoną drugą pochodną.
+            </p>
+
+            <p>
+                Sieć w powyższym sformułowaniu nazywamy <strong>funkcją realizacji sieci</strong>
+                (<em>ANN realization function</em>) \( F^{(L)} : \mathbb{R}^P \rightarrow \mathcal{F} \).
+                Pojęciem tym będziemy się posługiwać w dalszej części artykułu. Nazwa może sugerować
+                jakiś zewnętrzny mechanizm "wykonujący" sieć. Faktycznie \( F^{(L)} \) to po prostu sama
+                sieć traktowana jako
+                <em>mapowanie z przestrzeni parametrów do przestrzeni funkcji</em>: każdemu wektorowi
+                parametrów \( \theta \) przypisuje ona konkretną funkcję \( f_\theta \), jaką sieć
+                przyjmuje przy tych parametrach. Ważne jest odróżnienie dwóch etapów tego procesu:
+            </p>
+
+            <div class="math-block">
+                $$ \underbrace{\theta}_{\text{parametry}} \xrightarrow{F^{(L)}} \underbrace{f_\theta}_{\text{cała sieć jako funkcja}} \xrightarrow{\text{ewaluacja w } x} \underbrace{f_\theta(x)}_{\text{konkretne wyjście}} $$
+            </div>
+
+            <p>
+                \( F^{(L)} \) zatrzymuje się na pierwszym etapie, zwraca całą funkcję, nie liczbę czy
+                wektor. Dopiero podstawienie zmiennej \( x \) jako wejście sieci daje konkretne wyjście.
+            </p>
+
+            <p>
+                Wymiar przestrzeni parametrów \( P \) jest liczony ze wzoru:
+            </p>
+
+            <div class="math-block">
+                $$ P = \sum_{l=0}^{L - 1}(n_l + 1)n_{l + 1} $$
+            </div>
+
+            <details class="proof-block">
+            <summary>Dowód</summary>
+            <div class="proof-content">
+            <p>
+                Wybrana warstwa \( l \) ma \( n_l \cdot n_{l + 1} \) wag i \( n_{l + 1} \) parametrów bias,
+                jeden dla każdego neuronu wyjściowego. Oznacza to, że jedna warstwa ma
+                \( n_l \cdot n_{l + 1} + n_{l + 1} \) parametrów, czyli po uproszczeniu
+                \( (n_l + 1)n_{l + 1} \). Sumując po każdej warstwie, dostajemy wzór na wymiar \( P \).
+            </p>
+            </div>
+            </details>
+
+            <p>
+                Parametry sieci są inicjalizowane jako zmienne niezależne o identycznym rozkładzie Gaussa
+                \( \mathcal{N}(0, 1) \).
+            </p>
+
+            <p>
+                Dla ustalonego rozkładu \( p^{\text{in}} \) na przestrzeni wejściowej \( R^{n_0} \),
+                przestrzeń funkcji \( \mathcal{F} \) jest zdefiniowana jako
+                \( \{ f: \mathbb{R}^{n_0} \rightarrow \mathbb{R}^{n_L} \} \). W tej przestrzeni, rozważamy
+                seminormę \( \| \cdot \|_{p^{\text{in}}} \) zdefiniowaną za pomocą formy dwuliniowej
+            </p>
+
+            <div class="math-block">
+                $$ \langle f, g \rangle_{p^{\text{in}}} = \mathbb{E}_{x \sim p^{\text{in}}}[f(x)^T g(x)] $$
+            </div>
+
+            <p>
+                poprzez \( \| f \|_{p^{\text{in}}} := \sqrt{\langle f,f \rangle_{p^{\text{in}}}} \). Seminorma
+                to uogólnienie normy, które nie wymaga warunku: jeżeli \( x \in X \) spełnia \( ||x|| = 0 \),
+                wtedy \( x = 0 \).
+            </p>
+
+            <p>
+                Niech \( x_1, \dots, x_n \in \mathbb{R}^{n_0} \) oznacza zbiór punktów danych wejściowych.
+                Definiujemy na nich rozkład empiryczny
+            </p>
+
+            <div class="math-block">
+                $$ p^{\text{in}}(x) = \frac{1}{N}\sum_{i=1}^N \delta_{x_i}(x) $$
+            </div>
+
+            <p>
+                gdzie \( \delta_{x_i} \) to miara Diraca skupiona w punkcie \( x_i \).
+            </p>
+
+            <p>
+                Zapis \( x \sim p^{\text{in}} \) oznacza, że zmienna losowa \( x \) ma rozkład \( p^{\text{in}} \).
+            </p>
+
+            <p>
+                Jako konkretny przykład rozważmy sieć z artykułu o
+                <a href="../group-operations/">reprezentacjach grup cyklicznych w sieciach neuronowych</a>,
+                trenowaną na zadaniu dodawania modulo \( p \). Każda liczba \( a, b \in \mathbb{Z}_p \)
+                kodowana jest jako wektor one-hot, a wejście sieci to ich konkatenacja
+                \( x = [e_a; e_b] \in \mathbb{R}^{2p} \), gdzie \( e_b \) zajmuje przesunięty blok
+                indeksów \( [p, 2p) \). Pełny zbiór treningowy składa się ze wszystkich par
+                \( (a, b) \in \mathbb{Z}_p \times \mathbb{Z}_p \), czyli \( N = p^2 \) przykładów.
+            </p>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="onehot-example" class="plot-container plot-preview"></div>
+                    <figcaption>Wszystkie możliwe kodowania one-hot dla \( p = 7 \): blok \( a \) na indeksach \( [0, 7) \), blok \( b \) przesunięty na \( [7, 14) \).</figcaption>
+                </figure>
+                <figure class="plot-figure">
+                    <div id="onehot-distribution" class="plot-container plot-preview"></div>
+                    <figcaption>Rozkład empiryczny \( p^{\text{in}} \) na zbiorze wszystkich par \( (a, b) \in \mathbb{Z}_7 \times \mathbb{Z}_7 \) (\( N = 49 \)): masa \( 1/49 \) na każdym punkcie \( \delta_{x_i} \).</figcaption>
+                </figure>
+            </div>
+
+            <p>
+                Rozkład jest jednostajny, ponieważ każda para \( (a, b) \) pojawia się w zbiorze
+                treningowym dokładnie raz, więc rozkład empiryczny z definicji przypisuje każdemu
+                punktowi tę samą masę \( 1/p^2 \). Marginalnie każda pojedyncza liczba pojawia się
+                w zbiorze tyle samo razy: \( p \) razy jako \( a \) i \( p \) razy jako \( b \).
+            </p>
+
+            <p>
+                Wyjście sieci definiujemy jako
+            </p>
+
+            <div class="math-block">
+                $$ f_\theta(x) := \tilde\alpha^{(L)}(x;\theta) $$
+            </div>
+
+            <p>
+                czyli preaktywację ostatniej warstwy, bez zastosowania funkcji \( \sigma \) na końcu.
+            </p>
+
+            <p>
+                Preaktywacje \( \tilde\alpha^{(l)}(\cdot;\theta):\mathbb{R}^{n_0}\to\mathbb{R}^{n_l} \) i
+                aktywacje \( \alpha^{(l)}(\cdot;\theta):\mathbb{R}^{n_0}\to\mathbb{R}^{n_l} \) definiujemy
+                rekurencyjnie:
+            </p>
+
+            <div class="math-block">
+                $$ \alpha^{(0)}(x;\theta) = x $$
+            </div>
+
+            <div class="math-block">
+                $$ \tilde\alpha^{(l+1)}(x;\theta) = \frac{1}{\sqrt{n_l}}W^{(l)}\alpha^{(l)}(x;\theta) + \beta b^{(l)}, \qquad l=0,\dots,L-1 $$
+            </div>
+
+            <div class="math-block">
+                $$ \alpha^{(l)}(x;\theta) = \sigma\big(\tilde\alpha^{(l)}(x;\theta)\big), \qquad l=1,\dots,L-1 $$
+            </div>
+
+            <p>
+                W powyższym sformułowaniu sieci ważna jest zmiana podejścia do inicjalizacji parametrów.
+                Domyślnie inicjalizując parametry (np. w PyTorch) wagi warstwy losowane są z rozkładu o
+                przeskalowanej wariancji \( W_{ij}^{(l)}\sim\mathcal{N}(0,\frac{1}{n_l}) \), co kompensuje
+                brak czynnika \( \frac{1}{\sqrt{n_l}} \) we wzorze propagacji, natomiast parametry biasu
+                losowane są zazwyczaj z rozkładu \( b_i^{(l)}\sim\mathcal{N}(0,1) \) (opcjonalnie
+                \( b_i^{(l)}=0 \)). O ile zbiór funkcji \( F^{(L)}(\mathbb{R}^P) \) jest taki sam dla dwóch
+                metod, to pochodne funkcji realizacji już się różnią, do czego wrócimy potem.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>Gradient Jądra</h2>
+
+            <p>
+                Proces trenowania ANN polega na optymalizacji \( f_\theta \) w przestrzeni funkcji
+                \( \mathcal{F} \) względem funkcjonału kosztu \( C: \mathcal{F} \rightarrow \mathbb{R} \),
+                takim jak np. regresja albo entropia krzyżowa. Wracając do opisu w postaci etapów, możemy
+                przedstawić to następująco:
+            </p>
+
+            <div class="math-block">
+                $$ \underbrace{\theta}_{\text{parametry}} \xrightarrow{F^{(L)}} \underbrace{f_\theta}_{\text{cała sieć jako funkcja}} \xrightarrow{\text{ewaluacja w } x} \underbrace{f_\theta(x)}_{\text{konkretne wyjście}} \xrightarrow{C} \underbrace{C(f_\theta)}_{\text{koszt (liczba)}} $$
+            </div>
+
+            <p>
+                Nawet dla wypukłego funkcjonału kosztu \( C \), złożony koszt
+                \( C \circ F^{(L)}: \mathbb{R}^P \rightarrow \mathbb{R} \) jest mocno niewypukły.
+            </p>
+
+            <details class="proof-block">
+            <summary>Przykład</summary>
+            <div class="proof-content">
+            <p>
+                Rozważmy sieć z jednym neuronem ukrytym i rzeczywistą funkcją aktywacji \( \tanh \):
+                \( f_\theta(x) = \theta_2 \tanh(\theta_1 x) \), z dwoma skalarnymi parametrami
+                \( \theta = (\theta_1, \theta_2) \) (waga wejściowa i wyjściowa, bez biasów). Sieć ma
+                dopasować się do małego zbioru danych \( \{(x_i, y_i)\}_{i=1}^N \), a funkcjonał
+                kosztu to standardowy błąd średniokwadratowy (MSE):
+            </p>
+
+            <div class="math-block">
+                $$ C(f) = \frac{1}{N}\sum_{i=1}^N \big(f(x_i) - y_i\big)^2 $$
+            </div>
+
+            <p>
+                \( C \) jest wypukłym funkcjonałem na przestrzeni funkcji \( \mathcal{F} \) (to suma
+                wypukłych parabol). Po złożeniu z siecią \( F^{(2)} \) otrzymujemy jednak niewypukłą
+                powierzchnię kosztu w przestrzeni parametrów:
+            </p>
+
+            <div class="math-block">
+                $$ (C \circ F^{(2)})(\theta_1, \theta_2) = \frac{1}{N}\sum_{i=1}^N \big(\theta_2 \tanh(\theta_1 x_i) - y_i\big)^2 $$
+            </div>
+
+            <p>
+                Punkt \( \theta_1 = \theta_2 = 0 \) jest punktem krytycznym niezależnie od danych (bo
+                \( \tanh(0) = 0 \) zeruje zależność od \( \theta_2 \)), a hesjan w tym punkcie wynosi
+            </p>
+
+            <div class="math-block">
+                $$ \nabla^2(C \circ F^{(2)})(0, 0) = \begin{pmatrix} 0 & H \\ H & 0 \end{pmatrix}, \qquad H = -\frac{2}{N}\sum_{i=1}^N x_i y_i $$
+            </div>
+
+            <p>
+                Wartości własne tej macierzy to \( \pm |H| \), więc jest ona nieokreślona zawsze, gdy
+                \( \sum_i x_i y_i \neq 0 \), co dla niemal każdego zbioru danych jest prawdą. Punkt
+                \( (0, 0) \) jest więc punktem siodłowym, a \( C \circ F^{(2)} \) niewypukła, mimo że
+                sam funkcjonał \( C \) pozostaje wypukły.
+            </p>
+
+            <p>
+                Poniżej: \( 5 \) punktów danych wygenerowanych z \( y = 0{,}9\tanh(0{,}8x) \). Lewy
+                wykres pokazuje aktualną funkcję sieci \( f_\theta \) na tle tych punktów, a prawy,
+                krajobraz kosztu \( C \circ F^{(2)} \) w przestrzeni \( (\theta_1, \theta_2) \), z
+                zaznaczonym aktualnym punktem \( \theta \). Suwaki przesuwają ten sam punkt
+                jednocześnie na obu wykresach.
+            </p>
+            </div>
+            </details>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="nonconvex-f-space" class="plot-container plot-2d"></div>
+                    <figcaption>\( f_\theta(x) = \theta_2\tanh(\theta_1 x) \): funkcja sieci (niebieska krzywa) na tle danych treningowych (czerwone punkty).</figcaption>
+                </figure>
+                <figure class="plot-figure">
+                    <div id="nonconvex-theta-space" class="plot-container plot-2d"></div>
+                    <figcaption>Krajobraz kosztu \( C \circ F^{(2)} \) w przestrzeni \( (\theta_1, \theta_2) \): biały punkt to aktualne \( \theta \).</figcaption>
+                </figure>
+            </div>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="nc-theta1">θ₁ (waga 1)</label>
+                    <input type="range" id="nc-theta1" min="-3" max="3" step="0.02" value="0.9">
+                    <span class="gd-speed-label" id="nc-theta1-value">0.90</span>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="nc-theta2">θ₂ (waga 2)</label>
+                    <input type="range" id="nc-theta2" min="-3" max="3" step="0.02" value="1.05">
+                    <span class="gd-speed-label" id="nc-theta2-value">1.05</span>
+                </div>
+                <div class="gd-status" id="nc-status"></div>
+            </div>
+
+            <p>
+                Aby ominąć trudności wynikające z optymalizacji w niewypukłej przestrzeni parametrów,
+                autorzy proponują analizę dynamiki bezpośrednio w przestrzeni funkcji \( \mathcal{F} \). W
+                dalszej części pracy wykazano, że podczas uczenia funkcja sieci \( f_\theta \) ewoluuje
+                zgodnie ze spadkiem wzdłuż gradientu jądrowego (ang. <em>kernel gradient</em>) wyznaczonego
+                przez tzw. <strong>jądro styczne sieci neuronowej</strong> (<em>Neural Tangent Kernel</em>,
+                NTK). Podejście to pozwala badać proces zbieżności w przestrzeni \( \mathcal{F} \), w której
+                sam funkcjonał kosztu \( C \) pozostaje wypukły.
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+                <li id="ref-1">Jacot, A., Hongler, C., & Gabriel, F. (2018). <strong>Neural Tangent Kernel: Convergence and Generalization in Neural Networks</strong>. NeurIPS.</li>
+                <li id="ref-2">Schölkopf, B., & Smola, A. J. (2002). <strong>Learning with Kernels: Support Vector Machines, Regularization, Optimization, and Beyond</strong>. MIT Press.</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="krr-plot.js"></script>
+    <script src="onehot-plot.js"></script>
+    <script src="nonconvex-plot.js"></script>
+</body>
+</html>

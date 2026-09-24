@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Entropia krzyżowa — definicja i związek z entropią oraz dywergencją Kullbacka–Leiblera.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/primers/cross-entropy/">
+    <meta property="og:title" content="Entropia krzyżowa">
+    <meta property="og:description" content="Entropia krzyżowa — definicja i związek z entropią oraz dywergencją Kullbacka–Leiblera.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/julia_set_plotly.png">
+
+    <title>Entropia krzyżowa - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html">Articles</a>
+                    <a href="../../primers.html" class="active">Primers</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../primers.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Primers
+        </a>
+
+        <article class="article-container">
+
+            <h1 class="article-title">Entropia krzyżowa</h1>
+
+            <hr class="article-divider">
+
+            <p>
+                <strong>Założenia.</strong> Niech \( \mathcal{X} = \{1, \dots, K\} \) będzie skończonym zbiorem klas,
+                a \( p, q \colon \mathcal{X} \to [0,1] \) funkcjami masy dwóch rozkładów prawdopodobieństwa na
+                \( \mathcal{X} \), tzn. \( \sum_x p(x) = \sum_x q(x) = 1 \). Zakładamy, że \( q(x) > 0 \) dla każdego
+                \( x \) z \( p(x) > 0 \) (\( p \) jest absolutnie ciągły względem \( q \)).
+            </p>
+
+            <p><strong>Definicja.</strong></p>
+            <div class="math-block">
+                $$ H(p,q) = -\sum_{x} p(x) \log q(x). $$
+            </div>
+
+            <p>
+                <strong>Twierdzenie.</strong> \( H(p,q) = H(p) + D_{KL}(p\|q) \).
+            </p>
+
+            <details class="proof-block">
+            <summary>Dowód</summary>
+            <div class="proof-content">
+            <p>
+                Niech \( S = \{x : p(x) > 0\} \). Z założenia \( q > 0 \) na \( S \), więc wszystkie poniższe sumy są
+                skończone. Rozpiszmy prawą stronę z definicji:
+            </p>
+
+            <div class="math-block">
+                $$ H(p) = -\sum_{x \in S} p(x)\log p(x), $$
+            </div>
+
+            <div class="math-block">
+                $$ D_{KL}(p\|q) = \sum_{x \in S} p(x)\log\frac{p(x)}{q(x)} = \sum_{x \in S} p(x)\log p(x) - \sum_{x \in S} p(x)\log q(x). $$
+            </div>
+
+            <p>Zatem</p>
+
+            <div class="math-block">
+                $$ H(p) + D_{KL}(p\|q) = -\sum_{x \in S} p(x)\log p(x) + \sum_{x \in S} p(x)\log p(x) - \sum_{x \in S} p(x)\log q(x). $$
+            </div>
+
+            <p>Dwa pierwsze człony się znoszą, zostaje</p>
+
+            <div class="math-block">
+                $$ -\sum_{x \in S} p(x)\log q(x) = H(p,q). \qquad\blacksquare $$
+            </div>
+            </div>
+            </details>
+
+            <h2>Wizualizacja</h2>
+            <p>
+                Niech \( p \) i \( q \) będą rozkładami na \( \mathcal{X} = \{1, \dots, 41\} \). Dla każdego z nich
+                możesz wybrać rodzinę (Gauss, Laplace, dwumodalny, jednostajny; dla \( p \) także rozkład skupiony w
+                jednym punkcie), a suwakami ustawić położenie \( \mu \) i szerokość \( \sigma \). Przesuwaj suwaki i
+                obserwuj, jak zmienia się \( H(p,q) \). Entropia krzyżowa jest zawsze nie mniejsza niż \( H(p) \) i jest
+                jej równa dokładnie wtedy, gdy \( q = p \).
+            </p>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="ce-family-p">Rozkład p</label>
+                    <select id="ce-family-p" class="ce-input">
+                        <option value="gauss">Gauss</option>
+                        <option value="laplace">Laplace</option>
+                        <option value="bimodal">Dwumodalny</option>
+                        <option value="uniform">Jednostajny</option>
+                        <option value="spike">Skupiony w punkcie</option>
+                    </select>
+                    <label for="ce-mu-p">&mu;<sub>p</sub></label>
+                    <input type="range" id="ce-mu-p" class="ce-input" min="5" max="37" step="0.5" value="18">
+                    <span id="ce-mu-p-val" class="gd-speed-label">18.0</span>
+                    <label for="ce-sigma-p">&sigma;<sub>p</sub></label>
+                    <input type="range" id="ce-sigma-p" class="ce-input" min="0.5" max="10" step="0.5" value="3">
+                    <span id="ce-sigma-p-val" class="gd-speed-label">3.0</span>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="ce-family-q">Rozkład q</label>
+                    <select id="ce-family-q" class="ce-input">
+                        <option value="gauss">Gauss</option>
+                        <option value="laplace">Laplace</option>
+                        <option value="bimodal">Dwumodalny</option>
+                        <option value="uniform">Jednostajny</option>
+                    </select>
+                    <label for="ce-mu-q">&mu;<sub>q</sub></label>
+                    <input type="range" id="ce-mu-q" class="ce-input" min="-5" max="46" step="0.5" value="24">
+                    <span id="ce-mu-q-val" class="gd-speed-label">24.0</span>
+                    <label for="ce-sigma-q">&sigma;<sub>q</sub></label>
+                    <input type="range" id="ce-sigma-q" class="ce-input" min="0.5" max="15" step="0.5" value="5">
+                    <span id="ce-sigma-q-val" class="gd-speed-label">5.0</span>
+                </div>
+                <p class="gd-status" id="ce-readout"></p>
+            </div>
+
+            <figure class="plot-figure">
+                <div id="ce-dist" class="plot-container plot-2d"></div>
+                <figcaption>Rozkłady \( p \) (niebieski) i \( q \) (czerwony). Gdy \( p \) jest skupiony w punkcie, \( H(p) = 0 \) i \( H(p,q) = -\log q(x_0) \).</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ce-decomp" class="plot-container plot-2d"></div>
+                <figcaption>Rozkład \( H(p,q) = H(p) + D_{KL}(p\|q) \): niezmienna część zależna tylko od \( p \) oraz nadwyżka wynikająca z niedopasowania \( q \).</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ce-shift" class="plot-container plot-2d"></div>
+                <figcaption>\( H(p,q) \) jako funkcja przesunięcia \( \mu_q \) (przy bieżącym \( \sigma_q \)). Minimum równe \( H(p) \) osiągane jest, gdy \( q \) pokrywa się z \( p \).</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ce-sigma" class="plot-container plot-2d"></div>
+                <figcaption>\( H(p,q) \) jako funkcja szerokości \( \sigma_q \) (przy bieżącym \( \mu_q \)). Zbyt wąskie \( q \) jest karane szczególnie mocno, gdy \( p \) ma masę tam, gdzie \( q \) jest prawie zerowe.</figcaption>
+            </figure>
+
+            <h2>Przykład praktyczny: klasyfikator</h2>
+            <p>
+                W klasyfikacji \( p \) to rozkład docelowy, a \( q = \text{softmax}(z/T) \) to wyjście modelu dla logitów
+                \( z \) i temperatury \( T \). Weźmy zadanie algorytmiczne: dodawanie modulo 10, czyli klasyfikację
+                wyniku \( (a + b) \bmod 10 \) do jednej z \( K = 10 \) klas. Dla przykładu \( 7 + 6 \) poprawną klasą
+                jest \( y = 3 \). Typowy błąd modelu to pomyłka o jeden (\( 2 \) lub \( 4 \)), więc suwak „logit sąsiadów”
+                podnosi logity klas \( y \pm 1 \).
+            </p>
+            <p>
+                Dla etykiety one-hot mamy \( H(p) = 0 \), więc \( H(p,q) = D_{KL}(p\|q) = -\log q(y) \), czyli zwykła
+                strata klasyfikacyjna. Suwak „wygładzanie etykiet” \( \varepsilon \) zamienia cel na
+                \( p = (1-\varepsilon)\,\mathbf{e}_y + \varepsilon/K \). Wtedy \( H(p) > 0 \), a strata nie może
+                spaść poniżej \( H(p) \), nawet gdy model jest „idealnie” pewny siebie.
+            </p>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="ce-margin">Logit poprawnej klasy</label>
+                    <input type="range" id="ce-margin" class="ce-input" min="-2" max="12" step="0.25" value="3">
+                    <span id="ce-margin-val" class="gd-speed-label">3.00</span>
+                    <label for="ce-bonus">Logit sąsiadów y±1</label>
+                    <input type="range" id="ce-bonus" class="ce-input" min="0" max="12" step="0.25" value="2">
+                    <span id="ce-bonus-val" class="gd-speed-label">2.00</span>
+                </div>
+                <div class="gd-controls-row">
+                    <label for="ce-temp">Temperatura T</label>
+                    <input type="range" id="ce-temp" class="ce-input" min="0.25" max="4" step="0.25" value="1">
+                    <span id="ce-temp-val" class="gd-speed-label">1.00</span>
+                    <label for="ce-eps">Wygładzanie etykiet &epsilon;</label>
+                    <input type="range" id="ce-eps" class="ce-input" min="0" max="0.5" step="0.05" value="0">
+                    <span id="ce-eps-val" class="gd-speed-label">0.00</span>
+                </div>
+                <p class="gd-status" id="ce-clf-readout"></p>
+            </div>
+
+            <figure class="plot-figure">
+                <div id="ce-logits" class="plot-container plot-2d"></div>
+                <figcaption>Logity modelu dla 10 klas; poprawna klasa \( y = 3 \) zaznaczona na niebiesko.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ce-clf" class="plot-container plot-2d"></div>
+                <figcaption>Cel \( p \) (niebieski) i predykcja \( q \) (czerwony) po softmaksie.</figcaption>
+            </figure>
+
+            <figure class="plot-figure">
+                <div id="ce-loss" class="plot-container plot-2d"></div>
+                <figcaption>Strata w zależności od logitu poprawnej klasy. Dla one-hot maleje do zera, ale dla \( \varepsilon > 0 \) ma minimum w skończonym punkcie i rośnie, gdy model staje się nadmiernie pewny.</figcaption>
+            </figure>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="cross-entropy-plot.js"></script>
+</body>
+</html>

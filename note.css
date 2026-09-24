@@ -146,6 +146,11 @@ blockquote p + p {
     height: 420px;
 }
 
+.plot-square {
+    height: 560px;
+    max-height: 100vw;
+}
+
 .plot-preview {
     height: 260px;
 }
@@ -280,6 +285,38 @@ blockquote p + p {
 .gd-controls input[type="range"] {
     width: 160px;
     accent-color: var(--text-main);
+}
+
+/* Siatka suwaków: etykieta | suwak | wartość, dwie kolumny (jedna na wąskim ekranie) */
+.ds-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 28px;
+}
+
+.ds-field {
+    display: grid;
+    grid-template-columns: 6.5em minmax(0, 1fr) 3.5em;
+    align-items: center;
+    gap: 10px;
+}
+
+.gd-controls .ds-field input[type="range"] {
+    width: 100%;
+    margin: 0;
+}
+
+.ds-val {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+    .ds-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .gd-speed-label {

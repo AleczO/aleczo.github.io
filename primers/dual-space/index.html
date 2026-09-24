@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-title-en="Dual Space - Aleksander Czop" data-title-pl="Przestrzeń dualna - Aleksander Czop">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dual space — linear functionals, the dual basis, examples and an interactive picture of covectors as level lines.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/primers/dual-space/">
+    <meta property="og:title" content="Dual Space">
+    <meta property="og:description" content="Dual space — linear functionals, the dual basis, examples and an interactive picture of covectors as level lines.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/julia_set_plotly.png">
+
+    <title>Dual Space - Aleksander Czop</title>
+
+    <script>try { var l = localStorage.getItem('lang'); if (l) document.documentElement.lang = l; } catch (e) {}</script>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html">Articles</a>
+                    <a href="../../primers.html" class="active">Primers</a>
+
+                    <button class="lang-toggle-btn" id="lang-toggle" aria-label="Change language / Zmień język">PL</button>
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle theme">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../primers.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            <span data-lang="en">Back to Primers</span><span data-lang="pl">Powrót do Primers</span>
+        </a>
+
+        <article class="article-container">
+
+            <h1 class="article-title"><span data-lang="en">Dual Space</span><span data-lang="pl">Przestrzeń dualna</span></h1>
+
+            <hr class="article-divider">
+
+            <!-- ============ ENGLISH ============ -->
+            <div data-lang="en">
+            <p>
+                <strong>Assumptions.</strong> Let \( V \) be a vector space of finite dimension \( n \) over a field
+                \( \mathbb{F} \) (think \( \mathbb{R} \) or \( \mathbb{C} \)), and let \( (e_1, \dots, e_n) \) be a basis
+                of \( V \).
+            </p>
+
+            <p><strong>Definition (dual space).</strong> The dual space of \( V \) is the set of all linear functionals on \( V \),</p>
+            <div class="math-block">
+                $$ V^* = \operatorname{Hom}(V, \mathbb{F}) = \{\, f \colon V \to \mathbb{F} \mid f \text{ is linear} \,\}, $$
+            </div>
+            <p>
+                with pointwise operations \( (f + g)(v) = f(v) + g(v) \) and \( (\lambda f)(v) = \lambda f(v) \). These
+                make \( V^* \) a vector space over \( \mathbb{F} \). Its elements are called <em>covectors</em> (or
+                one-forms).
+            </p>
+
+            <p><strong>Definition (dual basis).</strong> The functionals \( e^1, \dots, e^n \in V^* \) are defined on
+            the basis by</p>
+            <div class="math-block">
+                $$ e^i(e_j) = \delta^i_j = \begin{cases} 1 & i = j, \\ 0 & i \neq j, \end{cases} $$
+            </div>
+            <p>
+                and extended linearly. Explicitly, \( e^i \) reads off the \( i \)-th coordinate:
+                if \( v = \sum_j v^j e_j \), then \( e^i(v) = v^i \), so
+            </p>
+            <div class="math-block">
+                $$ v = \sum_{i=1}^n e^i(v)\, e_i . $$
+            </div>
+
+            <h2>Example: polynomials</h2>
+            <p>
+                Let \( V = \mathbb{R}_2[x] \) be the space of real polynomials of degree at most \( 2 \), with basis
+                \( e_1 = 1,\ e_2 = x,\ e_3 = x^2 \). Some elements of \( V^* \):
+            </p>
+            <ul>
+                <li>evaluation at a point, \( \mathrm{ev}_a(p) = p(a) \);</li>
+                <li>the integral, \( I(p) = \int_0^1 p(x)\,dx \);</li>
+                <li>the derivative at zero, \( D(p) = p'(0) \).</li>
+            </ul>
+            <p>
+                Each of these is linear in \( p \). The dual basis reads off the coefficients of
+                \( p = a_0 + a_1 x + a_2 x^2 \):
+            </p>
+            <div class="math-block">
+                $$ e^1(p) = p(0) = a_0, \qquad e^2(p) = p'(0) = a_1, \qquad e^3(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
+            </div>
+            <p>
+                You can check \( e^i(e_j) = \delta^i_j \) directly. For example, \( e^3(x^2) = \tfrac12 \cdot 2 = 1 \) and
+                \( e^3(x) = 0 \). Every functional is a combination of these. For the integral,
+                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), so \( I = e^1 + \tfrac12 e^2 + \tfrac13 e^3 \).
+            </p>
+            <p>
+                In \( \mathbb{R}^n \) the same idea gives the familiar picture. Vectors are columns, covectors are
+                rows \( a^\top \), and \( f(v) = a^\top v \). The dual basis of the standard basis is the standard basis
+                of rows.
+            </p>
+
+            <h2>Visualization</h2>
+            <p>
+                Take \( V = \mathbb{R}^2 \) and choose a basis \( e_1, e_2 \) with the sliders (angle and length). A
+                covector \( f \) can be drawn as the family of parallel level lines \( \{x : f(x) = k\} \),
+                \( k \in \mathbb{Z} \). The value \( f(v) \) counts how many lines \( v \) crosses. The dual basis has
+                the following properties:
+            </p>
+            <ul>
+                <li>the level lines of \( e^1 \) are parallel to \( e_2 \), because \( e^1(e_2) = 0 \);</li>
+                <li>\( e_1 \) spans exactly one gap between them, because \( e^1(e_1) = 1 \).</li>
+            </ul>
+            <p>
+                Lengthen \( e_1 \), and the lines of \( e^1 \) spread apart. The covector gets "smaller" as the vector
+                grows. Let \( A = [\,e_1\ e_2\,] \) be the matrix with the basis vectors as columns. The dashed arrows
+                show the gradients of \( e^1, e^2 \) under the standard inner product, which are the rows of
+                \( A^{-1} \). Each is perpendicular to the <em>other</em> basis vector. They coincide with
+                \( e_1, e_2 \) only when the basis is orthonormal.
+            </p>
+            </div>
+
+            <!-- ============ POLSKI ============ -->
+            <div data-lang="pl">
+            <p>
+                <strong>Założenia.</strong> Niech \( V \) będzie przestrzenią wektorową skończonego wymiaru \( n \) nad
+                ciałem \( \mathbb{F} \) (np. \( \mathbb{R} \) lub \( \mathbb{C} \)), a \( (e_1, \dots, e_n) \) bazą
+                \( V \).
+            </p>
+
+            <p><strong>Definicja (przestrzeń dualna).</strong> Przestrzeń dualna do \( V \) to zbiór wszystkich funkcjonałów liniowych na \( V \),</p>
+            <div class="math-block">
+                $$ V^* = \operatorname{Hom}(V, \mathbb{F}) = \{\, f \colon V \to \mathbb{F} \mid f \text{ jest liniowy} \,\}, $$
+            </div>
+            <p>
+                z działaniami określonymi punktowo: \( (f + g)(v) = f(v) + g(v) \) oraz \( (\lambda f)(v) = \lambda f(v) \).
+                Z tymi działaniami \( V^* \) jest przestrzenią wektorową nad \( \mathbb{F} \). Jej elementy nazywamy
+                <em>kowektorami</em> (lub 1-formami).
+            </p>
+
+            <p><strong>Definicja (baza dualna).</strong> Funkcjonały \( e^1, \dots, e^n \in V^* \) określamy na bazie
+            wzorem</p>
+            <div class="math-block">
+                $$ e^i(e_j) = \delta^i_j = \begin{cases} 1 & i = j, \\ 0 & i \neq j, \end{cases} $$
+            </div>
+            <p>
+                i przedłużamy liniowo. Funkcjonał \( e^i \) odczytuje \( i \)-tą współrzędną:
+                jeśli \( v = \sum_j v^j e_j \), to \( e^i(v) = v^i \), a więc
+            </p>
+            <div class="math-block">
+                $$ v = \sum_{i=1}^n e^i(v)\, e_i . $$
+            </div>
+
+            <h2>Przykład: wielomiany</h2>
+            <p>
+                Niech \( V = \mathbb{R}_2[x] \) będzie przestrzenią wielomianów rzeczywistych stopnia co najwyżej
+                \( 2 \), z bazą \( e_1 = 1,\ e_2 = x,\ e_3 = x^2 \). Przykładowe elementy \( V^* \):
+            </p>
+            <ul>
+                <li>wartość w punkcie, \( \mathrm{ev}_a(p) = p(a) \);</li>
+                <li>całka, \( I(p) = \int_0^1 p(x)\,dx \);</li>
+                <li>pochodna w zerze, \( D(p) = p'(0) \).</li>
+            </ul>
+            <p>
+                Każdy z nich jest liniowy względem \( p \). Baza dualna odczytuje współczynniki wielomianu
+                \( p = a_0 + a_1 x + a_2 x^2 \):
+            </p>
+            <div class="math-block">
+                $$ e^1(p) = p(0) = a_0, \qquad e^2(p) = p'(0) = a_1, \qquad e^3(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
+            </div>
+            <p>
+                Łatwo sprawdzić, że \( e^i(e_j) = \delta^i_j \), np. \( e^3(x^2) = \tfrac12 \cdot 2 = 1 \) oraz
+                \( e^3(x) = 0 \). Każdy funkcjonał jest kombinacją tych trzech. Dla całki
+                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), więc \( I = e^1 + \tfrac12 e^2 + \tfrac13 e^3 \).
+            </p>
+            <p>
+                W \( \mathbb{R}^n \) ta sama idea daje znany obraz. Wektory to kolumny, kowektory to wiersze
+                \( a^\top \), a \( f(v) = a^\top v \). Bazą dualną do bazy standardowej jest standardowa baza wierszy.
+            </p>
+
+            <h2>Wizualizacja</h2>
+            <p>
+                Weźmy \( V = \mathbb{R}^2 \) i wybierzmy suwakami bazę \( e_1, e_2 \) (kąt i długość). Kowektor \( f \)
+                można narysować jako rodzinę równoległych poziomic \( \{x : f(x) = k\} \), \( k \in \mathbb{Z} \).
+                Wartość \( f(v) \) to liczba poziomic, które przecina \( v \). Baza dualna ma następujące własności:
+            </p>
+            <ul>
+                <li>poziomice \( e^1 \) są równoległe do \( e_2 \), bo \( e^1(e_2) = 0 \);</li>
+                <li>\( e_1 \) rozpina dokładnie jeden odstęp między nimi, bo \( e^1(e_1) = 1 \).</li>
+            </ul>
+            <p>
+                Gdy wydłużysz \( e_1 \), poziomice \( e^1 \) się rozsuną. Kowektor „maleje”, gdy wektor rośnie.
+                Niech \( A = [\,e_1\ e_2\,] \) będzie macierzą, której kolumnami są wektory bazy. Przerywane strzałki
+                to gradienty \( e^1, e^2 \) względem standardowego iloczynu skalarnego, czyli wiersze \( A^{-1} \).
+                Każdy z nich jest prostopadły do <em>drugiego</em> wektora bazy. Pokrywają się z \( e_1, e_2 \)
+                tylko wtedy, gdy baza jest ortonormalna.
+            </p>
+            </div>
+
+            <div class="gd-controls">
+                <div class="ds-grid">
+                    <div class="ds-field">
+                        <label for="ds-a1"><span data-lang="en">angle</span><span data-lang="pl">kąt</span> e<sub>1</sub></label>
+                        <input type="range" id="ds-a1" class="ds-input" min="-180" max="180" step="1" value="10">
+                        <span id="ds-a1-val" class="ds-val">10°</span>
+                    </div>
+                    <div class="ds-field">
+                        <label for="ds-l1"><span data-lang="en">length</span><span data-lang="pl">długość</span> e<sub>1</sub></label>
+                        <input type="range" id="ds-l1" class="ds-input" min="0.3" max="2.5" step="0.05" value="1.2">
+                        <span id="ds-l1-val" class="ds-val">1.20</span>
+                    </div>
+                    <div class="ds-field">
+                        <label for="ds-a2"><span data-lang="en">angle</span><span data-lang="pl">kąt</span> e<sub>2</sub></label>
+                        <input type="range" id="ds-a2" class="ds-input" min="-180" max="180" step="1" value="65">
+                        <span id="ds-a2-val" class="ds-val">65°</span>
+                    </div>
+                    <div class="ds-field">
+                        <label for="ds-l2"><span data-lang="en">length</span><span data-lang="pl">długość</span> e<sub>2</sub></label>
+                        <input type="range" id="ds-l2" class="ds-input" min="0.3" max="2.5" step="0.05" value="0.9">
+                        <span id="ds-l2-val" class="ds-val">0.90</span>
+                    </div>
+                    <div class="ds-field">
+                        <label for="ds-vx">v<sub>x</sub></label>
+                        <input type="range" id="ds-vx" class="ds-input" min="-3.5" max="3.5" step="0.05" value="2.2">
+                        <span id="ds-vx-val" class="ds-val">2.20</span>
+                    </div>
+                    <div class="ds-field">
+                        <label for="ds-vy">v<sub>y</sub></label>
+                        <input type="range" id="ds-vy" class="ds-input" min="-3.5" max="3.5" step="0.05" value="1.6">
+                        <span id="ds-vy-val" class="ds-val">1.60</span>
+                    </div>
+                </div>
+                <p class="gd-status" id="ds-readout"></p>
+            </div>
+
+            <figure class="plot-figure">
+                <div id="ds-plane" class="plot-container plot-square"></div>
+                <figcaption data-lang="en">Basis vectors \( e_1 \) (blue) and \( e_2 \) (red), with the level lines \( e^1 = k \) (blue) and \( e^2 = k \) (red) of the dual basis. Dashed arrows are the gradients of \( e^1, e^2 \). The black vector \( v \) has coordinates \( (e^1(v), e^2(v)) \), read off by counting the lines it crosses.</figcaption>
+                <figcaption data-lang="pl">Wektory bazy \( e_1 \) (niebieski) i \( e_2 \) (czerwony) oraz poziomice \( e^1 = k \) (niebieskie) i \( e^2 = k \) (czerwone) bazy dualnej. Przerywane strzałki to gradienty \( e^1, e^2 \). Czarny wektor \( v \) ma współrzędne \( (e^1(v), e^2(v)) \), które odczytujemy, licząc przecinane poziomice.</figcaption>
+            </figure>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="dual-space-plot.js"></script>
+</body>
+</html>

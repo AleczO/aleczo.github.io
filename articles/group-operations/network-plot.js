@@ -24,39 +24,35 @@
         return '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
     }
 
-    function relu(x) {
-        return x > 0 ? x : 0;
+    function square(x) {
+        return x * x;
     }
 
     function fc1Row(n) {
         const p2 = 2 * model.p;
-        return model['fc1.weight'].data.slice(n * p2, (n + 1) * p2);
+        return model['FN.0.weight'].data.slice(n * p2, (n + 1) * p2);
     }
 
-    function hiddenActivations(a, b) {
-        const p = model.p;
-        const x = new Array(2 * p).fill(0);
-        x[a] = 1;
-        x[p + b] = 1;
-        const h = new Array(model.hidden);
-        for (let i = 0; i < model.hidden; i++) {
-            const row = fc1Row(i);
-            let s = model['fc1.bias'].data[i];
-            for (let k = 0; k < 2 * p; k++) s += row[k] * x[k];
-            h[i] = relu(s);
-        }
-        return h;
+    // This model used plain bias-free linear layers (no 1/sqrt(fan_in) or 1/hidden scaling):
+    // only the raw weights reproduce the logged training loss.
+
+    // First hidden layer for a one-hot pair (a, b): only columns a and p + b contribute.
+    function firstLayerNeuron(n, a, b) {
+        const w = model['FN.0.weight'].data;
+        const p2 = 2 * model.p;
+        return square(w[n * p2 + a] + w[n * p2 + model.p + b]);
     }
 
     function logits(a, b) {
-        const h = hiddenActivations(a, b);
-        const p = model.p;
-        const out = new Array(p);
-        for (let i = 0; i < p; i++) {
-            const row = model['fc2.weight'].data.slice(i * model.hidden, (i + 1) * model.hidden);
-            let s = model['fc2.bias'].data[i];
-            for (let k = 0; k < model.hidden; k++) s += row[k] * h[k];
-            out[i] = s;
+        const hidden = model.hidden;
+        const w2 = model['FN.2.weight'].data;
+        const h = new Array(hidden);
+        for (let n = 0; n < hidden; n++) h[n] = firstLayerNeuron(n, a, b);
+        const out = new Array(model.p);
+        for (let q = 0; q < model.p; q++) {
+            let s = 0;
+            for (let k = 0; k < hidden; k++) s += w2[q * hidden + k] * h[k];
+            out[q] = s;
         }
         return out;
     }
@@ -73,7 +69,7 @@
     }
 
     // Classic cyclic Jacobi eigenvalue algorithm for a small symmetric matrix.
-    // Returns all eigenvalues/eigenvectors; good enough for the <=58x58 covariance
+    // Returns all eigenvalues/eigenvectors; good enough for the <=142x142 covariance
     // matrices here, no external linear-algebra library needed.
     function jacobiEigen(matrix, n) {
         const a = matrix.map(row => row.slice());
@@ -165,10 +161,10 @@
         if (pcaCache) return pcaCache;
         const p = model.p;
         const hidden = model.hidden;
-        const w1 = model['fc1.weight'].data;
-        const w2 = model['fc2.weight'].data;
+        const w1 = model['FN.0.weight'].data;
+        const w2 = model['FN.2.weight'].data;
 
-        // fc1 columns: one 58-dim (per-neuron) direction for each input unit k = 0..2p-1.
+        // FN.0 columns: one hidden-dim (per-neuron) direction for each input unit k = 0..2p-1.
         const fc1Cols = [];
         for (let k = 0; k < 2 * p; k++) {
             const col = new Array(hidden);
@@ -177,7 +173,7 @@
         }
         const fc1Pca = pca2D(fc1Cols);
 
-        // fc2 rows: one 58-dim direction for each output result r = 0..p-1.
+        // FN.2 rows: one hidden-dim direction for each output result r = 0..p-1.
         const fc2Rows = [];
         for (let r = 0; r < p; r++) fc2Rows.push(w2.slice(r * hidden, (r + 1) * hidden));
         const fc2Pca = pca2D(fc2Rows);
@@ -261,8 +257,8 @@
         const { fc1Pca, fc2Pca } = computePCA();
         const statusEl = document.getElementById('net-pca-status');
         if (statusEl) {
-            statusEl.textContent = 'PC1+PC2: fc1 wyjaśnia ' + (100 * (fc1Pca.explained[0] + fc1Pca.explained[1])).toFixed(1) +
-                '% wariancji, fc2 wyjaśnia ' + (100 * (fc2Pca.explained[0] + fc2Pca.explained[1])).toFixed(1) + '%.';
+            statusEl.textContent = 'PC1+PC2: FN.0 wyjaśnia ' + (100 * (fc1Pca.explained[0] + fc1Pca.explained[1])).toFixed(1) +
+                '% wariancji, FN.2 wyjaśnia ' + (100 * (fc2Pca.explained[0] + fc2Pca.explained[1])).toFixed(1) + '%.';
         }
     }
 
@@ -351,20 +347,6 @@
         const spectra = neuronSpectra();
         const ms = Array.from({ length: spectra.half }, (_, i) => i + 1);
         const powers = ms.map(m => spectra.aggregate[m]);
-        const totalPower = powers.reduce((a, b) => a + b, 0);
-
-        // Smallest set of frequencies (by descending power) whose energy already covers
-        // most of the spectrum — a simple, threshold-free way to say "how many" and "which".
-        const order = ms.map((m, i) => i).sort((i, j) => powers[j] - powers[i]);
-        const active = new Set();
-        let cumulative = 0;
-        for (const i of order) {
-            active.add(ms[i]);
-            cumulative += powers[i];
-            if (cumulative >= 0.6 * totalPower) break;
-        }
-        const activeSorted = ms.filter(m => active.has(m));
-        const colors = ms.map(m => active.has(m) ? aColor : otherColor);
 
         const layout = {
             margin: { l: 45, r: 10, t: 10, b: 45 },
@@ -373,19 +355,13 @@
             font: { color: c.muted, family: fontFamily() },
             showlegend: false,
             dragmode: false,
-            xaxis: Object.assign(baseAxisLayout(c), { title: 'częstotliwość m', tickmode: 'linear', dtick: 1, zeroline: false }),
+            xaxis: Object.assign(baseAxisLayout(c), { title: 'częstotliwość m', tickmode: 'linear', tick0: 0, dtick: 5, zeroline: false }),
             yaxis: Object.assign(baseAxisLayout(c), { title: 'moc widmowa', zeroline: false })
         };
 
         Plotly.react('net-spectrum-plot', [
-            { type: 'bar', x: ms, y: powers, marker: { color: colors } }
+            { type: 'bar', x: ms, y: powers, marker: { color: aColor } }
         ], layout, { responsive: true, displaylogo: false, displayModeBar: false });
-
-        const statusEl = document.getElementById('net-spectrum-status');
-        if (statusEl) {
-            statusEl.textContent = activeSorted.length + ' z ' + spectra.half +
-                ' możliwych częstotliwości odpowiada za 60% mocy widma: m = {' + activeSorted.join(', ') + '}.';
-        }
     }
 
     function renderWeightProfile(n) {
@@ -420,32 +396,39 @@
         ], layout, { responsive: true, displaylogo: false, displayModeBar: false });
     }
 
-    function renderHeatmap(n) {
+    // In sum/difference coordinates s = (a+b) mod p, d = (a-b) mod p. For odd p the map is a
+    // bijection: a = (s+d)/2, b = (s-d)/2 mod p, with 1/2 = (p+1)/2 in Z_p.
+    function renderHeatmap(n, sumDiff) {
         const c = themeColors();
         const p = model.p;
+        const half = (p + 1) / 2;
         const z = [];
-        for (let b = 0; b < p; b++) {
+        for (let y = 0; y < p; y++) {
             const row = [];
-            for (let a = 0; a < p; a++) {
-                row.push(hiddenActivations(a, b)[n]);
+            for (let x = 0; x < p; x++) {
+                const a = sumDiff ? ((x + y) * half) % p : x;
+                const b = sumDiff ? ((x - y + p) * half) % p : y;
+                row.push(firstLayerNeuron(n, a, b));
             }
             z.push(row);
         }
+        const xTitle = sumDiff ? '(a+b) mod p' : 'a';
+        const yTitle = sumDiff ? '(a−b) mod p' : 'b';
 
         const layout = {
-            margin: { l: 40, r: 10, t: 10, b: 30 },
+            margin: { l: 50, r: 10, t: 10, b: 45 },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(0,0,0,0)',
             font: { color: c.muted, family: fontFamily() },
             dragmode: false,
-            xaxis: Object.assign(baseAxisLayout(c), { title: 'a', zeroline: false }),
-            yaxis: Object.assign(baseAxisLayout(c), { title: 'b', zeroline: false })
+            xaxis: Object.assign(baseAxisLayout(c), { title: xTitle, zeroline: false }),
+            yaxis: Object.assign(baseAxisLayout(c), { title: yTitle, zeroline: false })
         };
 
         Plotly.react(HEATMAP_ID, [
             {
                 type: 'heatmap', z: z, colorscale: 'Viridis', showscale: false,
-                hovertemplate: 'a=%{x}, b=%{y}<br>aktywacja=%{z:.3f}<extra></extra>'
+                hovertemplate: xTitle + '=%{x}, ' + yTitle + '=%{y}<br>aktywacja=%{z:.3f}<extra></extra>'
             }
         ], layout, { responsive: true, displaylogo: false, displayModeBar: false });
     }
@@ -468,7 +451,7 @@
             font: { color: c.muted, family: fontFamily() },
             showlegend: false,
             dragmode: false,
-            xaxis: Object.assign(baseAxisLayout(c), { title: 'wynik', tickmode: 'linear', dtick: 2 }),
+            xaxis: Object.assign(baseAxisLayout(c), { title: 'wynik', tickmode: 'linear', dtick: 5 }),
             yaxis: Object.assign(baseAxisLayout(c), { title: 'P(wynik)', range: [0, 1] })
         };
 
@@ -496,12 +479,13 @@
     }
 
     let sortFc1ByFreq = true;
+    let heatmapSumDiff = false;
 
     function renderAll() {
         if (!model) return;
         const n = currentNeuron();
         renderWeightProfile(n);
-        renderHeatmap(n);
+        renderHeatmap(n, heatmapSumDiff);
         const { a, b } = currentAB();
         renderOutput(a, b);
         renderFc1Heatmap(sortFc1ByFreq);
@@ -537,12 +521,21 @@
             });
         }
 
+        const coordsBtn = document.getElementById('net-heatmap-coords');
+        if (coordsBtn) {
+            coordsBtn.addEventListener('click', () => {
+                heatmapSumDiff = !heatmapSumDiff;
+                coordsBtn.textContent = heatmapSumDiff ? 'Współrzędne (a, b)' : 'Współrzędne (a+b, a−b)';
+                if (model) renderHeatmap(currentNeuron(), heatmapSumDiff);
+            });
+        }
+
         try {
             const dataEl = document.getElementById('model-weights-data');
             model = JSON.parse(dataEl.textContent);
             const statusEl = document.getElementById('net-status');
             if (statusEl) {
-                statusEl.textContent = 'p = ' + model.p + ', warstwa ukryta = ' + model.hidden + ' neuronów, aktywacja ReLU.';
+                statusEl.textContent = 'p = ' + model.p + ', warstwa ukryta = ' + model.hidden + ' neuronów, aktywacja x².';
             }
             renderAll();
         } catch (e) {

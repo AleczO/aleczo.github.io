@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" data-title-en="Linear Functional - Aleksander Czop" data-title-pl="Funkcjonał liniowy - Aleksander Czop">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Linear functional — definition and examples: linear combination, trace, definite integral.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/primers/linear-functional/">
+    <meta property="og:title" content="Linear Functional">
+    <meta property="og:description" content="Linear functional — definition and examples: linear combination, trace, definite integral.">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/julia_set_plotly.png">
+
+    <title>Linear Functional - Aleksander Czop</title>
+
+    <script>try { var l = localStorage.getItem('lang'); if (l) document.documentElement.lang = l; } catch (e) {}</script>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html">Articles</a>
+                    <a href="../../primers.html" class="active">Primers</a>
+
+                    <button class="lang-toggle-btn" id="lang-toggle" aria-label="Change language / Zmień język">PL</button>
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle theme">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../primers.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            <span data-lang="en">Back to Primers</span><span data-lang="pl">Powrót do Primers</span>
+        </a>
+
+        <article class="article-container">
+
+            <h1 class="article-title"><span data-lang="en">Linear Functional</span><span data-lang="pl">Funkcjonał liniowy</span></h1>
+
+            <hr class="article-divider">
+
+            <!-- ============ ENGLISH ============ -->
+            <div data-lang="en">
+            <p>
+                <strong>Definition.</strong> Let \( V \) be a vector space over a field \( \mathbb{K} \). A
+                <em>linear functional</em> (linear form, covector) on \( V \) is a map
+                \( \phi \colon V \to \mathbb{K} \) satisfying:
+            </p>
+            <ol>
+                <li>additivity
+                    <div class="math-block">
+                        $$ \forall x, y \in V \quad \phi(x + y) = \phi(x) + \phi(y), $$
+                    </div>
+                </li>
+                <li>homogeneity
+                    <div class="math-block">
+                        $$ \forall \alpha \in \mathbb{K},\ \forall x \in V \quad \phi(\alpha x) = \alpha\,\phi(x). $$
+                    </div>
+                </li>
+            </ol>
+            <p>Both conditions can be written equivalently as one:</p>
+            <div class="math-block">
+                $$ \forall \alpha, \beta \in \mathbb{K},\ \forall x, y \in V \quad \phi(\alpha x + \beta y) = \alpha\,\phi(x) + \beta\,\phi(y). $$
+            </div>
+            <p>
+                The set of all linear functionals on \( V \) is itself a vector space, the
+                <a href="../dual-space/index.html">dual space</a> \( V^* \).
+            </p>
+
+            <h2>Examples</h2>
+
+            <h3>Linear combination</h3>
+            <p>
+                Fix \( (c_1, \dots, c_n) \in \mathbb{K}^n \) and define \( \phi \colon \mathbb{K}^n \to \mathbb{K} \) by
+            </p>
+            <div class="math-block">
+                $$ \phi(x_1, \dots, x_n) = c_1 x_1 + \dots + c_n x_n . $$
+            </div>
+            <p>Then \( \phi \) is a linear functional on \( \mathbb{K}^n \).</p>
+
+            <h3>Trace of a matrix</h3>
+            <p>
+                Consider the vector space \( M_{n \times n}(\mathbb{K}) \) of all square \( n \times n \) matrices over
+                \( \mathbb{K} \). Define \( \operatorname{tr} \colon M_{n \times n}(\mathbb{K}) \to \mathbb{K} \), which
+                assigns to a matrix the sum of the entries on its main diagonal:
+            </p>
+            <div class="math-block">
+                $$ \operatorname{tr}(A) = \sum_{i=1}^n A_{ii} = A_{11} + A_{22} + \dots + A_{nn} . $$
+            </div>
+            <p>Then \( \operatorname{tr} \) is a linear functional on \( M_{n \times n}(\mathbb{K}) \).</p>
+
+            <details class="proof-block">
+                <summary>Proof</summary>
+                <div class="proof-content">
+                    <p>For any matrices \( A, B \in M_{n \times n}(\mathbb{K}) \) and any scalar \( \alpha \in \mathbb{K} \):</p>
+                    <ol>
+                        <li>Additivity:
+                            <div class="math-block">
+                                $$ \operatorname{tr}(A + B) = \sum_{i=1}^n (A_{ii} + B_{ii}) = \sum_{i=1}^n A_{ii} + \sum_{i=1}^n B_{ii} = \operatorname{tr}(A) + \operatorname{tr}(B) $$
+                            </div>
+                        </li>
+                        <li>Homogeneity:
+                            <div class="math-block">
+                                $$ \operatorname{tr}(\alpha A) = \sum_{i=1}^n \alpha A_{ii} = \alpha \sum_{i=1}^n A_{ii} = \alpha \operatorname{tr}(A) $$
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </details>
+
+            <h3>Definite integral</h3>
+            <p>
+                Take real scalars, \( \mathbb{K} = \mathbb{R} \), and let \( V = C([a, b]) \) be the space of
+                continuous real-valued functions on the interval \( [a, b] \). Define
+                \( I \colon C([a, b]) \to \mathbb{R} \) by the definite integral
+            </p>
+            <div class="math-block">
+                $$ I(f) = \int_a^b f(x)\,dx . $$
+            </div>
+            <p>Then \( I \) is a linear functional on \( C([a, b]) \).</p>
+
+            <details class="proof-block">
+                <summary>Proof</summary>
+                <div class="proof-content">
+                    <p>For any functions \( f, g \in C([a, b]) \) and any scalar \( \alpha \in \mathbb{R} \):</p>
+                    <ol>
+                        <li>Additivity:
+                            <div class="math-block">
+                                $$ I(f + g) = \int_a^b \big(f(x) + g(x)\big)\,dx = \int_a^b f(x)\,dx + \int_a^b g(x)\,dx = I(f) + I(g) $$
+                            </div>
+                        </li>
+                        <li>Homogeneity:
+                            <div class="math-block">
+                                $$ I(\alpha f) = \int_a^b \alpha f(x)\,dx = \alpha \int_a^b f(x)\,dx = \alpha I(f) $$
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </details>
+            </div>
+
+            <!-- ============ POLSKI ============ -->
+            <div data-lang="pl">
+            <p>
+                <strong>Definicja.</strong> Niech \( V \) będzie przestrzenią liniową nad ciałem \( \mathbb{K} \).
+                <em>Funkcjonałem liniowym</em> (formą liniową, kowektorem) w przestrzeni \( V \) nazywamy odwzorowanie
+                \( \phi \colon V \to \mathbb{K} \), spełniające:
+            </p>
+            <ol>
+                <li>addytywność
+                    <div class="math-block">
+                        $$ \forall x, y \in V \quad \phi(x + y) = \phi(x) + \phi(y), $$
+                    </div>
+                </li>
+                <li>jednorodność
+                    <div class="math-block">
+                        $$ \forall \alpha \in \mathbb{K},\ \forall x \in V \quad \phi(\alpha x) = \alpha\,\phi(x). $$
+                    </div>
+                </li>
+            </ol>
+            <p>Oba warunki można zapisać równoważnie jednym:</p>
+            <div class="math-block">
+                $$ \forall \alpha, \beta \in \mathbb{K},\ \forall x, y \in V \quad \phi(\alpha x + \beta y) = \alpha\,\phi(x) + \beta\,\phi(y). $$
+            </div>
+            <p>
+                Zbiór wszystkich funkcjonałów liniowych na \( V \) sam jest przestrzenią liniową, nazywaną
+                <a href="../dual-space/index.html">przestrzenią dualną</a> \( V^* \).
+            </p>
+
+            <h2>Przykłady</h2>
+
+            <h3>Kombinacja liniowa</h3>
+            <p>
+                Przyjmijmy \( (c_1, \dots, c_n) \in \mathbb{K}^n \). Zdefiniujmy odwzorowanie
+                \( \phi \colon \mathbb{K}^n \to \mathbb{K} \) wzorem:
+            </p>
+            <div class="math-block">
+                $$ \phi(x_1, \dots, x_n) = c_1 x_1 + \dots + c_n x_n . $$
+            </div>
+            <p>Wówczas \( \phi \) jest funkcjonałem liniowym na \( \mathbb{K}^n \).</p>
+
+            <h3>Ślad macierzy</h3>
+            <p>
+                Rozważmy przestrzeń liniową \( M_{n \times n}(\mathbb{K}) \) wszystkich macierzy kwadratowych rozmiaru
+                \( n \times n \) nad ciałem \( \mathbb{K} \). Zdefiniujmy odwzorowanie
+                \( \operatorname{tr} \colon M_{n \times n}(\mathbb{K}) \to \mathbb{K} \) przypisujące macierzy sumę
+                elementów leżących na jej głównej przekątnej:
+            </p>
+            <div class="math-block">
+                $$ \operatorname{tr}(A) = \sum_{i=1}^n A_{ii} = A_{11} + A_{22} + \dots + A_{nn} . $$
+            </div>
+            <p>Wówczas \( \operatorname{tr} \) jest funkcjonałem liniowym na \( M_{n \times n}(\mathbb{K}) \).</p>
+
+            <details class="proof-block">
+                <summary>Dowód</summary>
+                <div class="proof-content">
+                    <p>Dla dowolnych macierzy \( A, B \in M_{n \times n}(\mathbb{K}) \) oraz dowolnego skalara \( \alpha \in \mathbb{K} \):</p>
+                    <ol>
+                        <li>Addytywność:
+                            <div class="math-block">
+                                $$ \operatorname{tr}(A + B) = \sum_{i=1}^n (A_{ii} + B_{ii}) = \sum_{i=1}^n A_{ii} + \sum_{i=1}^n B_{ii} = \operatorname{tr}(A) + \operatorname{tr}(B) $$
+                            </div>
+                        </li>
+                        <li>Jednorodność:
+                            <div class="math-block">
+                                $$ \operatorname{tr}(\alpha A) = \sum_{i=1}^n \alpha A_{ii} = \alpha \sum_{i=1}^n A_{ii} = \alpha \operatorname{tr}(A) $$
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </details>
+
+            <h3>Całka oznaczona</h3>
+            <p>
+                Rozważmy przypadek, gdy ciałem skalarów są liczby rzeczywiste (\( \mathbb{K} = \mathbb{R} \)). Niech
+                \( V = C([a, b]) \) będzie przestrzenią funkcji ciągłych określonych na przedziale \( [a, b] \)
+                o wartościach rzeczywistych. Zdefiniujmy odwzorowanie \( I \colon C([a, b]) \to \mathbb{R} \) za pomocą
+                całki oznaczonej:
+            </p>
+            <div class="math-block">
+                $$ I(f) = \int_a^b f(x)\,dx . $$
+            </div>
+            <p>Wówczas \( I \) jest funkcjonałem liniowym na \( C([a, b]) \).</p>
+
+            <details class="proof-block">
+                <summary>Dowód</summary>
+                <div class="proof-content">
+                    <p>Dla dowolnych funkcji \( f, g \in C([a, b]) \) oraz dowolnego skalara \( \alpha \in \mathbb{R} \):</p>
+                    <ol>
+                        <li>Addytywność:
+                            <div class="math-block">
+                                $$ I(f + g) = \int_a^b \big(f(x) + g(x)\big)\,dx = \int_a^b f(x)\,dx + \int_a^b g(x)\,dx = I(f) + I(g) $$
+                            </div>
+                        </li>
+                        <li>Jednorodność:
+                            <div class="math-block">
+                                $$ I(\alpha f) = \int_a^b \alpha f(x)\,dx = \alpha \int_a^b f(x)\,dx = \alpha I(f) $$
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </details>
+            </div>
+
+            <h2><span data-lang="en">References</span><span data-lang="pl">Bibliografia</span></h2>
+            <ol class="reference-list">
+                <li id="ref-1">Axler, S. (2024). <strong>Linear Algebra Done Right</strong> (4th ed.). Undergraduate Texts in Mathematics. Springer. <span data-lang="en">Section</span><span data-lang="pl">Rozdział</span> 3F: Duality.</li>
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="../../script.js"></script>
+</body>
+</html>

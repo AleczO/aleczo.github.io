@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://aleczo.github.io/articles/group-operations-2/">
+    <meta property="og:title" content="Reprezentacje grup cyklicznych w sieciach neuronowych, część II">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="https://aleczo.github.io/attachments/thumbnails/group-operations.svg">
+
+    <title>Reprezentacje grup cyklicznych w sieciach neuronowych, część II - Aleksander Czop</title>
+
+    <link rel="icon" type="" href="../../attachments/julia_set_plotly.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../../note.css">
+
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+
+    <header class="nav-background">
+        <div class="align-wrapper">
+            <nav class="nav-content">
+                <a class="nav-brand" href="../../index.html">Aleksander Czop</a>
+
+                <div class="nav-links">
+                    <a href="../../index.html#About">About</a>
+                    <a href="../../research.html" class="active">Articles</a>
+                    <a href="../../primers.html">Primers</a>
+
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Przełącz motyw">
+                        <span class="material-symbols-outlined icon-moon">dark_mode</span>
+                        <span class="material-symbols-outlined icon-sun">light_mode</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="align-wrapper main-content">
+
+        <a href="../../research.html" class="back-link">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            Back to Notes
+        </a>
+
+        <article class="article-container">
+
+            <div class="article-meta">
+                <span class="note-tag">DL</span>
+                <span class="note-date">Published: Oct 2026</span>
+            </div>
+
+            <h1 class="article-title">Reprezentacje grup cyklicznych w sieciach neuronowych, część II</h1>
+
+            <h2>Abstract</h2>
+            <p>
+            </p>
+
+            <hr class="article-divider">
+
+            <h2>Wstęp</h2>
+            <p>
+            </p>
+
+            <hr class="article-divider">
+
+            <h2 id="eksperymenty">Eksperymenty</h2>
+            <p>
+                Sieci postaci \( \operatorname{FN}_0 : \mathbb{R}^{2p} \to \mathbb{R}^{h} \), \( x^2 \),
+                \( \operatorname{FN}_2 : \mathbb{R}^{h} \to \mathbb{R}^{p} \) (bez wyrazów wolnych), trenowane na wszystkich
+                parach \( (a, b) \) dla \( p \in \{29, 53, 71, 97\} \), szerokości \( h \approx p/4,\ p/2,\ p,\ 2p \)
+                i trzech ziaren losowych.
+            </p>
+
+            <figure class="plot-figure">
+                <div id="go2-summary-plot" class="plot-container plot-2d"></div>
+                <figcaption>Końcowa dokładność w funkcji względnej szerokości \( h/p \) (wszystkie przebiegi bez regularyzacji L2); punkty to pojedyncze ziarna, linia to średnia.</figcaption>
+            </figure>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="go2-p">p</label>
+                    <select id="go2-p"></select>
+                    <label for="go2-h">h</label>
+                    <select id="go2-h"></select>
+                    <label for="go2-seed">seed</label>
+                    <select id="go2-seed"></select>
+                    <label for="go2-wd">wd</label>
+                    <select id="go2-wd"></select>
+                </div>
+                <p class="gd-status" id="go2-run-status">Ładowanie…</p>
+            </div>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="go2-loss-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Funkcja straty w trakcie uczenia (skala logarytmiczna).</figcaption>
+                </figure>
+
+                <figure class="plot-figure">
+                    <div id="go2-acc-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Dokładność na wszystkich parach \( (a, b) \) w trakcie uczenia.</figcaption>
+                </figure>
+            </div>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <button type="button" id="go2-sort" class="gd-btn gd-btn-secondary">Kolejność oryginalna</button>
+                </div>
+            </div>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="go2-weight-heatmap-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Cała macierz \( \operatorname{FN.0.weight} \); pionowa linia rozdziela część \( a \) od \( b \).</figcaption>
+                </figure>
+
+                <figure class="plot-figure">
+                    <div id="go2-spectrum-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Widmo DFT: łączna moc widmowa \( |\hat{w}_a(m)|^2 + |\hat{w}_b(m)|^2 \) zsumowana po wszystkich neuronach.</figcaption>
+                </figure>
+            </div>
+
+            <div class="gd-controls">
+                <div class="gd-controls-row">
+                    <label for="go2-neuron">Neuron warstwy ukrytej</label>
+                    <input type="range" id="go2-neuron" min="0" max="0" step="1" value="0">
+                    <input type="number" id="go2-neuron-num" min="0" max="0" step="1" value="0">
+                </div>
+                <div class="gd-controls-row">
+                    <button type="button" id="go2-coords" class="gd-btn gd-btn-secondary">Współrzędne (a+b, a−b)</button>
+                </div>
+            </div>
+
+            <div class="plot-figure-row">
+                <figure class="plot-figure">
+                    <div id="go2-neuron-weight-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Wektor wag wejściowych \( \operatorname{FN}_0 \) dla wybranego neuronu, rozbity na część \( a \) i \( b \).</figcaption>
+                </figure>
+
+                <figure class="plot-figure">
+                    <div id="go2-activation-plot" class="plot-container plot-2d"></div>
+                    <figcaption>Aktywacja wybranego neuronu (po \( x^2 \)) jako funkcja \( (a, b) \) albo \( \big((a+b) \bmod p,\ (a-b) \bmod p\big) \).</figcaption>
+                </figure>
+            </div>
+
+            <hr class="article-divider">
+
+            <h2>References</h2>
+            <ol class="reference-list">
+            </ol>
+
+        </article>
+    </main>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <script src="../../script.js"></script>
+    <script src="runs/index.js"></script>
+    <script src="run-explorer.js"></script>
+</body>
+
+</html>

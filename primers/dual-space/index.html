@@ -66,33 +66,95 @@
             <!-- ============ ENGLISH ============ -->
             <div data-lang="en">
             <p>
-                <strong>Assumptions.</strong> Let \( V \) be a vector space of finite dimension \( n \) over a field
-                \( \mathbb{F} \) (think \( \mathbb{R} \) or \( \mathbb{C} \)), and let \( (e_1, \dots, e_n) \) be a basis
-                of \( V \).
+                Let \( V \) be a vector space over a field \( \mathbb{K} \).
+                The dual (conjugate) space of \( V \), denoted \( V^* \), is the space of all linear functionals
+                defined on \( V \):
+            </p>
+            <div class="math-block">
+                $$ V^* = \operatorname{Hom}(V, \mathbb{K}) = \{\phi : V \to \mathbb{K} \mid \phi \text{ is linear}\} $$
+            </div>
+
+            <p>
+                <strong>Dual basis.</strong> Let \( (e_1, \dots, e_n) \) be a basis of \( V \).
             </p>
 
-            <p><strong>Definition (dual space).</strong> The dual space of \( V \) is the set of all linear functionals on \( V \),</p>
+            <p>
+                <strong>Theorem (Dual basis).</strong> Let \( V \) be a vector space of finite dimension
+                \( \dim(V) = n \), and let \( B = (e_1, \dots, e_n) \) be a basis of \( V \).
+                For each basis vector \( e_i \) there is a unique functional \( e_i^* \in V^* \) (called the \( i \)-th
+                coordinate functional), given on the vectors of \( B \) by the Kronecker delta:
+            </p>
             <div class="math-block">
-                $$ V^* = \operatorname{Hom}(V, \mathbb{F}) = \{\, f \colon V \to \mathbb{F} \mid f \text{ is linear} \,\}, $$
+                $$ e_i^*(e_j) = \delta_{ij} = \begin{cases} 1 & \text{for } i = j \\ 0 & \text{for } i \neq j \end{cases} $$
             </div>
             <p>
-                with pointwise operations \( (f + g)(v) = f(v) + g(v) \) and \( (\lambda f)(v) = \lambda f(v) \). These
-                make \( V^* \) a vector space over \( \mathbb{F} \). Its elements are called <em>covectors</em> (or
-                one-forms).
+                The system \( B^* = (e_1^*, \dots, e_n^*) \) is a basis of the dual space \( V^* \), called the dual
+                basis of \( B \).
             </p>
 
-            <p><strong>Definition (dual basis).</strong> The functionals \( e^1, \dots, e^n \in V^* \) are defined on
-            the basis by</p>
+            <p>As a consequence:</p>
+            <ol>
+                <li>
+                    Decomposition of a vector in \( V \) using the dual basis:
+                    <div class="math-block">$$ v = \sum_{i=1}^n e_i^*(v)\, e_i $$</div>
+                </li>
+                <li>
+                    Decomposition of a functional in \( V^* \) in the dual basis:
+                    <div class="math-block">$$ \phi = \sum_{i=1}^n \phi(e_i)\, e_i^* $$</div>
+                </li>
+                <li>\( \dim(V^*) = \dim(V) = n \).</li>
+            </ol>
+
+            <details class="proof-block">
+            <summary>Proof</summary>
+            <div class="proof-content">
+            <p>
+                To show that \( (e_1^*, \dots, e_n^*) \) is a basis of \( V^* \), we prove that it is linearly
+                independent and that it spans \( V^* \).
+            </p>
+
+            <p><strong>1. Linear independence.</strong> Consider a linear combination that gives the zero functional \( \mathbf{0} \in V^* \):</p>
             <div class="math-block">
-                $$ e^i(e_j) = \delta^i_j = \begin{cases} 1 & i = j, \\ 0 & i \neq j, \end{cases} $$
+                $$ \sum_{i=1}^n \alpha_i e_i^* = \mathbf{0} $$
+            </div>
+            <p>Apply both sides to an arbitrary basis vector \( e_j \in V \):</p>
+            <div class="math-block">
+                $$ \left(\sum_{i=1}^n \alpha_i e_i^*\right)(e_j) = \mathbf{0}(e_j) = 0 $$
+            </div>
+            <p>By linearity and the definition \( e_i^*(e_j) = \delta_{ij} \):</p>
+            <div class="math-block">
+                $$ \sum_{i=1}^n \alpha_i \delta_{ij} = \alpha_j = 0 \quad \text{for every } j \in \{1, \dots, n\} $$
             </div>
             <p>
-                and extended linearly. Explicitly, \( e^i \) reads off the \( i \)-th coordinate:
-                if \( v = \sum_j v^j e_j \), then \( e^i(v) = v^i \), so
+                All coefficients \( \alpha_j \) are zero, so \( (e_1^*, \dots, e_n^*) \) is linearly independent.
+            </p>
+
+            <p>
+                <strong>2. Spanning \( V^* \).</strong> Let \( \phi \in V^* \) be any linear functional. Define the
+                scalars \( c_i = \phi(e_i) \in \mathbb{K} \) and consider the functional:
             </p>
             <div class="math-block">
-                $$ v = \sum_{i=1}^n e^i(v)\, e_i . $$
+                $$ \psi = \sum_{i=1}^n c_i e_i^* $$
             </div>
+            <p>Evaluate \( \psi \) on the basis vectors \( e_j \):</p>
+            <div class="math-block">
+                $$ \psi(e_j) = \left(\sum_{i=1}^n c_i e_i^*\right)(e_j) = \sum_{i=1}^n c_i \delta_{ij} = c_j = \phi(e_j) $$
+            </div>
+            <p>
+                The linear functionals \( \phi \) and \( \psi \) agree on every vector of the basis \( B \), so they are
+                equal:
+            </p>
+            <div class="math-block">
+                $$ \phi = \psi = \sum_{i=1}^n \phi(e_i)\, e_i^* $$
+            </div>
+            <p>So every functional is a linear combination of the elements of \( B^* \).</p>
+
+            <p>
+                The system \( B^* = (e_1^*, \dots, e_n^*) \) is linearly independent and spans all of \( V^* \), so it is
+                a basis. \( \blacksquare \)
+            </p>
+            </div>
+            </details>
 
             <h2>Example: polynomials</h2>
             <p>
@@ -109,34 +171,34 @@
                 \( p = a_0 + a_1 x + a_2 x^2 \):
             </p>
             <div class="math-block">
-                $$ e^1(p) = p(0) = a_0, \qquad e^2(p) = p'(0) = a_1, \qquad e^3(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
+                $$ e_1^*(p) = p(0) = a_0, \qquad e_2^*(p) = p'(0) = a_1, \qquad e_3^*(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
             </div>
             <p>
-                You can check \( e^i(e_j) = \delta^i_j \) directly. For example, \( e^3(x^2) = \tfrac12 \cdot 2 = 1 \) and
-                \( e^3(x) = 0 \). Every functional is a combination of these. For the integral,
-                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), so \( I = e^1 + \tfrac12 e^2 + \tfrac13 e^3 \).
+                You can check \( e_i^*(e_j) = \delta_{ij} \) directly. For example, \( e_3^*(x^2) = \tfrac12 \cdot 2 = 1 \) and
+                \( e_3^*(x) = 0 \). Every functional is a combination of these. For the integral,
+                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), so \( I = e_1^* + \tfrac12 e_2^* + \tfrac13 e_3^* \).
             </p>
             <p>
                 In \( \mathbb{R}^n \) the same idea gives the familiar picture. Vectors are columns, covectors are
-                rows \( a^\top \), and \( f(v) = a^\top v \). The dual basis of the standard basis is the standard basis
+                rows \( a^\top \), and \( \phi(v) = a^\top v \). The dual basis of the standard basis is the standard basis
                 of rows.
             </p>
 
             <h2>Visualization</h2>
             <p>
                 Take \( V = \mathbb{R}^2 \) and choose a basis \( e_1, e_2 \) with the sliders (angle and length). A
-                covector \( f \) can be drawn as the family of parallel level lines \( \{x : f(x) = k\} \),
-                \( k \in \mathbb{Z} \). The value \( f(v) \) counts how many lines \( v \) crosses. The dual basis has
+                covector \( \phi \) can be drawn as the family of parallel level lines \( \{x : \phi(x) = k\} \),
+                \( k \in \mathbb{Z} \). The value \( \phi(v) \) counts how many lines \( v \) crosses. The dual basis has
                 the following properties:
             </p>
             <ul>
-                <li>the level lines of \( e^1 \) are parallel to \( e_2 \), because \( e^1(e_2) = 0 \);</li>
-                <li>\( e_1 \) spans exactly one gap between them, because \( e^1(e_1) = 1 \).</li>
+                <li>the level lines of \( e_1^* \) are parallel to \( e_2 \), because \( e_1^*(e_2) = 0 \);</li>
+                <li>\( e_1 \) spans exactly one gap between them, because \( e_1^*(e_1) = 1 \).</li>
             </ul>
             <p>
-                Lengthen \( e_1 \), and the lines of \( e^1 \) spread apart. The covector gets "smaller" as the vector
+                Lengthen \( e_1 \), and the lines of \( e_1^* \) spread apart. The covector gets "smaller" as the vector
                 grows. Let \( A = [\,e_1\ e_2\,] \) be the matrix with the basis vectors as columns. The dashed arrows
-                show the gradients of \( e^1, e^2 \) under the standard inner product, which are the rows of
+                show the gradients of \( e_1^*, e_2^* \) under the standard inner product, which are the rows of
                 \( A^{-1} \). Each is perpendicular to the <em>other</em> basis vector. They coincide with
                 \( e_1, e_2 \) only when the basis is orthonormal.
             </p>
@@ -145,33 +207,97 @@
             <!-- ============ POLSKI ============ -->
             <div data-lang="pl">
             <p>
-                <strong>Założenia.</strong> Niech \( V \) będzie przestrzenią wektorową skończonego wymiaru \( n \) nad
-                ciałem \( \mathbb{F} \) (np. \( \mathbb{R} \) lub \( \mathbb{C} \)), a \( (e_1, \dots, e_n) \) bazą
-                \( V \).
+                Niech \( V \) będzie przestrzenią liniową nad ciałem \( \mathbb{K} \).
+                Przestrzenią sprzężoną (dualną) do \( V \), oznaczaną jako \( V^* \), nazywamy przestrzeń wszystkich
+                funkcjonałów liniowych określonych na \( V \):
+            </p>
+            <div class="math-block">
+                $$ V^* = \operatorname{Hom}(V, \mathbb{K}) = \{\phi : V \to \mathbb{K} \mid \phi \text{ jest liniowe}\} $$
+            </div>
+
+            <p>
+                <strong>Baza sprzężona.</strong> Przyjmijmy \( (e_1, \dots, e_n) \) jako bazę przestrzeni \( V \).
             </p>
 
-            <p><strong>Definicja (przestrzeń dualna).</strong> Przestrzeń dualna do \( V \) to zbiór wszystkich funkcjonałów liniowych na \( V \),</p>
+            <p>
+                <strong>Twierdzenie (Baza sprzężona).</strong> Niech \( V \) będzie przestrzenią liniową o wymiarze
+                skończonym \( \dim(V) = n \), a układ \( B = (e_1, \dots, e_n) \) jej bazą.
+                Dla każdego wektora bazowego \( e_i \) istnieje jednoznacznie wyznaczony funkcjonał \( e_i^* \in V^* \)
+                (zwany \( i \)-tym funkcjonałem współrzędnym), zadany na wektorach bazy \( B \) za pomocą delty
+                Kroneckera:
+            </p>
             <div class="math-block">
-                $$ V^* = \operatorname{Hom}(V, \mathbb{F}) = \{\, f \colon V \to \mathbb{F} \mid f \text{ jest liniowy} \,\}, $$
+                $$ e_i^*(e_j) = \delta_{ij} = \begin{cases} 1 & \text{dla } i = j \\ 0 & \text{dla } i \neq j \end{cases} $$
             </div>
             <p>
-                z działaniami określonymi punktowo: \( (f + g)(v) = f(v) + g(v) \) oraz \( (\lambda f)(v) = \lambda f(v) \).
-                Z tymi działaniami \( V^* \) jest przestrzenią wektorową nad \( \mathbb{F} \). Jej elementy nazywamy
-                <em>kowektorami</em> (lub 1-formami).
+                Układ \( B^* = (e_1^*, \dots, e_n^*) \) stanowi bazę przestrzeni sprzężonej \( V^* \), zwaną bazą
+                sprzężoną (dualną) do bazy \( B \).
             </p>
 
-            <p><strong>Definicja (baza dualna).</strong> Funkcjonały \( e^1, \dots, e^n \in V^* \) określamy na bazie
-            wzorem</p>
+            <p>W konsekwencji:</p>
+            <ol>
+                <li>
+                    Rozkład wektora z \( V \) za pomocą bazy dualnej:
+                    <div class="math-block">$$ v = \sum_{i=1}^n e_i^*(v)\, e_i $$</div>
+                </li>
+                <li>
+                    Rozkład funkcjonału z \( V^* \) w bazie dualnej:
+                    <div class="math-block">$$ \phi = \sum_{i=1}^n \phi(e_i)\, e_i^* $$</div>
+                </li>
+                <li>\( \dim(V^*) = \dim(V) = n \).</li>
+            </ol>
+
+            <details class="proof-block">
+            <summary>Dowód</summary>
+            <div class="proof-content">
+            <p>
+                Aby wykazać, że układ \( (e_1^*, \dots, e_n^*) \) jest bazą przestrzeni \( V^* \), należy dowieść jego
+                liniowej niezależności oraz tego, że rozpina przestrzeń \( V^* \).
+            </p>
+
+            <p><strong>1. Liniowa niezależność.</strong> Rozważmy kombinację liniową dającą funkcjonał zerowy \( \mathbf{0} \in V^* \):</p>
             <div class="math-block">
-                $$ e^i(e_j) = \delta^i_j = \begin{cases} 1 & i = j, \\ 0 & i \neq j, \end{cases} $$
+                $$ \sum_{i=1}^n \alpha_i e_i^* = \mathbf{0} $$
+            </div>
+            <p>Aplikując obie strony tej równości do dowolnego wektora bazowego \( e_j \in V \):</p>
+            <div class="math-block">
+                $$ \left(\sum_{i=1}^n \alpha_i e_i^*\right)(e_j) = \mathbf{0}(e_j) = 0 $$
+            </div>
+            <p>Z liniowości i definicji \( e_i^*(e_j) = \delta_{ij} \):</p>
+            <div class="math-block">
+                $$ \sum_{i=1}^n \alpha_i \delta_{ij} = \alpha_j = 0 \quad \text{dla każdego } j \in \{1, \dots, n\} $$
             </div>
             <p>
-                i przedłużamy liniowo. Funkcjonał \( e^i \) odczytuje \( i \)-tą współrzędną:
-                jeśli \( v = \sum_j v^j e_j \), to \( e^i(v) = v^i \), a więc
+                Wszystkie współczynniki \( \alpha_j \) muszą być równe zeru, zatem układ \( (e_1^*, \dots, e_n^*) \)
+                jest liniowo niezależny.
+            </p>
+
+            <p>
+                <strong>2. Liniowe rozpinanie przestrzeni \( V^* \).</strong> Niech \( \phi \in V^* \) będzie dowolnym
+                funkcjonałem liniowym. Zdefiniujmy skalary \( c_i = \phi(e_i) \in \mathbb{K} \) i rozważmy funkcjonał:
             </p>
             <div class="math-block">
-                $$ v = \sum_{i=1}^n e^i(v)\, e_i . $$
+                $$ \psi = \sum_{i=1}^n c_i e_i^* $$
             </div>
+            <p>Sprawdzamy wartości funkcjonału \( \psi \) na wektorach bazowych \( e_j \):</p>
+            <div class="math-block">
+                $$ \psi(e_j) = \left(\sum_{i=1}^n c_i e_i^*\right)(e_j) = \sum_{i=1}^n c_i \delta_{ij} = c_j = \phi(e_j) $$
+            </div>
+            <p>
+                Ponieważ funkcjonały liniowe \( \phi \) i \( \psi \) przyjmują identyczne wartości na wszystkich wektorach
+                bazy \( B \), są tożsame:
+            </p>
+            <div class="math-block">
+                $$ \phi = \psi = \sum_{i=1}^n \phi(e_i)\, e_i^* $$
+            </div>
+            <p>Dowolny funkcjonał jest zatem kombinacją liniową elementów układu \( B^* \).</p>
+
+            <p>
+                Układ \( B^* = (e_1^*, \dots, e_n^*) \) jest liniowo niezależny i generuje całą przestrzeń \( V^* \),
+                stanowi więc jej bazę. \( \blacksquare \)
+            </p>
+            </div>
+            </details>
 
             <h2>Przykład: wielomiany</h2>
             <p>
@@ -188,32 +314,32 @@
                 \( p = a_0 + a_1 x + a_2 x^2 \):
             </p>
             <div class="math-block">
-                $$ e^1(p) = p(0) = a_0, \qquad e^2(p) = p'(0) = a_1, \qquad e^3(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
+                $$ e_1^*(p) = p(0) = a_0, \qquad e_2^*(p) = p'(0) = a_1, \qquad e_3^*(p) = \tfrac{1}{2}\, p''(0) = a_2 . $$
             </div>
             <p>
-                Łatwo sprawdzić, że \( e^i(e_j) = \delta^i_j \), np. \( e^3(x^2) = \tfrac12 \cdot 2 = 1 \) oraz
-                \( e^3(x) = 0 \). Każdy funkcjonał jest kombinacją tych trzech. Dla całki
-                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), więc \( I = e^1 + \tfrac12 e^2 + \tfrac13 e^3 \).
+                Łatwo sprawdzić, że \( e_i^*(e_j) = \delta_{ij} \), np. \( e_3^*(x^2) = \tfrac12 \cdot 2 = 1 \) oraz
+                \( e_3^*(x) = 0 \). Każdy funkcjonał jest kombinacją tych trzech. Dla całki
+                \( I(p) = a_0 + \tfrac12 a_1 + \tfrac13 a_2 \), więc \( I = e_1^* + \tfrac12 e_2^* + \tfrac13 e_3^* \).
             </p>
             <p>
                 W \( \mathbb{R}^n \) ta sama idea daje znany obraz. Wektory to kolumny, kowektory to wiersze
-                \( a^\top \), a \( f(v) = a^\top v \). Bazą dualną do bazy standardowej jest standardowa baza wierszy.
+                \( a^\top \), a \( \phi(v) = a^\top v \). Bazą dualną do bazy standardowej jest standardowa baza wierszy.
             </p>
 
             <h2>Wizualizacja</h2>
             <p>
-                Weźmy \( V = \mathbb{R}^2 \) i wybierzmy suwakami bazę \( e_1, e_2 \) (kąt i długość). Kowektor \( f \)
-                można narysować jako rodzinę równoległych poziomic \( \{x : f(x) = k\} \), \( k \in \mathbb{Z} \).
-                Wartość \( f(v) \) to liczba poziomic, które przecina \( v \). Baza dualna ma następujące własności:
+                Weźmy \( V = \mathbb{R}^2 \) i wybierzmy suwakami bazę \( e_1, e_2 \) (kąt i długość). Kowektor \( \phi \)
+                można narysować jako rodzinę równoległych poziomic \( \{x : \phi(x) = k\} \), \( k \in \mathbb{Z} \).
+                Wartość \( \phi(v) \) to liczba poziomic, które przecina \( v \). Baza dualna ma następujące własności:
             </p>
             <ul>
-                <li>poziomice \( e^1 \) są równoległe do \( e_2 \), bo \( e^1(e_2) = 0 \);</li>
-                <li>\( e_1 \) rozpina dokładnie jeden odstęp między nimi, bo \( e^1(e_1) = 1 \).</li>
+                <li>poziomice \( e_1^* \) są równoległe do \( e_2 \), bo \( e_1^*(e_2) = 0 \);</li>
+                <li>\( e_1 \) rozpina dokładnie jeden odstęp między nimi, bo \( e_1^*(e_1) = 1 \).</li>
             </ul>
             <p>
-                Gdy wydłużysz \( e_1 \), poziomice \( e^1 \) się rozsuną. Kowektor „maleje”, gdy wektor rośnie.
+                Gdy wydłużysz \( e_1 \), poziomice \( e_1^* \) się rozsuną. Kowektor „maleje”, gdy wektor rośnie.
                 Niech \( A = [\,e_1\ e_2\,] \) będzie macierzą, której kolumnami są wektory bazy. Przerywane strzałki
-                to gradienty \( e^1, e^2 \) względem standardowego iloczynu skalarnego, czyli wiersze \( A^{-1} \).
+                to gradienty \( e_1^*, e_2^* \) względem standardowego iloczynu skalarnego, czyli wiersze \( A^{-1} \).
                 Każdy z nich jest prostopadły do <em>drugiego</em> wektora bazy. Pokrywają się z \( e_1, e_2 \)
                 tylko wtedy, gdy baza jest ortonormalna.
             </p>
@@ -257,8 +383,8 @@
 
             <figure class="plot-figure">
                 <div id="ds-plane" class="plot-container plot-square"></div>
-                <figcaption data-lang="en">Basis vectors \( e_1 \) (blue) and \( e_2 \) (red), with the level lines \( e^1 = k \) (blue) and \( e^2 = k \) (red) of the dual basis. Dashed arrows are the gradients of \( e^1, e^2 \). The black vector \( v \) has coordinates \( (e^1(v), e^2(v)) \), read off by counting the lines it crosses.</figcaption>
-                <figcaption data-lang="pl">Wektory bazy \( e_1 \) (niebieski) i \( e_2 \) (czerwony) oraz poziomice \( e^1 = k \) (niebieskie) i \( e^2 = k \) (czerwone) bazy dualnej. Przerywane strzałki to gradienty \( e^1, e^2 \). Czarny wektor \( v \) ma współrzędne \( (e^1(v), e^2(v)) \), które odczytujemy, licząc przecinane poziomice.</figcaption>
+                <figcaption data-lang="en">Basis vectors \( e_1 \) (blue) and \( e_2 \) (red), with the level lines \( e_1^* = k \) (blue) and \( e_2^* = k \) (red) of the dual basis. Dashed arrows are the gradients of \( e_1^*, e_2^* \). The black vector \( v \) has coordinates \( (e_1^*(v), e_2^*(v)) \), read off by counting the lines it crosses.</figcaption>
+                <figcaption data-lang="pl">Wektory bazy \( e_1 \) (niebieski) i \( e_2 \) (czerwony) oraz poziomice \( e_1^* = k \) (niebieskie) i \( e_2^* = k \) (czerwone) bazy dualnej. Przerywane strzałki to gradienty \( e_1^*, e_2^* \). Czarny wektor \( v \) ma współrzędne \( (e_1^*(v), e_2^*(v)) \), które odczytujemy, licząc przecinane poziomice.</figcaption>
             </figure>
 
         </article>

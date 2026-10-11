@@ -101,8 +101,8 @@
             const kMax1 = Math.ceil(Math.max(...corners.map(p => Math.abs(d1[0] * p[0] + d1[1] * p[1])))) + 1;
             const kMax2 = Math.ceil(Math.max(...corners.map(p => Math.abs(d2[0] * p[0] + d2[1] * p[1])))) + 1;
 
-            traces.push(levelLines(e1, e2, Math.min(kMax1, 200), E1_COLOR, 'e¹ = k'));
-            traces.push(levelLines(e2, e1, Math.min(kMax2, 200), E2_COLOR, 'e² = k'));
+            traces.push(levelLines(e1, e2, Math.min(kMax1, 200), E1_COLOR, 'e₁* = k'));
+            traces.push(levelLines(e2, e1, Math.min(kMax2, 200), E2_COLOR, 'e₂* = k'));
 
             // parallelogram decomposition v = c1 e1 + c2 e2
             const p1 = [c1 * e1[0], c1 * e1[1]];
@@ -112,11 +112,11 @@
                 line: { color: c.muted, width: 1.5, dash: 'dot' }
             });
 
-            traces.push(arrow(d1, E1_COLOR, '∇e¹', { dash: 'dash', width: 2, head: 11 }));
-            traces.push(arrow(d2, E2_COLOR, '∇e²', { dash: 'dash', width: 2, head: 11 }));
+            traces.push(arrow(d1, E1_COLOR, '∇e₁*', { dash: 'dash', width: 2, head: 11 }));
+            traces.push(arrow(d2, E2_COLOR, '∇e₂*', { dash: 'dash', width: 2, head: 11 }));
 
             readout.textContent =
-                'e¹(v) = ' + c1.toFixed(2) + '   e²(v) = ' + c2.toFixed(2) +
+                'e₁*(v) = ' + c1.toFixed(2) + '   e₂*(v) = ' + c2.toFixed(2) +
                 '   ⇒  v = ' + c1.toFixed(2) + '·e₁ ' + (c2 < 0 ? '− ' : '+ ') + Math.abs(c2).toFixed(2) + '·e₂' +
                 '   (det A = ' + det.toFixed(2) + ')';
         }
